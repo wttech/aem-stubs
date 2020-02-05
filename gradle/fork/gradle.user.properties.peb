@@ -1,0 +1,37 @@
+# AEM configuration
+notifier.enabled=true
+package.deploy.workflowToggle=[dam_asset=false]
+
+#package.snapshots=[**/*-SNAPSHOT*.zip]
+#instance.author=true
+#instance.publish=true
+
+fileTransfer.user={{companyUser}}
+fileTransfer.password={{companyPassword}}
+fileTransfer.domain={{companyDomain}}
+
+{% if instanceAuthorHttpUrl is not empty %}
+instance.local-author.httpUrl={{instanceAuthorHttpUrl}}
+instance.local-author.type={{instanceType}}
+{% if instanceType == 'local' %}
+instance.local-author.runModes={{instanceRunModes}}
+instance.local-author.jvmOpts={{instanceJvmOpts}}
+{% endif %}
+{% endif %}
+
+{% if instancePublishHttpUrl is not empty %}
+instance.local-publish.httpUrl={{instancePublishHttpUrl}}
+instance.local-publish.type={{instanceType}}
+{% if instanceType == 'local' %}
+instance.local-publish.runModes={{instanceRunModes}}
+instance.local-publish.jvmOpts={{instanceJvmOpts}}
+{% endif %}
+{% endif %}
+
+{% if instanceType == 'local' %}
+localInstance.source={{ localInstanceSource }}
+localInstance.quickstart.jarUrl={{ localInstanceQuickstartJarUri }}
+localInstance.quickstart.licenseUrl={{ localInstanceQuickstartLicenseUri }}
+localInstance.backup.uploadUrl={{ localInstanceBackupUploadUri}}
+localInstance.backup.downloadUrl={{ localInstanceBackupDownloadUri }}
+{% endif %}

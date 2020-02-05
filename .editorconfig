@@ -1,0 +1,21 @@
+# top-most EditorConfig file
+root = true
+
+[*]
+insert_final_newline = true
+
+[*.js]
+indent_style = space
+indent_size = 2
+
+[*.xml]
+indent_style = space
+indent_size = 4
+
+[*.{scss,less,css}]
+indent_style = space
+indent_size = 2
+
+[*.{kt,java,jsp}]
+indent_style = space
+indent_size = 2
