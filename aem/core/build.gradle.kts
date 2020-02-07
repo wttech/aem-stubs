@@ -9,7 +9,28 @@ description = "Wiremock on AEM - Core"
 
 aem {
     tasks {
-        bundlePrivateEmbed("com.github.tomakehurst:wiremock-jre8:2.21.0")
+        bundlePrivateEmbed("com.github.tomakehurst:wiremock:2.1.6",
+                "com.github.tomakehurst.wiremock.servlet",
+                "com.github.tomakehurst.wiremock.common",
+                "com.github.tomakehurst.wiremock.core",
+                "com.github.tomakehurst.wiremock.extension",
+                "com.github.tomakehurst.wiremock.extension.responsetemplating",
+                "com.github.tomakehurst.wiremock.admin",
+                "com.github.tomakehurst.wiremock.admin.model",
+                "com.github.tomakehurst.wiremock.admin.tasks",
+                "com.github.tomakehurst.wiremock.global",
+                "com.github.tomakehurst.wiremock.verification.*",
+                "com.github.tomakehurst.wiremock.stubbing",
+                "com.github.tomakehurst.wiremock.recording",
+                "com.github.tomakehurst.wiremock.http",
+                "com.github.tomakehurst.wiremock.http.trafficlistener",
+                "com.github.tomakehurst.wiremock.jetty9",
+                "com.github.tomakehurst.wiremock.client",
+                "com.github.tomakehurst.wiremock.matching",
+                "com.github.tomakehurst.wiremock.security",
+                "com.github.tomakehurst.wiremock.standalone",
+                "com.github.tomakehurst.wiremock.extension.responsetemplating.helpers"
+        )
         bundlePrivateEmbed("com.google.guava:guava:27.0.1-jre",
                 "com.google.common.base",
                 "com.google.common.base.internal",
@@ -31,7 +52,51 @@ aem {
         bundlePrivateEmbed("com.google.guava:failureaccess:1.0.1",
                 "com.google.common.util.concurrent.internal"
         )
+        bundlePrivateEmbed("xmlunit:xmlunit:1.6",
+                "org.custommonkey.xmlunit",
+                "org.custommonkey.xmlunit.examples",
+                        "org.custommonkey.xmlunit.exceptions",
+                        "org.custommonkey.xmlunit.jaxp13",
+                        "org.custommonkey.xmlunit.util")
+        bundlePrivateEmbed("org.xmlunit:xmlunit-core:2.6.3", "org.xmlunit.*")
+        bundlePrivateEmbed("com.jayway.jsonpath:json-path:2.4.0",
+                "com.jayway.jsonpath",
+                "com.jayway.jsonpath.internal.*",
+                "com.jayway.jsonpath.internal.filter",
+                "com.jayway.jsonpath.internal.path",
+                "com.jayway.jsonpath.spi.cache",
+                "com.jayway.jsonpath.spi.json",
+                "com.jayway.jsonpath.spi.mapper")
+        bundlePrivateEmbed("net.sf.jopt-simple:jopt-simple:5.0.4", "joptsimple.*")
 
+
+        bundlePrivateEmbed("com.github.jknack:handlebars:4.1.2",
+                "com.github.jknack.handlebars",
+                "com.github.jknack.handlebars.cache",
+                "com.github.jknack.handlebars.context",
+                "com.github.jknack.handlebars.io",
+                "com.github.jknack.handlebars.internal.*",
+                "com.github.jknack.handlebars.helper"
+        )
+        bundlePrivateEmbed("org.apache.tapestry:tapestry-json:5.3.7",
+                "org.codehaus.jettison.json")
+
+        bundlePrivateEmbed("org.codehaus.jettison:jettison:1.4.0",
+                "org.apache.tapestry5.json")
+
+        bundlePrivateEmbed("net.minidev:json-smart:2.3",
+                "net.minidev.json",
+                "net.minidev.json.parser",
+                "net.minidev.asm",
+                "net.minidev.json.annotate",
+                "net.minidev.json.reader",
+                "net.minidev.asm.ex",
+                "net.minidev.json.writer")
+
+        bundlePrivateEmbed("org.ow2.asm:asm:7.0",
+                "org.objectweb.asm")
+        bundlePrivateEmbed("com.flipkart.zjsonpatch:zjsonpatch:0.4.9",
+                "com.flipkart.zjsonpatch")
         bundleCompose {
             activator = "com.company.aem.wiremockonaem.aem.activator.Activator"
         }
