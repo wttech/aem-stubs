@@ -10,6 +10,7 @@ description = "Wiremock on AEM - Core"
 aem {
     tasks {
         bundlePrivateEmbed("com.github.tomakehurst:wiremock:2.1.6",
+                "com.github.tomakehurst.wiremock",
                 "com.github.tomakehurst.wiremock.servlet",
                 "com.github.tomakehurst.wiremock.common",
                 "com.github.tomakehurst.wiremock.core",
@@ -79,7 +80,7 @@ aem {
                 "com.github.jknack.handlebars.helper"
         )
         bundlePrivateEmbed("org.apache.tapestry:tapestry-json:5.3.7",
-                "org.codehaus.jettison.json")
+                "org.codehaus.jettison.*")
 
         bundlePrivateEmbed("org.codehaus.jettison:jettison:1.4.0",
                 "org.apache.tapestry5.json")
@@ -97,8 +98,43 @@ aem {
                 "org.objectweb.asm")
         bundlePrivateEmbed("com.flipkart.zjsonpatch:zjsonpatch:0.4.9",
                 "com.flipkart.zjsonpatch")
+/*
+        bundlePrivateEmbed("junit:junit:4.12",
+                "junit.framework",
+                "junit.extensions",
+                "junit.runner",
+                "org.junit.runner",
+                "org.junit",
+                "org.junit.internal",
+                "org.junit.internal.builders",
+                "org.junit.internal.requests",
+                "org.junit.internal.runners",
+                "org.junit.runner.manipulation",
+                "org.junit.runner.notification",
+                "org.junit.runners",
+                "org.junit.runners.model",
+                "org.junit.internal.runners.model",
+                "org.junit.internal.runners.rules",
+                "org.junit.internal.runners.statements",
+                "org.junit.runners.parameterized",
+                "org.junit.validator",
+                "org.junit.rules",
+                "org.junit.internal.matchers",
+                "org.junit.matchers")
+        bundlePrivateEmbed("org.hamcrest:hamcrest-all:1.3",
+                "org.hamcrest.*")
+
+
+        bundlePrivateEmbed("org.jmock:jmock:2.5.1",
+                "org.jmock.core")
+        bundlePrivateEmbed("org.jmock:jmock-junit4:2.5.1",
+                "org.jmock.core")
+*/
+
+
         bundleCompose {
             activator = "com.company.aem.wiremockonaem.aem.activator.Activator"
+            importPackages = listOf("!junit.framework", "!org.junit", "!org.junit.internal", "!com.github.tomakehurst.wiremock.junit", "*")
         }
     }
 }
