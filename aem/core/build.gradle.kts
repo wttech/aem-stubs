@@ -9,18 +9,20 @@ description = "Wiremock on AEM - Core"
 
 aem {
     tasks {
-        bundlePrivateEmbed("com.github.tomakehurst:wiremock:2.1.6",
+        bundlePrivateEmbed("com.github.tomakehurst:wiremock:2.21.0",
                 "com.github.tomakehurst.wiremock",
-                "com.github.tomakehurst.wiremock.servlet",
                 "com.github.tomakehurst.wiremock.common",
                 "com.github.tomakehurst.wiremock.core",
+                "com.github.tomakehurst.wiremock.jetty9",
+                "com.github.tomakehurst.wiremock.servlet",
+                "com.github.tomakehurst.wiremock.verification.*",
                 "com.github.tomakehurst.wiremock.extension",
                 "com.github.tomakehurst.wiremock.extension.responsetemplating",
                 "com.github.tomakehurst.wiremock.admin",
                 "com.github.tomakehurst.wiremock.admin.model",
                 "com.github.tomakehurst.wiremock.admin.tasks",
                 "com.github.tomakehurst.wiremock.global",
-                "com.github.tomakehurst.wiremock.verification.*",
+                "com.github.tomakehurst.wiremock.extension.responsetemplating.helpers",
                 "com.github.tomakehurst.wiremock.stubbing",
                 "com.github.tomakehurst.wiremock.recording",
                 "com.github.tomakehurst.wiremock.http",
@@ -30,8 +32,39 @@ aem {
                 "com.github.tomakehurst.wiremock.matching",
                 "com.github.tomakehurst.wiremock.security",
                 "com.github.tomakehurst.wiremock.standalone",
-                "com.github.tomakehurst.wiremock.extension.responsetemplating.helpers"
-        )
+                "com.github.tomakehurst.wiremock.http")
+                /*
+
+
+import com.github.tomakehurst.wiremock.jetty9.DefaultMultipartRequestConfigurer;
+import com.github.tomakehurst.wiremock.servlet.BodyChunker;
+import com.github.tomakehurst.wiremock.servlet.FaultInjectorFactory;
+import com.github.tomakehurst.wiremock.servlet.MultipartRequestConfigurer;
+import com.github.tomakehurst.wiremock.servlet.NoFaultInjectorFactory;
+import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
+import com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+                "com.github.tomakehurst.wiremock",
+
+
+                "com.github.tomakehurst.wiremock.extension",
+                "com.github.tomakehurst.wiremock.extension.responsetemplating",
+                "com.github.tomakehurst.wiremock.admin",
+                "com.github.tomakehurst.wiremock.admin.model",
+                "com.github.tomakehurst.wiremock.admin.tasks",
+                "com.github.tomakehurst.wiremock.global",
+
+                "com.github.tomakehurst.wiremock.stubbing",
+                "com.github.tomakehurst.wiremock.recording",
+                "com.github.tomakehurst.wiremock.http",
+                "com.github.tomakehurst.wiremock.http.trafficlistener",
+                "com.github.tomakehurst.wiremock.jetty9",
+                "com.github.tomakehurst.wiremock.client",
+                "com.github.tomakehurst.wiremock.matching",
+                "com.github.tomakehurst.wiremock.security",
+                "com.github.tomakehurst.wiremock.standalone",
+                "com.github.tomakehurst.wiremock.extension.responsetemplating.helpers"*/
+
         bundlePrivateEmbed("com.google.guava:guava:27.0.1-jre",
                 "com.google.common.base",
                 "com.google.common.base.internal",
@@ -98,43 +131,18 @@ aem {
                 "org.objectweb.asm")
         bundlePrivateEmbed("com.flipkart.zjsonpatch:zjsonpatch:0.4.9",
                 "com.flipkart.zjsonpatch")
-/*
-        bundlePrivateEmbed("junit:junit:4.12",
-                "junit.framework",
-                "junit.extensions",
-                "junit.runner",
-                "org.junit.runner",
-                "org.junit",
-                "org.junit.internal",
-                "org.junit.internal.builders",
-                "org.junit.internal.requests",
-                "org.junit.internal.runners",
-                "org.junit.runner.manipulation",
-                "org.junit.runner.notification",
-                "org.junit.runners",
-                "org.junit.runners.model",
-                "org.junit.internal.runners.model",
-                "org.junit.internal.runners.rules",
-                "org.junit.internal.runners.statements",
-                "org.junit.runners.parameterized",
-                "org.junit.validator",
-                "org.junit.rules",
-                "org.junit.internal.matchers",
-                "org.junit.matchers")
-        bundlePrivateEmbed("org.hamcrest:hamcrest-all:1.3",
-                "org.hamcrest.*")
-
-
-        bundlePrivateEmbed("org.jmock:jmock:2.5.1",
-                "org.jmock.core")
-        bundlePrivateEmbed("org.jmock:jmock-junit4:2.5.1",
-                "org.jmock.core")
-*/
 
 
         bundleCompose {
             activator = "com.company.aem.wiremockonaem.aem.activator.Activator"
-            importPackages = listOf("!junit.framework", "!org.junit", "!org.junit.internal", "!com.github.tomakehurst.wiremock.junit", "*")
+            importPackages = listOf("!junit.framework",
+                    "!org.junit", "!org.junit.internal",
+                    "!com.github.tomakehurst.wiremock.junit",
+                    "!com.github.tomakehurst.wiremock.jetty92",
+                    "!com.github.tomakehurst.wiremock.jetty94",
+                    "!org.eclipse.jetty.servlets.gzip",
+                    "*")
+            //excludePackage("!junit.framework", "!org.junit", "!org.junit.internal", "!com.github.tomakehurst.wiremock.junit")
         }
     }
 }
