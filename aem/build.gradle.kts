@@ -20,6 +20,7 @@ aem {
                 "jetty.webapp" {resolve("org.eclipse.jetty:jetty-webapp:9.4.20.v20190813")}
                 "jetty.http" {resolve("org.eclipse.jetty:jetty-http:9.4.20.v20190813")}
                 "sun.misc" {resolve("net.sdruskat:net.sdruskat.fragment.sun.misc:1.0.0")}
+                "groovy-console"("https://github.com/icfnext/aem-groovy-console/releases/download/14.0.0/aem-groovy-console-14.0.0.zip")
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.company.aem.wiremockonaem.aem.core;
+package com.company.wiremockonaem.aem.core;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

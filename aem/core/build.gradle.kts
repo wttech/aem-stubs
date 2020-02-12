@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-
+group = "com.company.wiremockonaem.aem"
 description = "Wiremock on AEM - Core"
 
 aem {
@@ -104,6 +104,7 @@ aem {
 
 
         bundleCompose {
+            exportPackages = listOf("com.github.tomakehurst.wiremock.client.*")
             importPackages = listOf("!junit.framework",
                     "!org.junit", "!org.junit.internal",
                     "!com.github.tomakehurst.wiremock.junit",

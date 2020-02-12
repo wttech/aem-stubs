@@ -1,6 +1,6 @@
-package com.company.aem.wiremockonaem.aem.core;
+package com.company.wiremockonaem.aem.core;
 
-import static com.company.aem.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
+import static com.company.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
