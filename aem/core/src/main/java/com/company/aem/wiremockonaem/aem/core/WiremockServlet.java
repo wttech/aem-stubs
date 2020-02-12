@@ -1,7 +1,8 @@
 package com.company.aem.wiremockonaem.aem.core;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.company.aem.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.common.Exceptions.throwUnchecked;
 import static com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter.ORIGINAL_REQUEST_KEY;
@@ -15,11 +16,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.common.Notifier;
 import com.github.tomakehurst.wiremock.core.FaultInjector;
-import com.github.tomakehurst.wiremock.core.WireMockApp;
 import com.github.tomakehurst.wiremock.http.ChunkedDribbleDelay;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
@@ -32,56 +31,45 @@ import com.github.tomakehurst.wiremock.servlet.BodyChunker;
 import com.github.tomakehurst.wiremock.servlet.FaultInjectorFactory;
 import com.github.tomakehurst.wiremock.servlet.MultipartRequestConfigurer;
 import com.github.tomakehurst.wiremock.servlet.NoFaultInjectorFactory;
-import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 import com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class WiremockServlet extends HttpServlet {
+  private final Wiremock wiremock;
+  private final RequestHandler requestHandler;
+  private final FaultInjectorFactory faultHandlerFactory;
+  private final Notifier notifier;
+  private final MultipartRequestConfigurer multipartRequestConfigurer;
 
-  private static final Gson GSON = new GsonBuilder()
-    .disableHtmlEscaping().serializeNulls().setPrettyPrinting()
-    .create();
-
-  private WireMockApp wireMockApp;
-  private RequestHandler requestHandler;
-  private FaultInjectorFactory faultHandlerFactory;
-  private Notifier notifier;
-  private MultipartRequestConfigurer multipartRequestConfigurer;
-
+  WiremockServlet(Wiremock wiremock){
+    this.wiremock = wiremock;
+    this.requestHandler = wiremock.buildStubRequestHandler();
+    this.faultHandlerFactory = new NoFaultInjectorFactory();
+    this.notifier = new ConsoleNotifier(true);
+    this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
+  }
   @Override
   public void init(ServletConfig config) {
-    wireMockApp = new WireMockApp(new AEMConfiguration(), new NotImplementedContainer());
-    get(urlEqualTo("/ok")).willReturn(aResponse().withStatus(204)).build();
-
-
-    stubFor(get(urlEqualTo("/some/thing"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "text/plain")
-        .withBody("Hello world!")));
-
-
-    requestHandler = wireMockApp.buildStubRequestHandler();
-    faultHandlerFactory = new NoFaultInjectorFactory();
-    notifier = new ConsoleNotifier(true);
-    multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
-  }
-
-  private void stubFor(MappingBuilder mappingBuilder){
-    wireMockApp.addStubMapping(mappingBuilder.build());
+    wiremock.stubFor(
+      get(urlEqualTo("/some/thing"))
+        .willReturn(
+          okJson("{ \"message\": \"Hello World\" }")));
   }
 
   @Override
   protected void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     throws IOException {
-    Request request = new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
-      "/wiremock");
+    Request request = toRequest(httpRequest);
     WiremockServlet.ServletHttpResponder responder = new WiremockServlet.ServletHttpResponder(
       httpRequest, httpResponse);
     requestHandler.handle(request, responder);
 
+  }
+
+  private Request toRequest(HttpServletRequest httpRequest) {
+    return new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
+      URL_PREFIX);
   }
 
   private class ServletHttpResponder implements HttpResponder {
@@ -103,11 +91,11 @@ public class WiremockServlet extends HttpServlet {
 
       httpServletRequest.setAttribute(ORIGINAL_REQUEST_KEY, LoggedRequest.createFrom(request));
 
-      respondTo(request, response);
+      respondTo(response);
     }
 
 
-    private void respondTo(Request request, Response response) {
+    private void respondTo(Response response) {
       try {
         if (response.wasConfigured()) {
           applyResponse(response, httpServletRequest, httpServletResponse);

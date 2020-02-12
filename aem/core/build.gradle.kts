@@ -33,37 +33,7 @@ aem {
                 "com.github.tomakehurst.wiremock.security",
                 "com.github.tomakehurst.wiremock.standalone",
                 "com.github.tomakehurst.wiremock.http")
-                /*
 
-
-import com.github.tomakehurst.wiremock.jetty9.DefaultMultipartRequestConfigurer;
-import com.github.tomakehurst.wiremock.servlet.BodyChunker;
-import com.github.tomakehurst.wiremock.servlet.FaultInjectorFactory;
-import com.github.tomakehurst.wiremock.servlet.MultipartRequestConfigurer;
-import com.github.tomakehurst.wiremock.servlet.NoFaultInjectorFactory;
-import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
-import com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter;
-import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-                "com.github.tomakehurst.wiremock",
-
-
-                "com.github.tomakehurst.wiremock.extension",
-                "com.github.tomakehurst.wiremock.extension.responsetemplating",
-                "com.github.tomakehurst.wiremock.admin",
-                "com.github.tomakehurst.wiremock.admin.model",
-                "com.github.tomakehurst.wiremock.admin.tasks",
-                "com.github.tomakehurst.wiremock.global",
-
-                "com.github.tomakehurst.wiremock.stubbing",
-                "com.github.tomakehurst.wiremock.recording",
-                "com.github.tomakehurst.wiremock.http",
-                "com.github.tomakehurst.wiremock.http.trafficlistener",
-                "com.github.tomakehurst.wiremock.jetty9",
-                "com.github.tomakehurst.wiremock.client",
-                "com.github.tomakehurst.wiremock.matching",
-                "com.github.tomakehurst.wiremock.security",
-                "com.github.tomakehurst.wiremock.standalone",
-                "com.github.tomakehurst.wiremock.extension.responsetemplating.helpers"*/
 
         bundlePrivateEmbed("com.google.guava:guava:27.0.1-jre",
                 "com.google.common.base",
@@ -134,7 +104,6 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 
 
         bundleCompose {
-            activator = "com.company.aem.wiremockonaem.aem.activator.Activator"
             importPackages = listOf("!junit.framework",
                     "!org.junit", "!org.junit.internal",
                     "!com.github.tomakehurst.wiremock.junit",
@@ -142,7 +111,6 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
                     "!com.github.tomakehurst.wiremock.jetty94",
                     "!org.eclipse.jetty.servlets.gzip",
                     "*")
-            //excludePackage("!junit.framework", "!org.junit", "!org.junit.internal", "!com.github.tomakehurst.wiremock.junit")
         }
     }
 }
