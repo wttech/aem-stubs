@@ -11,7 +11,10 @@ description = "Wiremock on AEM - Groovy"
 
 
 aem {
-    tasks {
+    tasks{
+        bundleCompose {
+            importPackage("com.github.tomakehurst.wiremock.client")
+        }
     }
 }
 

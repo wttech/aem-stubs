@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
     <filter root="/var/groovyconsole/scripts/stub"/>
+    <filter root="/apps/wiremockonaem/groovy"/>
+    <filter root="/home/users/system/1azHk3c3oYNGdNTqj-bJ"/>
 </workspaceFilter>
