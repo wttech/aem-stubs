@@ -3,11 +3,6 @@ package com.company.wiremockonaem.aem.groovy.executor;
 import static java.util.Collections.singletonMap;
 import static org.apache.sling.api.resource.ResourceResolverFactory.SUBSERVICE;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -31,22 +26,7 @@ public class GroovyScriptExecutor {
 
   public void runScript(String path) {
     try (ResourceResolver resolver = retrieveResourceResolver()) {
-      DummyRequest request = new DummyRequest(resolver);
-      DummyResponse response = new DummyResponse();
-
-      System.out.println(">>> running " + path);
-      LOG.info(">>> running script path: {}", path);
-      InputStream in = resolver.getResource(path).adaptTo(InputStream.class);
-      String script = null;
-      try {
-        script = IOUtils.toString(in, StandardCharsets.UTF_8);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      System.out.println(script); //execute rather :)
-      LOG.info(">>> running script {}", script);
-
-      groovyConsoleService.runScript(request, response, path);
+      groovyConsoleService.runScript(new DummyRequest(resolver), new DummyResponse(), path);
     }
   }
 
