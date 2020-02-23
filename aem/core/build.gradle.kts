@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-group = "com.company.wiremockonaem.aem"
+group = "com.cognifide.wiremockonaem.aem"
 description = "Wiremock on AEM - Core"
 
 aem {

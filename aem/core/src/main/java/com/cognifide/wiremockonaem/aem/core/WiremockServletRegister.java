@@ -1,6 +1,6 @@
-package com.company.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core;
 
-import static com.company.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
+import static com.cognifide.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
 import static java.lang.String.format;
 
 import javax.servlet.ServletException;
@@ -11,7 +11,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 
-import com.company.wiremockonaem.aem.core.groovy.GroovyScriptExecutor;
+import com.cognifide.wiremockonaem.aem.core.groovy.GroovyScriptExecutor;
 
 @Component(
   immediate = true

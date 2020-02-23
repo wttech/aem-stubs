@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.core.groovy;
+package com.cognifide.wiremockonaem.aem.core.groovy;
 
 import java.io.BufferedReader;
 import java.io.IOException;

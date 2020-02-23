@@ -1,6 +1,6 @@
-package com.company.wiremockonaem.aem.core.groovy;
+package com.cognifide.wiremockonaem.aem.core.groovy;
 
-import static com.company.wiremockonaem.aem.core.WiremockConfiguration.GROOVY_SCRIPT_LOCATION;
+import static com.cognifide.wiremockonaem.aem.core.WiremockConfiguration.GROOVY_SCRIPT_LOCATION;
 
 import java.util.List;
 

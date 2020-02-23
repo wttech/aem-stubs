@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core;
 
 import java.io.File;
 

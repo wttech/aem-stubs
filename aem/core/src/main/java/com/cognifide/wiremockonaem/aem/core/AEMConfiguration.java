@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core;
 
 import java.util.Collections;
 import java.util.List;

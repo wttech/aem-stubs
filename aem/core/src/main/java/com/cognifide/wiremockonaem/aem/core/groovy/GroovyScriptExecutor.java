@@ -1,17 +1,11 @@
-package com.company.wiremockonaem.aem.core.groovy;
+package com.cognifide.wiremockonaem.aem.core.groovy;
 
-import static java.util.Collections.singletonMap;
-import static org.apache.sling.api.resource.ResourceResolverFactory.SUBSERVICE;
-
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.company.wiremockonaem.aem.core.ResourceResolverGentleman;
+import com.cognifide.wiremockonaem.aem.core.ResourceResolverGentleman;
 import com.icfolson.aem.groovy.console.GroovyConsoleService;
 
 @Component(service = GroovyScriptExecutor.class)
