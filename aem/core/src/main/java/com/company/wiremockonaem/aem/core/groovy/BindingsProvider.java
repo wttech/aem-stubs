@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.groovy;
+package com.company.wiremockonaem.aem.core.groovy;
 
 import static java.util.Collections.singletonMap;
 

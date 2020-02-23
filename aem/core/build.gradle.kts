@@ -104,8 +104,9 @@ aem {
 
 
         bundleCompose {
-            exportPackages = listOf("com.github.tomakehurst.wiremock.client.*")
-            importPackages = listOf("!junit.framework",
+            exportPackages = listOf("com.github.tomakehurst.wiremock.*")
+            importPackages = listOf("!junit.framework", "!org.junit.rules",
+                    "!org.junit.runner", "!org.junit.runners.model",
                     "!org.junit", "!org.junit.internal",
                     "!com.github.tomakehurst.wiremock.junit",
                     "!com.github.tomakehurst.wiremock.jetty92",
@@ -118,5 +119,5 @@ aem {
 
 dependencies {
     compileOnly("com.github.tomakehurst:wiremock-jre8:2.21.0")
-
+    compileOnly("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
 }

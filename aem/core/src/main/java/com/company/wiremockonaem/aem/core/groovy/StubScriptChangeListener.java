@@ -1,11 +1,9 @@
-package com.company.wiremockonaem.aem.groovy;
+package com.company.wiremockonaem.aem.core.groovy;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import static com.company.wiremockonaem.aem.core.WiremockConfiguration.GROOVY_SCRIPT_LOCATION;
+
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
@@ -13,12 +11,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.company.wiremockonaem.aem.groovy.executor.GroovyScriptExecutor;
-
 @Component(
   service = ResourceChangeListener.class,
   property = {
-    ResourceChangeListener.PATHS + "=" + "/var/groovyconsole/scripts/stub",
+    ResourceChangeListener.PATHS + "=" + GROOVY_SCRIPT_LOCATION,
     ResourceChangeListener.CHANGES + "=" + "ADDED",
     ResourceChangeListener.CHANGES + "=" + "CHANGED"
   }

@@ -61,7 +61,7 @@ public class WiremockServlet extends HttpServlet {
   protected void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     throws IOException {
     Request request = toRequest(httpRequest);
-    WiremockServlet.ServletHttpResponder responder = new WiremockServlet.ServletHttpResponder(
+    ServletHttpResponder responder = new ServletHttpResponder(
       httpRequest, httpResponse);
     requestHandler.handle(request, responder);
 

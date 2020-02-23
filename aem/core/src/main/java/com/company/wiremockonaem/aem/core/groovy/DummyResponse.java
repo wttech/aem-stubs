@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.groovy.executor;
+package com.company.wiremockonaem.aem.core.groovy;
 
 import java.io.IOException;
 import java.io.PrintWriter;

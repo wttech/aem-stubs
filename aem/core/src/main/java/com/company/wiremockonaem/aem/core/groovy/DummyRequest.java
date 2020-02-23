@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.groovy.executor;
+package com.company.wiremockonaem.aem.core.groovy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -430,7 +430,7 @@ class DummyRequest implements SlingHttpServletRequest {
   }
 
   //@Override
-  public javax.servlet.http.Part getPart(String name) throws IOException, ServletException {
+  public Part getPart(String name) throws IOException, ServletException {
     return null;
   }
 

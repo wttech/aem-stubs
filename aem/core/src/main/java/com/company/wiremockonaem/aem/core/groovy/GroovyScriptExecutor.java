@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.groovy.executor;
+package com.company.wiremockonaem.aem.core.groovy;
 
 import static java.util.Collections.singletonMap;
 import static org.apache.sling.api.resource.ResourceResolverFactory.SUBSERVICE;
@@ -11,6 +11,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.company.wiremockonaem.aem.core.ResourceResolverGentleman;
 import com.icfolson.aem.groovy.console.GroovyConsoleService;
 
 @Component(service = GroovyScriptExecutor.class)
@@ -19,25 +20,16 @@ public class GroovyScriptExecutor {
   private static Logger LOG = LoggerFactory.getLogger(GroovyScriptExecutor.class);
 
   @Reference
-  ResourceResolverFactory resourceResolverFactory;
+  ResourceResolverGentleman resourceResolverGentleman;
 
   @Reference
   GroovyConsoleService groovyConsoleService;
 
   public void runScript(String path) {
-    try (ResourceResolver resolver = retrieveResourceResolver()) {
+    resourceResolverGentleman.withResolver(resolver -> {
+      LOG.info("Executing changed/added script {}", path);
       groovyConsoleService.runScript(new DummyRequest(resolver), new DummyResponse(), path);
-    }
-  }
-
-  private ResourceResolver retrieveResourceResolver() {
-    try {
-      return resourceResolverFactory
-        .getServiceResourceResolver(
-          singletonMap(SUBSERVICE, "com.cognifide.wiremock.aem.groovy"));
-    } catch (LoginException e) {
-      throw new RuntimeException(
-        "Cannot create resource resolver for mapper service. Is service user mapper configured?");
-    }
+      return true;
+    });
   }
 }
