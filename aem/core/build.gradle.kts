@@ -34,6 +34,8 @@ aem {
                 "com.github.tomakehurst.wiremock.standalone",
                 "com.github.tomakehurst.wiremock.http")
 
+        bundlePrivateEmbed("org.eclipse.jetty:jetty-servlets:9.4.20.v20190813",
+                "org.eclipse.jetty.servlets")
 
         bundlePrivateEmbed("com.google.guava:guava:27.0.1-jre",
                 "com.google.common.base",
@@ -120,4 +122,8 @@ aem {
 dependencies {
     compileOnly("com.github.tomakehurst:wiremock-jre8:2.21.0")
     compileOnly("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
+}
+
+tasks.named("packageDeploy"){
+    mustRunAfter(":aem:instanceSetup", ":aem:ext:packageDeploy")
 }

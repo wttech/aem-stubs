@@ -17,3 +17,7 @@ aem {
         }
     }
 }
+
+tasks.named("packageDeploy"){
+    mustRunAfter(":aem:instanceSetup")
+}
