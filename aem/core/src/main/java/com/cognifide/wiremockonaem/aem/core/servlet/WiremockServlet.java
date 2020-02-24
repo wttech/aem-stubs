@@ -1,15 +1,11 @@
 package com.cognifide.wiremockonaem.aem.core.servlet;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.common.Exceptions.throwUnchecked;
 import static com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter.ORIGINAL_REQUEST_KEY;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,13 +46,6 @@ public class WiremockServlet extends HttpServlet {
     this.notifier = new ConsoleNotifier(true);
     this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
     this.path = path;
-  }
-  @Override
-  public void init(ServletConfig config) {
-    wiremock.stubFor(
-      get(urlEqualTo("/some/thing"))
-        .willReturn(
-          okJson("{ \"message\": \"Hello World\" }")));
   }
 
   @Override
