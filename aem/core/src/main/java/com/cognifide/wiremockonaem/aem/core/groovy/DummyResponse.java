@@ -11,7 +11,7 @@ import javax.servlet.http.Cookie;
 
 import org.apache.sling.api.SlingHttpServletResponse;
 
-public class DummyResponse implements SlingHttpServletResponse {
+class DummyResponse implements SlingHttpServletResponse {
   @Override
   public void addCookie(Cookie cookie) {
     // not used

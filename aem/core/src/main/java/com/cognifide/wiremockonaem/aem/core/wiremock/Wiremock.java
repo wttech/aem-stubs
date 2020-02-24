@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core.wiremock;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -13,7 +13,6 @@ import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 )
 public class Wiremock {
 
-  static final String URL_PREFIX = "/wiremock";
   private WireMockApp wireMockApp;
 
   @Activate
@@ -28,4 +27,9 @@ public class Wiremock {
   public RequestHandler buildStubRequestHandler(){
     return wireMockApp.buildStubRequestHandler();
   }
+
+  public void clearStubs(){
+    wireMockApp.resetAll();
+  }
+
 }

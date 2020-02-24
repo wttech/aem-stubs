@@ -1,22 +1,25 @@
-package com.cognifide.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core.servlet;
 
-import static com.cognifide.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
+import static com.cognifide.wiremockonaem.aem.core.Configuration.URL_PREFIX;
 import static java.lang.String.format;
 
 import javax.servlet.ServletException;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 
 import com.cognifide.wiremockonaem.aem.core.groovy.GroovyScriptExecutor;
+import com.cognifide.wiremockonaem.aem.core.wiremock.Wiremock;
 
 @Component(
   immediate = true
 )
 public class WiremockServletRegister {
+
   @Reference
   private Wiremock wiremock;
 
@@ -26,18 +29,28 @@ public class WiremockServletRegister {
   @Reference
   private GroovyScriptExecutor groovyScriptExecutor;
 
-  @Reference
-  private WiremockConfiguration wiremockConfiguration;
-
   @Activate
   public void start() {
     try {
-      httpService.registerServlet(format("%s/*", URL_PREFIX), new WiremockServlet(wiremock), null, null);
-      wiremockConfiguration.getAllScript().forEach(path -> groovyScriptExecutor.runScript(path));
+      httpService.registerServlet(getServletPath(), createServlet(),null, null);
+      groovyScriptExecutor.runAllScripts();
     } catch (ServletException e) {
       e.printStackTrace();
     } catch (NamespaceException e) {
       e.printStackTrace();
     }
+  }
+
+  @Deactivate
+  public void stop(){
+    httpService.unregister(getServletPath());
+  }
+
+  private String getServletPath(){
+    return format("%s/*", URL_PREFIX);
+  }
+
+  private WiremockServlet createServlet(){
+    return new WiremockServlet(URL_PREFIX, wiremock);
   }
 }

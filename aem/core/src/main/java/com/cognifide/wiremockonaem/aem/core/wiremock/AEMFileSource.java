@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core.wiremock;
 
 import java.io.File;
 
@@ -7,10 +7,10 @@ import org.osgi.framework.FrameworkUtil;
 import com.github.tomakehurst.wiremock.common.AbstractFileSource;
 import com.github.tomakehurst.wiremock.common.FileSource;
 
-public class AEMFileSource extends AbstractFileSource {
+class AEMFileSource extends AbstractFileSource {
   private final String rootPath;
 
-  public AEMFileSource(String rootPath) {
+  AEMFileSource(String rootPath) {
     super(getRootFile(rootPath));
     this.rootPath = rootPath;
   }

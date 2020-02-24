@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core.wiremock;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +27,7 @@ import com.github.tomakehurst.wiremock.verification.notmatched.NotMatchedRendere
 import com.github.tomakehurst.wiremock.verification.notmatched.PlainTextStubNotMatchedRenderer;
 import com.google.common.base.Optional;
 
-public class AEMConfiguration implements Options {
+class AEMConfiguration implements Options {
 
   @Override
   public int portNumber() {

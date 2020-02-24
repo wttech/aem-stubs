@@ -1,6 +1,6 @@
 package com.cognifide.wiremockonaem.aem.core.groovy;
 
-import static com.cognifide.wiremockonaem.aem.core.WiremockConfiguration.GROOVY_SCRIPT_LOCATION;
+import static com.cognifide.wiremockonaem.aem.core.Configuration.GROOVY_SCRIPT_LOCATION;
 
 import java.util.List;
 
@@ -28,13 +28,12 @@ public class StubScriptChangeListener implements ResourceChangeListener {
 
 
   @Override
-  public void onChange(
-    List<ResourceChange> changes) {
-    changes.forEach(c -> executeScript(c.getPath()));
+  public void onChange(List<ResourceChange> changes) {
+    changes.forEach(this::executeScript);
   }
 
-  private void executeScript(String path) {
-    LOG.info("Running script {}", path);
-    groovyScriptExecutor.runScript(path);
+  private void executeScript(ResourceChange change) {
+    LOG.info("Running script {}", change.getPath());
+    groovyScriptExecutor.runScript(change.getPath());
   }
 }

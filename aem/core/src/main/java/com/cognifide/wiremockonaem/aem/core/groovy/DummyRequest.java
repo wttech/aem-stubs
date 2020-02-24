@@ -44,7 +44,7 @@ class DummyRequest implements SlingHttpServletRequest {
    *
    * @param resolver resource resolver
    */
-  public DummyRequest(ResourceResolver resolver) {
+  DummyRequest(ResourceResolver resolver) {
     this.resolver = resolver;
   }
 

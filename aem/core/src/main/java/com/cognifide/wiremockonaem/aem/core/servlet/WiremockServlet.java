@@ -1,6 +1,5 @@
-package com.cognifide.wiremockonaem.aem.core;
+package com.cognifide.wiremockonaem.aem.core.servlet;
 
-import static com.cognifide.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cognifide.wiremockonaem.aem.core.wiremock.Wiremock;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.common.Notifier;
 import com.github.tomakehurst.wiremock.core.FaultInjector;
@@ -41,13 +41,15 @@ public class WiremockServlet extends HttpServlet {
   private final FaultInjectorFactory faultHandlerFactory;
   private final Notifier notifier;
   private final MultipartRequestConfigurer multipartRequestConfigurer;
+  private final String path;
 
-  WiremockServlet(Wiremock wiremock){
+  WiremockServlet(String path, Wiremock wiremock){
     this.wiremock = wiremock;
     this.requestHandler = wiremock.buildStubRequestHandler();
     this.faultHandlerFactory = new NoFaultInjectorFactory();
     this.notifier = new ConsoleNotifier(true);
     this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
+    this.path = path;
   }
   @Override
   public void init(ServletConfig config) {
@@ -69,7 +71,7 @@ public class WiremockServlet extends HttpServlet {
 
   private Request toRequest(HttpServletRequest httpRequest) {
     return new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
-      URL_PREFIX);
+      path);
   }
 
   private class ServletHttpResponder implements HttpResponder {
