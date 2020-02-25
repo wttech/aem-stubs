@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core.groovy;
+package com.cognifide.aem.stubs.groovy;
 
 import static java.util.Collections.singletonMap;
 
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.cognifide.wiremockonaem.aem.core.wiremock.Wiremock;
+import com.cognifide.aem.stubs.wiremock.Wiremock;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import com.icfolson.aem.groovy.console.api.BindingVariable;
 import com.icfolson.aem.groovy.console.api.ScriptContext;

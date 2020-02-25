@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core.groovy;
+package com.cognifide.aem.stubs.groovy;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
@@ -6,7 +6,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.wiremockonaem.aem.core.scripts.ScriptResolver;
+import com.cognifide.aem.stubs.scripts.ScriptResolver;
 import com.icfolson.aem.groovy.console.GroovyConsoleService;
 
 @Component(service = GroovyScriptExecutor.class)

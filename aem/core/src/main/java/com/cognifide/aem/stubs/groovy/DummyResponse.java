@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core.groovy;
+package com.cognifide.aem.stubs.groovy;
 
 import java.io.IOException;
 import java.io.PrintWriter;

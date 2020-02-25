@@ -4,8 +4,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-group = "com.cognifide.wiremockonaem.aem"
-description = "Wiremock on AEM - Core"
+description = "Stubs on AEM"
 
 aem {
     tasks {
@@ -106,6 +105,7 @@ aem {
 
 
         bundleCompose {
+            javaPackage = project.group.toString()
             exportPackages = listOf("com.github.tomakehurst.wiremock.*")
             importPackages = listOf("!junit.framework", "!org.junit.rules",
                     "!org.junit.runner", "!org.junit.runners.model",

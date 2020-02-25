@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core.wiremock;
+package com.cognifide.aem.stubs.wiremock;
 
 import java.util.Collections;
 import java.util.List;

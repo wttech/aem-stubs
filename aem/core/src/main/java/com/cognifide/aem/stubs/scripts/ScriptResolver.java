@@ -1,6 +1,6 @@
-package com.cognifide.wiremockonaem.aem.core.scripts;
+package com.cognifide.aem.stubs.scripts;
 
-import static com.cognifide.wiremockonaem.aem.core.Configuration.GROOVY_SCRIPT_LOCATION;
+import static com.cognifide.aem.stubs.Configuration.GROOVY_SCRIPT_LOCATION;
 import static java.util.Collections.singletonMap;
 import static org.apache.sling.api.resource.ResourceResolverFactory.SUBSERVICE;
 
@@ -51,7 +51,7 @@ public class ScriptResolver {
   private ResourceResolver retrieveResourceResolver() throws LoginException {
     return resourceResolverFactory
       .getServiceResourceResolver(
-        singletonMap(SUBSERVICE, "com.cognifide.wiremock.aem.core"));
+        singletonMap(SUBSERVICE, "com.cognifide.aem.stubs"));
   }
 
   private static Spliterator<Resource> findScripts(ResourceResolver resolver) {

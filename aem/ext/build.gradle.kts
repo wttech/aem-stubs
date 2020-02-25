@@ -5,7 +5,7 @@ plugins {
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
 
-description = "AEM Stubs - Ext"
+description = "Stubs on AEM - Ext"
 
 
 aem {

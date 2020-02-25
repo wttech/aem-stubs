@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core;
+package com.cognifide.aem.stubs;
 
 public class Configuration {
   public static final String URL_PREFIX = "/wiremock";

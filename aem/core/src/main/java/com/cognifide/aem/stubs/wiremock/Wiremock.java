@@ -1,4 +1,4 @@
-package com.cognifide.wiremockonaem.aem.core.wiremock;
+package com.cognifide.aem.stubs.wiremock;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
