@@ -120,7 +120,7 @@ aem {
 }
 
 dependencies {
-    compileOnly("com.github.tomakehurst:wiremock-jre8:2.21.0")
+    compileOnly("com.github.tomakehurst:wiremock:2.21.0")
     compileOnly("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
 }
 
