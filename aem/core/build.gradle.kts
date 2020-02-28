@@ -4,8 +4,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-group = "com.company.wiremockonaem.aem"
-description = "Wiremock on AEM - Core"
+description = "Stubs on AEM"
 
 aem {
     tasks {
@@ -34,6 +33,8 @@ aem {
                 "com.github.tomakehurst.wiremock.standalone",
                 "com.github.tomakehurst.wiremock.http")
 
+        bundlePrivateEmbed("org.eclipse.jetty:jetty-servlets:9.4.20.v20190813",
+                "org.eclipse.jetty.servlets")
 
         bundlePrivateEmbed("com.google.guava:guava:27.0.1-jre",
                 "com.google.common.base",
@@ -104,8 +105,10 @@ aem {
 
 
         bundleCompose {
-            exportPackages = listOf("com.github.tomakehurst.wiremock.client.*")
-            importPackages = listOf("!junit.framework",
+            javaPackage = project.group.toString()
+            exportPackages = listOf("com.github.tomakehurst.wiremock.*")
+            importPackages = listOf("!junit.framework", "!org.junit.rules",
+                    "!org.junit.runner", "!org.junit.runners.model",
                     "!org.junit", "!org.junit.internal",
                     "!com.github.tomakehurst.wiremock.junit",
                     "!com.github.tomakehurst.wiremock.jetty92",
@@ -117,6 +120,10 @@ aem {
 }
 
 dependencies {
-    compileOnly("com.github.tomakehurst:wiremock-jre8:2.21.0")
+    compileOnly("com.github.tomakehurst:wiremock:2.21.0")
+    compileOnly("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
+}
 
+tasks.named("packageDeploy"){
+    mustRunAfter(":aem:instanceSetup", ":aem:ext:packageDeploy")
 }

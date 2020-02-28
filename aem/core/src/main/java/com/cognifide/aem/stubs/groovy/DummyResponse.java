@@ -1,4 +1,4 @@
-package com.company.wiremockonaem.aem.groovy.executor;
+package com.cognifide.aem.stubs.groovy;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,7 +11,7 @@ import javax.servlet.http.Cookie;
 
 import org.apache.sling.api.SlingHttpServletResponse;
 
-public class DummyResponse implements SlingHttpServletResponse {
+class DummyResponse implements SlingHttpServletResponse {
   @Override
   public void addCookie(Cookie cookie) {
     // not used

@@ -1,4 +1,4 @@
-rootProject.name = "wiremockonaem"
+rootProject.name = "aem-stubs"
 
 include("aem")
 include("aem:core")

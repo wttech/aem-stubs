@@ -5,7 +5,7 @@ plugins {
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
 
-description = "AEM Stubs - Ext"
+description = "Stubs on AEM - Ext"
 
 
 aem {
@@ -16,4 +16,8 @@ aem {
                     "com.sun.org.apache.xerces.internal.jaxp")
         }
     }
+}
+
+tasks.named("packageDeploy"){
+    mustRunAfter(":aem:instanceSetup")
 }

@@ -1,21 +1,17 @@
-package com.company.wiremockonaem.aem.core;
+package com.cognifide.aem.stubs.servlet;
 
-import static com.company.wiremockonaem.aem.core.Wiremock.URL_PREFIX;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.common.Exceptions.throwUnchecked;
 import static com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter.ORIGINAL_REQUEST_KEY;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cognifide.aem.stubs.wiremock.Wiremock;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.common.Notifier;
 import com.github.tomakehurst.wiremock.core.FaultInjector;
@@ -41,27 +37,22 @@ public class WiremockServlet extends HttpServlet {
   private final FaultInjectorFactory faultHandlerFactory;
   private final Notifier notifier;
   private final MultipartRequestConfigurer multipartRequestConfigurer;
+  private final String path;
 
-  WiremockServlet(Wiremock wiremock){
+  WiremockServlet(String path, Wiremock wiremock){
     this.wiremock = wiremock;
     this.requestHandler = wiremock.buildStubRequestHandler();
     this.faultHandlerFactory = new NoFaultInjectorFactory();
     this.notifier = new ConsoleNotifier(true);
     this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
-  }
-  @Override
-  public void init(ServletConfig config) {
-    wiremock.stubFor(
-      get(urlEqualTo("/some/thing"))
-        .willReturn(
-          okJson("{ \"message\": \"Hello World\" }")));
+    this.path = path;
   }
 
   @Override
   protected void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     throws IOException {
     Request request = toRequest(httpRequest);
-    WiremockServlet.ServletHttpResponder responder = new WiremockServlet.ServletHttpResponder(
+    ServletHttpResponder responder = new ServletHttpResponder(
       httpRequest, httpResponse);
     requestHandler.handle(request, responder);
 
@@ -69,7 +60,7 @@ public class WiremockServlet extends HttpServlet {
 
   private Request toRequest(HttpServletRequest httpRequest) {
     return new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
-      URL_PREFIX);
+      path);
   }
 
   private class ServletHttpResponder implements HttpResponder {

@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
-group = "com.company.aem.wiremockonaem"
+group = "com.cognifide.aem.stubs"
 
 repositories {
     jcenter()
