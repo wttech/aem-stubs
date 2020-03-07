@@ -12,7 +12,7 @@ import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.cognifide.aem.stubs.wiremock.Wiremock;
+import com.cognifide.aem.stubs.moco.MocoService;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import com.icfolson.aem.groovy.console.api.BindingVariable;
 import com.icfolson.aem.groovy.console.api.ScriptContext;
@@ -32,18 +32,18 @@ public class GroovyScriptConfigurer implements ResourceChangeListener, BindingEx
   private GroovyScriptExecutor scriptExecutor;
 
   @Reference
-  private Wiremock wiremock;
+  private MocoService wiremock;
 
   @Override
   public Map<String, BindingVariable> getBindingVariables(
     ScriptContext scriptContext) {
-    return singletonMap("wiremock", new BindingVariable(wiremock, Wiremock.class, "wiremock"));
+    return singletonMap("wiremock", new BindingVariable(wiremock, MocoService.class, "wiremock"));
   }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
     if (hasRemovedScript(changes)) {
-      wiremock.clearStubs();
+     // wiremock.clearStubs();
       scriptExecutor.runAllScripts();
     } else {
       changes.forEach(this::executeScript);
