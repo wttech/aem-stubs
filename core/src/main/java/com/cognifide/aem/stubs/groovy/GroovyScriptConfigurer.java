@@ -7,12 +7,13 @@ import static org.apache.sling.api.resource.observation.ResourceChange.ChangeTyp
 import java.util.List;
 import java.util.Map;
 
+import com.cognifide.aem.stubs.moco.Moco;
+import com.github.dreamhead.moco.HttpServer;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.cognifide.aem.stubs.moco.MocoService;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import com.icfolson.aem.groovy.console.api.BindingVariable;
 import com.icfolson.aem.groovy.console.api.ScriptContext;
@@ -32,18 +33,17 @@ public class GroovyScriptConfigurer implements ResourceChangeListener, BindingEx
   private GroovyScriptExecutor scriptExecutor;
 
   @Reference
-  private MocoService wiremock;
+  private Moco moco;
 
   @Override
-  public Map<String, BindingVariable> getBindingVariables(
-    ScriptContext scriptContext) {
-    return singletonMap("wiremock", new BindingVariable(wiremock, MocoService.class, "wiremock"));
+  public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
+    return singletonMap("moco", new BindingVariable(moco.getServer(), HttpServer.class, "moco"));
   }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
     if (hasRemovedScript(changes)) {
-     // wiremock.clearStubs();
+      moco.restartServer();
       scriptExecutor.runAllScripts();
     } else {
       changes.forEach(this::executeScript);

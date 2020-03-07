@@ -9,26 +9,42 @@ import org.osgi.service.component.annotations.Deactivate;
 import static com.github.dreamhead.moco.Moco.*;
 import static com.github.dreamhead.moco.Runner.*;
 
-@Component(service = MocoService.class, immediate = true)
-public class MocoService {
+@Component(service = Moco.class, immediate = true)
+public class MocoService implements Moco {
 
   private HttpServer server;
 
   private Runner runner;
 
   @Activate
-  public void start() {
+  public void startServer() {
     server = httpServer(5502);
-    server.request(by(uri("/hello-world"))).response("hello world");
+
+    server.request(by(uri("/debug"))).response("it works!");
 
     runner = runner(server);
     runner.start();
+
+    server.request(by(uri("/debug2"))).response("it works!");
   }
 
   @Deactivate
-  public void stop() {
-    runner.stop();
+  public void stopServer() {
+    if (runner != null) {
+      runner.stop();
+    }
     runner = null;
     server = null;
+  }
+
+  @Override
+  public void restartServer() {
+    stopServer();
+    startServer();
+  }
+
+  @Override
+  public HttpServer getServer() {
+    return server;
   }
 }
