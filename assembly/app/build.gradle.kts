@@ -3,12 +3,11 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-description = "AEM Stubs - Application Only Package"
+description = "AEM Stubs - Application"
 
 tasks {
     packageCompose {
         installBundleProject(":system")
         nestPackageProject(":core")
-        nestPackageProject(":groovy-console")
     }
 }
