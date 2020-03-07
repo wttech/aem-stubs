@@ -9,7 +9,7 @@ description = "AEM Stubs - System Extension"
 aem {
     tasks {
         bundleCompose {
-            symbolicName = "com.adobe.cognifide.aem.stubs.ext"
+            symbolicName = "com.adobe.cognifide.aem.stubs.system"
             fragmentHost = "system.bundle"
             exportPackage(
                     "sun.misc",
