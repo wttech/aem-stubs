@@ -1,11 +1,20 @@
 plugins {
     id("com.neva.fork")
+    id("com.cognifide.aem.instance.local")
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
-description = "Wiremock on AEM - Root"
-defaultTasks(":aem:ext:packageDeploy", ":aem:core:packageDeploy", ":aem:groovy:packageDeploy")
+apply(from = "gradle/common.gradle.kts")
 
-task("develop"){
-    dependsOn(":aem:instanceSetup", ":aem:ext:packageDeploy", ":aem:core:packageDeploy", ":aem:groovy:packageDeploy")
+description = "AEM Stubs"
+defaultTasks(":all:packageDeploy")
+
+aem {
+    instance {
+        satisfier {
+            packages {
+                "tool.groovy-console"("https://github.com/icfnext/aem-groovy-console/releases/download/14.0.0/aem-groovy-console-14.0.0.zip")
+            }
+        }
+    }
 }
