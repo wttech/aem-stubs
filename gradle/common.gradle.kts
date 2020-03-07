@@ -40,6 +40,7 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("joda-time:joda-time:2.9.1")
 
         "compileOnly"("com.adobe.aem:uber-jar:6.5.0:apis") // TODO to be removed
+        "compileOnly"("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
     }
 }
 
