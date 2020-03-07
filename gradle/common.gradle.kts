@@ -30,6 +30,7 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("javax.servlet:jsp-api:2.0")
         "compileOnly"("javax.jcr:jcr:2.0")
         "compileOnly"("org.slf4j:slf4j-api:1.7.25")
+        "compileOnly"("org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.0")
         "compileOnly"("org.apache.geronimo.specs:geronimo-atinject_1.0_spec:1.0")
         "compileOnly"("org.apache.sling:org.apache.sling.api:2.16.4")
         "compileOnly"("org.apache.sling:org.apache.sling.jcr.api:2.4.0")
@@ -37,9 +38,6 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.apache.sling:org.apache.sling.settings:1.3.8")
         "compileOnly"("com.google.guava:guava:15.0")
         "compileOnly"("com.google.code.gson:gson:2.8.2")
-        "compileOnly"("joda-time:joda-time:2.9.1")
-
-        "compileOnly"("com.adobe.aem:uber-jar:6.5.0:apis") // TODO to be removed
         "compileOnly"("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
     }
 }

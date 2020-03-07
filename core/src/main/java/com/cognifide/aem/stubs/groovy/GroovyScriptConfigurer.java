@@ -7,10 +7,7 @@ import static org.apache.sling.api.resource.observation.ResourceChange.ChangeTyp
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import org.apache.sling.api.resource.observation.ResourceChange;
-import org.apache.sling.api.resource.observation.ResourceChange.ChangeType;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,7 +41,7 @@ public class GroovyScriptConfigurer implements ResourceChangeListener, BindingEx
   }
 
   @Override
-  public void onChange(@Nonnull List<ResourceChange> changes) {
+  public void onChange(List<ResourceChange> changes) {
     if (hasRemovedScript(changes)) {
       wiremock.clearStubs();
       scriptExecutor.runAllScripts();
