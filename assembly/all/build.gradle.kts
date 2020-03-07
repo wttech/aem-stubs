@@ -3,14 +3,13 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-
-description = "AEM Stubs - All-In-One"
+description = "AEM Stubs - All-In-One Package"
 
 tasks {
     packageCompose {
-        installBundleProject(":ext")
+        installBundleProject(":system")
         nestPackageProject(":core")
-        nestPackageProject(":groovy")
+        nestPackageProject(":groovy-console")
         nestPackage("https://github.com/icfnext/aem-groovy-console/releases/download/14.0.0/aem-groovy-console-14.0.0.zip")
     }
 }

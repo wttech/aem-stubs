@@ -1,6 +1,9 @@
 rootProject.name = "aem-stubs"
 
+include("system")
 include("core")
-include("ext")
-include("groovy")
-include("all")
+include("groovy-console")
+
+include("assembly:dev")
+include("assembly:app")
+include("assembly:all")
