@@ -6,6 +6,7 @@ group = "com.cognifide.aem.stubs"
 
 repositories {
     jcenter()
+    mavenCentral()
     maven("https://repo.adobe.com/nexus/content/groups/public")
     maven("https://dl.bintray.com/acs/releases")
 }
@@ -38,7 +39,10 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.apache.sling:org.apache.sling.settings:1.3.8")
         "compileOnly"("com.google.guava:guava:15.0")
         "compileOnly"("com.google.code.gson:gson:2.8.2")
+
         "compileOnly"("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
+        "compileOnly"("org.codehaus.groovy:groovy-all:2.4.15")
+        "compileOnly"("org.apache.felix:org.apache.felix.http.servlet-api:1.1.2")
     }
 }
 
