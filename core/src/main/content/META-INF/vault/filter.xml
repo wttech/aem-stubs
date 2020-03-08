@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/apps/aemstubs"/>
+    <filter root="/apps/stubs"/>
     <filter root="/home/users/system/1azHk3c3oYNGdNTqj-bJ"/>
 
     <filter root="/rep:policy" mode="update"/>
     <filter root="/var/rep:policy" mode="update"/>
-    <filter root="/var/groovyconsole/scripts/stub" mode="update"/>
+    <filter root="/var/groovyconsole/scripts/stubs" mode="update"/>
 </workspaceFilter>

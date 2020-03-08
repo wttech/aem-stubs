@@ -7,7 +7,7 @@ apply(from = "gradle/fork/props.gradle.kts")
 apply(from = "gradle/common.gradle.kts")
 
 description = "AEM Stubs"
-defaultTasks(":core:packageDeploy")
+defaultTasks(":moco:app:packageDeploy")
 
 aem {
     instance {
