@@ -44,7 +44,18 @@ public class GroovyScriptManager {
 
   @Activate
   public void runAll() {
-    findAll().map(Resource::getPath).forEach(this::run);
+    try {
+      Stream<Resource> all = findAll();
+      all.map(Resource::getPath).forEach(path -> {
+        try {
+          run(path);
+        } catch (Exception e) {
+          LOG.error("Cannot execute script at path '{}'! Cause: {}", path, e.getMessage(), e);
+        }
+      });
+    } catch (Exception e) {
+      LOG.error("Cannot search for scripts! Cause: {}", e.getMessage(), e);
+    }
   }
 
   public Stream<Resource> findAll() {
