@@ -14,7 +14,7 @@ repositories {
 plugins.withId("com.cognifide.aem.common") {
     configure<AemExtension> {
         `package` {
-            configDir.set(rootProject.file("src/aem/package"))
+            commonDir.set(rootProject.file("src/aem/package"))
             validator {
                 base("com.adobe.acs:acs-aem-commons-oakpal-checks:4.3.4")
             }
