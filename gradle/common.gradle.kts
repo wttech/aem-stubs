@@ -3,7 +3,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import com.cognifide.gradle.aem.AemExtension
 
 group = "com.cognifide.aem.stubs"
-val appName = "stubs"
 repositories {
     jcenter()
     mavenCentral()
@@ -18,10 +17,6 @@ plugins.withId("com.cognifide.aem.common") {
             validator {
                 base("com.adobe.acs:acs-aem-commons-oakpal-checks:4.3.4")
             }
-            appPath.set(when {
-                project == project.rootProject -> "/apps/${appName}"
-                else -> "/apps/${appName}/${project.name}"
-            })
         }
     }
 }

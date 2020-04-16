@@ -1,4 +1,4 @@
-rootProject.name = "aem-stubs"
+rootProject.name = "stubs"
 
 include("system")
 include("core")
