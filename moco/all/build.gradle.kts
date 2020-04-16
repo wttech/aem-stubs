@@ -9,6 +9,7 @@ tasks {
     packageCompose {
         archiveClassifier.set("moco")
 
+        mergePackageProject(":moco:all.config")
         nestPackageProject(":core")
         nestPackageProject(":moco")
         nestPackageProject(":moco:content")
