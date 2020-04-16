@@ -31,6 +31,7 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.google.common.io.ByteStreams;
 
 public class WiremockServlet extends HttpServlet {
+
   private final WiremockStubs stubs;
   private final RequestHandler requestHandler;
   private final FaultInjectorFactory faultHandlerFactory;
@@ -38,7 +39,7 @@ public class WiremockServlet extends HttpServlet {
   private final MultipartRequestConfigurer multipartRequestConfigurer;
   private final String path;
 
-  WiremockServlet(String path, WiremockStubs stubs){
+  WiremockServlet(String path, WiremockStubs stubs) {
     this.stubs = stubs;
     this.requestHandler = stubs.buildStubRequestHandler();
     this.faultHandlerFactory = new NoFaultInjectorFactory();
@@ -48,14 +49,13 @@ public class WiremockServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-    throws IOException {
+  protected void service(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
     Request request = toRequest(httpRequest);
     ServletHttpResponder responder = new ServletHttpResponder(
       httpRequest, httpResponse);
     requestHandler.handle(request, responder);
-
   }
+
 
   private Request toRequest(HttpServletRequest httpRequest) {
     return new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
@@ -68,7 +68,7 @@ public class WiremockServlet extends HttpServlet {
     private final HttpServletResponse httpServletResponse;
 
     public ServletHttpResponder(HttpServletRequest httpServletRequest,
-                                HttpServletResponse httpServletResponse) {
+      HttpServletResponse httpServletResponse) {
       this.httpServletRequest = httpServletRequest;
       this.httpServletResponse = httpServletResponse;
     }
@@ -89,6 +89,8 @@ public class WiremockServlet extends HttpServlet {
       try {
         if (response.wasConfigured()) {
           applyResponse(response, httpServletRequest, httpServletResponse);
+        } else {
+          httpServletResponse.sendError(404, "No mapping configured!");
         }
       } catch (Exception e) {
         throwUnchecked(e);
@@ -97,7 +99,7 @@ public class WiremockServlet extends HttpServlet {
   }
 
   public void applyResponse(Response response, HttpServletRequest httpServletRequest,
-                            HttpServletResponse httpServletResponse) {
+    HttpServletResponse httpServletResponse) {
     Fault fault = response.getFault();
     if (fault != null) {
       FaultInjector faultInjector = faultHandlerFactory
@@ -127,8 +129,11 @@ public class WiremockServlet extends HttpServlet {
     }
   }
 
+  public void applyErrorResponse(int status, String errorMessage, HttpServletResponse httpServletResponse){
+
+  }
   private static void writeAndTranslateExceptions(HttpServletResponse httpServletResponse,
-                                                  InputStream content) {
+    InputStream content) {
     try (ServletOutputStream out = httpServletResponse.getOutputStream()) {
       ByteStreams.copy(content, out);
       out.flush();
