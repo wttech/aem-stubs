@@ -16,21 +16,23 @@ configure<ForkExtension> {
                     optional()
                     description = "For accessing AEM author instance (leave empty to skip creating it)"
                 },
-                "instanceAuthorOnly" to {
-                    label = "Author Only"
-                    description = "Limits instances to work with to author instance only."
-                    checkbox(false)
-                },
                 "instancePublishHttpUrl" to {
                     label = "Publish HTTP URL"
                     url("http://localhost:4503")
                     optional()
                     description = "For accessing AEM publish instance (leave empty to skip creating it)"
                 },
+                "instanceAuthorOnly" to {
+                    label = "Author Only"
+                    description = "Limits instances to work with to author instance only."
+                    checkbox(false)
+                    controller { other("instancePublishOnly").enabled = !value.toBoolean() }
+                },
                 "instancePublishOnly" to {
                     label = "Publish Only"
                     description = "Limits instances to work with to publish instance only."
                     checkbox(false)
+                    controller { other("instanceAuthorOnly").enabled = !value.toBoolean() }
                 },
                 "instanceSatisfierEnabled" to {
                     label = "Satisfier Enabled"
