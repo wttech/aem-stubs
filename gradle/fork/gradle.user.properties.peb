@@ -1,10 +1,13 @@
 # AEM configuration
-notifier.enabled=true
-package.deploy.workflowToggle=[dam_asset=false]
-
-#package.snapshots=[**/*-SNAPSHOT*.zip]
-#instance.author=true
-#instance.publish=true
+notifier.enabled={{notifierEnabled}}
+instance.author={{instanceAuthorOnly}}
+instance.publish={{instancePublishOnly}}
+instance.satisfy.enabled={{instanceSatisfierEnabled}}
+instance.provision.enabled={{instanceProvisionerEnabled}}
+package.validator.enabled={{packageValidatorEnabled}}
+package.bundleTest={{packageBundleTest}}
+package.nestedValidation={{packageNestedValidation}}
+package.manager.workflowToggle=[dam_asset={{packageDamAssetToggle}}]
 
 fileTransfer.user={{companyUser}}
 fileTransfer.password={{companyPassword}}
@@ -13,19 +16,15 @@ fileTransfer.domain={{companyDomain}}
 {% if instanceAuthorHttpUrl is not empty %}
 instance.local-author.httpUrl={{instanceAuthorHttpUrl}}
 instance.local-author.type={{instanceType}}
-{% if instanceType == 'local' %}
-instance.local-author.runModes={{instanceRunModes}}
-instance.local-author.jvmOpts={{instanceJvmOpts}}
-{% endif %}
+instance.local-author.runModes={{localInstanceRunModes}}
+instance.local-author.jvmOpts={{localInstanceJvmOpts}}
 {% endif %}
 
 {% if instancePublishHttpUrl is not empty %}
 instance.local-publish.httpUrl={{instancePublishHttpUrl}}
 instance.local-publish.type={{instanceType}}
-{% if instanceType == 'local' %}
-instance.local-publish.runModes={{instanceRunModes}}
-instance.local-publish.jvmOpts={{instanceJvmOpts}}
-{% endif %}
+instance.local-publish.runModes={{localInstanceRunModes}}
+instance.local-publish.jvmOpts={{localInstanceJvmOpts}}
 {% endif %}
 
 {% if instanceType == 'local' %}

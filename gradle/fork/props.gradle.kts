@@ -3,7 +3,7 @@ import com.neva.gradle.fork.ForkExtension
 
 configure<ForkExtension> {
     properties {
-        define("Instance type", mapOf(
+        define("Instance", mapOf(
                 "instanceType" to {
                     label = "Type"
                     select("local", "remote")
@@ -14,13 +14,35 @@ configure<ForkExtension> {
                     label = "Author HTTP URL"
                     url("http://localhost:4502")
                     optional()
-                    description = "For accessing AEM author instance (leave empty to do not use it)"
+                    description = "For accessing AEM author instance (leave empty to skip creating it)"
                 },
                 "instancePublishHttpUrl" to {
                     label = "Publish HTTP URL"
                     url("http://localhost:4503")
                     optional()
-                    description = "For accessing AEM publish instance (leave empty to do not use it)"
+                    description = "For accessing AEM publish instance (leave empty to skip creating it)"
+                },
+                "instanceAuthorOnly" to {
+                    label = "Author Only"
+                    description = "Limits instances to work with to author instance only."
+                    checkbox(false)
+                    controller { other("instancePublishOnly").enabled = !value.toBoolean() }
+                },
+                "instancePublishOnly" to {
+                    label = "Publish Only"
+                    description = "Limits instances to work with to publish instance only."
+                    checkbox(false)
+                    controller { other("instanceAuthorOnly").enabled = !value.toBoolean() }
+                },
+                "instanceSatisfierEnabled" to {
+                    label = "Satisfier Enabled"
+                    description = "Turns on/off automated package pre-installation."
+                    checkbox(true)
+                },
+                "instanceProvisionerEnabled" to {
+                    label = "Provisioner Enabled"
+                    description = "Turns on/off automated instance configuration."
+                    checkbox(true)
                 }
         ))
 
@@ -32,11 +54,11 @@ configure<ForkExtension> {
                 },
                 "localInstanceQuickstartJarUri" to {
                     label = "Quickstart URI"
-                    description = "File named 'cq-quickstart-x.x.x.jar'"
+                    description = "For file named 'cq-quickstart-x.x.x.jar'"
                 },
                 "localInstanceQuickstartLicenseUri" to {
                     label = "Quickstart License URI"
-                    description = "File named 'license.properties'"
+                    description = "For file named 'license.properties'"
                 },
                 "localInstanceBackupDownloadUri" to {
                     label = "Backup Download URI"
@@ -48,17 +70,41 @@ configure<ForkExtension> {
                     description = "For directory containing backup files. Protocols supported: SMB/SFTP"
                     optional()
                 },
-                "instanceRunModes" to {
+                "localInstanceRunModes" to {
                     label = "Run Modes"
-                    text("local,nosamplecontent")
+                    text("local")
                 },
-                "instanceJvmOpts" to {
+                "localInstanceJvmOpts" to {
                     label = "JVM Options"
                     text("-server -Xmx2048m -XX:MaxPermSize=512M -Djava.awt.headless=true")
                 }
         ))
 
-        define("File transfer", mapOf(
+        define("Package", mapOf(
+                "packageDamAssetToggle" to {
+                    label = "Deploy Without DAM Worklows"
+                    description = "Turns on/off temporary disablement of assets processing for package deployment time.\n" +
+                            "Useful to avoid redundant rendition generation when package contains renditions synchronized earlier."
+                    checkbox(true)
+                },
+                "packageValidatorEnabled" to {
+                    label = "Validator Enabled"
+                    description = "Turns on/off package validation using OakPAL."
+                    checkbox(true)
+                },
+                "packageNestedValidation" to {
+                    label = "Nested Validation"
+                    description = "Turns on/off separate validation of built subpackages."
+                    checkbox(true)
+                },
+                "packageBundleTest" to {
+                    label = "Bundle Test"
+                    description = "Turns on/off running tests for built bundles put under install path."
+                    checkbox(true)
+                }
+        ))
+
+        define("Authorization", mapOf(
                 "companyUser" to {
                     label = "User"
                     description = "Authorized to access AEM files"
@@ -75,6 +121,14 @@ configure<ForkExtension> {
                     description = "Needed only when accessing AEM files over SMB"
                     defaultValue = System.getenv("USERDOMAIN").orEmpty()
                     optional()
+                }
+        ))
+
+        define("Other", mapOf(
+                "notifierEnabled" to {
+                    label = "Notifications"
+                    description = "Controls displaying of GUI notifications (baloons)"
+                    checkbox(true)
                 }
         ))
     }

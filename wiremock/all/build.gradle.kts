@@ -13,6 +13,8 @@ tasks {
         nestPackageProject(":core")
         nestPackageProject(":wiremock")
         nestPackageProject(":wiremock:content")
+
+        mergePackageProject(":wiremock:all.config")
         nestPackage("https://github.com/icfnext/aem-groovy-console/releases/download/14.0.0/aem-groovy-console-14.0.0.zip")
     }
 }

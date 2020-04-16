@@ -3,7 +3,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import com.cognifide.gradle.aem.AemExtension
 
 group = "com.cognifide.aem.stubs"
-
 repositories {
     jcenter()
     mavenCentral()
@@ -14,7 +13,7 @@ repositories {
 plugins.withId("com.cognifide.aem.common") {
     configure<AemExtension> {
         `package` {
-            configDir.set(rootProject.file("src/aem/package"))
+            commonDir.set(rootProject.file("src/aem/package"))
             validator {
                 base("com.adobe.acs:acs-aem-commons-oakpal-checks:4.3.4")
             }
