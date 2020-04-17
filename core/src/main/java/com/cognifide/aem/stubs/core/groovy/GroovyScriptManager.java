@@ -19,7 +19,7 @@ public class GroovyScriptManager {
 
   private static Logger LOG = LoggerFactory.getLogger(GroovyScriptManager.class);
 
-  private static final String ROOT_PATH = "/var/groovyconsole/scripts/stubs";
+  static final String ROOT_PATH = "/var/groovyconsole/scripts/stubs";
 
   private static final String QUERY = String.format(
     "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])", ROOT_PATH

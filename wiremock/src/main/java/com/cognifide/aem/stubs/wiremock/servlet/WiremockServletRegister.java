@@ -1,17 +1,22 @@
-package com.cognifide.aem.stubs.wiremock;
+package com.cognifide.aem.stubs.wiremock.servlet;
 
 import javax.servlet.ServletException;
 
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
+import com.cognifide.aem.stubs.wiremock.WiremockStubs;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
 public class WiremockServletRegister {
+  private static Logger LOG = LoggerFactory.getLogger(WiremockServletRegister.class);
 
   @Reference
   private WiremockStubs stubs;
@@ -28,7 +33,7 @@ public class WiremockServletRegister {
       httpService.registerServlet(getServletPath(), createServlet(),null, null);
       scripts.runAll();
     } catch (ServletException | NamespaceException e) {
-      e.printStackTrace();
+      LOG.error("Cannot register AEM Stubs Wiremock integration servlet at path {}", getServletPath(), e);
     }
   }
 
@@ -38,7 +43,7 @@ public class WiremockServletRegister {
   }
 
   private WiremockServlet createServlet(){
-    return new WiremockServlet("/wiremock", stubs);
+    return new WiremockServlet("/wiremock", stubs.buildStubRequestHandler());
   }
 
   private String getServletPath(){

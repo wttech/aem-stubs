@@ -10,6 +10,7 @@ include("moco:all.config")
 include("moco:all")
 
 include("wiremock")
+include("wiremock:test")
 include("wiremock:system")
 include("wiremock:content")
 include("wiremock:app")
