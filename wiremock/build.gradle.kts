@@ -25,6 +25,7 @@ aem {
                         "com.github.tomakehurst.wiremock.jetty94.*",
                         "org.eclipse.jetty.servlets.gzip.*"
                 )
+                embedPackage("com.github.jknack:handlebars:4.1.2", "com.github.jknack.handlebars.*")
                 embedPackage("org.apache.commons:commons-lang3:3.9", "org.apache.commons.lang3.*")
                 embedPackage("org.apache.commons:commons-collections4:4.4", "org.apache.commons.collections4.*")
                 embedPackage("com.github.tomakehurst:wiremock:2.21.0", "com.github.tomakehurst.wiremock.*")

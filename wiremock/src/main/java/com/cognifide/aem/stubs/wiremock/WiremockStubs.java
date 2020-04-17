@@ -29,7 +29,7 @@ public class WiremockStubs implements Stubs<WireMockApp> {
 
   @Activate
   protected void start() {
-    app = new WiremockApp(new WiremockConfig(), new NotImplementedContainer());
+    app = new WiremockApp(new WiremockConfig().addExtenstions(), new NotImplementedContainer());
   }
 
   @Override
