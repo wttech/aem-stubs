@@ -2,6 +2,7 @@ package com.cognifide.aem.stubs.wiremock;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ public class HelloWorldMocksIntegrationTest {
       .when()
       .get("http://localhost:4502/wiremock/json")
       .then()
+      .body("message", equalTo("Hello"))
       .statusCode(200);
   }
 
@@ -31,6 +33,7 @@ public class HelloWorldMocksIntegrationTest {
       .when()
       .get("http://localhost:4502/wiremock/fine-with-body")
       .then()
+      .body(equalTo("body content"))
       .statusCode(200);
   }
 
@@ -40,6 +43,7 @@ public class HelloWorldMocksIntegrationTest {
       .when()
       .post("http://localhost:4502/wiremock/post")
       .then()
+      .body("message", equalTo("Hello Post"))
       .statusCode(200);
   }
 

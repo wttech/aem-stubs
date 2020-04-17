@@ -23,8 +23,6 @@ stubs.define "hello-world", { wm ->
     wm.stubFor(put("/status-only")
             .willReturn(status(418)))
 
-    wm.stubFor(get("/with")
-            .willReturn(ok("body content")))
 
     wm.stubFor(get(urlEqualTo("/with-header"))
             .willReturn(aResponse()

@@ -11,9 +11,12 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
 public class WiremockServletRegister {
+  private static Logger LOG = LoggerFactory.getLogger(WiremockServletRegister.class);
 
   @Reference
   private WiremockStubs stubs;
@@ -30,7 +33,7 @@ public class WiremockServletRegister {
       httpService.registerServlet(getServletPath(), createServlet(),null, null);
       scripts.runAll();
     } catch (ServletException | NamespaceException e) {
-      e.printStackTrace();
+      LOG.error("Cannot register servlet under path {}", getServletPath(), e);
     }
   }
 
