@@ -38,7 +38,7 @@ public class WiremockServletRegister {
   }
 
   private WiremockServlet createServlet(){
-    return new WiremockServlet("/wiremock", stubs);
+    return new WiremockServlet("/wiremock", stubs.buildStubRequestHandler());
   }
 
   private String getServletPath(){

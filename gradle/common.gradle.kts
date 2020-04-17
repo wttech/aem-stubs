@@ -55,6 +55,7 @@ plugins.withId("java") {
 
     tasks {
         withType<Test>().configureEach {
+            exclude("**/*IntegrationTest")
             failFast = true
             useJUnitPlatform()
             testLogging {

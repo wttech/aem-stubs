@@ -30,9 +30,4 @@ stubs.define "hello-world", { wm ->
                     .withStatus(200)
                     .withStatusMessage("Everything was just fine!")
                     .withHeader("Some-Header", "value")))
-
-    wm.stubFor(get(urlPathEqualTo("/templated"))
-            .willReturn(aResponse()
-                    .withBody("{{request.path.[0]}}")
-                    .withTransformers("response-template")))
 }

@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.common.Notifier;
-import com.github.tomakehurst.wiremock.core.FaultInjector;
-import com.github.tomakehurst.wiremock.http.ChunkedDribbleDelay;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpResponder;
@@ -22,7 +20,6 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestHandler;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.jetty9.DefaultMultipartRequestConfigurer;
-import com.github.tomakehurst.wiremock.servlet.BodyChunker;
 import com.github.tomakehurst.wiremock.servlet.FaultInjectorFactory;
 import com.github.tomakehurst.wiremock.servlet.MultipartRequestConfigurer;
 import com.github.tomakehurst.wiremock.servlet.NoFaultInjectorFactory;
@@ -32,16 +29,14 @@ import com.google.common.io.ByteStreams;
 
 public class WiremockServlet extends HttpServlet {
 
-  private final WiremockStubs stubs;
   private final RequestHandler requestHandler;
   private final FaultInjectorFactory faultHandlerFactory;
   private final Notifier notifier;
   private final MultipartRequestConfigurer multipartRequestConfigurer;
   private final String path;
 
-  WiremockServlet(String path, WiremockStubs stubs) {
-    this.stubs = stubs;
-    this.requestHandler = stubs.buildStubRequestHandler();
+  WiremockServlet(String path, RequestHandler requestHandler) {
+    this.requestHandler = requestHandler;
     this.faultHandlerFactory = new NoFaultInjectorFactory();
     this.notifier = new ConsoleNotifier(true);
     this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
@@ -50,62 +45,19 @@ public class WiremockServlet extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-    Request request = toRequest(httpRequest);
+    Request request = new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
+      path);
+    ;
     ServletHttpResponder responder = new ServletHttpResponder(
       httpRequest, httpResponse);
     requestHandler.handle(request, responder);
   }
 
-
-  private Request toRequest(HttpServletRequest httpRequest) {
-    return new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
-      path);
-  }
-
-  private class ServletHttpResponder implements HttpResponder {
-
-    private final HttpServletRequest httpServletRequest;
-    private final HttpServletResponse httpServletResponse;
-
-    public ServletHttpResponder(HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse) {
-      this.httpServletRequest = httpServletRequest;
-      this.httpServletResponse = httpServletResponse;
-    }
-
-    @Override
-    public void respond(final Request request, final Response response) {
-      if (Thread.currentThread().isInterrupted()) {
-        return;
-      }
-
-      httpServletRequest.setAttribute(ORIGINAL_REQUEST_KEY, LoggedRequest.createFrom(request));
-
-      respondTo(response);
-    }
-
-
-    private void respondTo(Response response) {
-      try {
-        if (response.wasConfigured()) {
-          applyResponse(response, httpServletRequest, httpServletResponse);
-        } else {
-          httpServletResponse.sendError(404, "No mapping configured!");
-        }
-      } catch (Exception e) {
-        throwUnchecked(e);
-      }
-    }
-  }
-
-  public void applyResponse(Response response, HttpServletRequest httpServletRequest,
-    HttpServletResponse httpServletResponse) {
+  public void applyResponse(Response response, HttpServletResponse httpServletResponse)
+    throws IOException {
     Fault fault = response.getFault();
     if (fault != null) {
-      FaultInjector faultInjector = faultHandlerFactory
-        .buildFaultInjector(httpServletRequest, httpServletResponse);
-      fault.apply(faultInjector);
-      httpServletResponse.addHeader(Fault.class.getName(), fault.name());
+      httpServletResponse.sendError(400, "Faults not supported!");
       return;
     }
 
@@ -122,18 +74,13 @@ public class WiremockServlet extends HttpServlet {
     }
 
     if (response.shouldAddChunkedDribbleDelay()) {
-      writeAndTranslateExceptionsWithChunkedDribbleDelay(httpServletResponse,
-        response.getBodyStream(), response.getChunkedDribbleDelay());
+      httpServletResponse.sendError(400, "Chunked dribble delay not supported by AEM Stubs");
     } else {
-      writeAndTranslateExceptions(httpServletResponse, response.getBodyStream());
+      write(httpServletResponse, response.getBodyStream());
     }
   }
 
-  public void applyErrorResponse(int status, String errorMessage, HttpServletResponse httpServletResponse){
-
-  }
-  private static void writeAndTranslateExceptions(HttpServletResponse httpServletResponse,
-    InputStream content) {
+  private static void write(HttpServletResponse httpServletResponse,InputStream content) {
     try (ServletOutputStream out = httpServletResponse.getOutputStream()) {
       ByteStreams.copy(content, out);
       out.flush();
@@ -148,33 +95,30 @@ public class WiremockServlet extends HttpServlet {
     }
   }
 
-  private void writeAndTranslateExceptionsWithChunkedDribbleDelay(
-    HttpServletResponse httpServletResponse, InputStream bodyStream,
-    ChunkedDribbleDelay chunkedDribbleDelay) {
-    try (ServletOutputStream out = httpServletResponse.getOutputStream()) {
-      byte[] body = ByteStreams.toByteArray(bodyStream);
+  private class ServletHttpResponder implements HttpResponder {
 
-      if (body.length < 1) {
-        notifier.error("Cannot chunk dribble delay when no body set");
-        out.flush();
-        return;
+    private final HttpServletRequest httpServletRequest;
+    private final HttpServletResponse httpServletResponse;
+
+    public ServletHttpResponder(HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse) {
+      this.httpServletRequest = httpServletRequest;
+      this.httpServletResponse = httpServletResponse;
+    }
+
+    @Override
+    public void respond(final Request request, final Response response) {
+      httpServletRequest.setAttribute(ORIGINAL_REQUEST_KEY, LoggedRequest.createFrom(request));
+      try {
+        if (response.wasConfigured()) {
+          applyResponse(response, httpServletResponse);
+        } else {
+          httpServletResponse.sendError(404, "No stub defined for this request");
+        }
+      } catch (Exception e) {
+        throwUnchecked(e);
       }
 
-      byte[][] chunkedBody = BodyChunker.chunkBody(body, chunkedDribbleDelay.getNumberOfChunks());
-
-      int chunkInterval = chunkedDribbleDelay.getTotalDuration() / chunkedBody.length;
-
-      for (byte[] bodyChunk : chunkedBody) {
-        Thread.sleep(chunkInterval);
-        out.write(bodyChunk);
-        out.flush();
-      }
-
-    } catch (IOException e) {
-      throwUnchecked(e);
-    } catch (InterruptedException ignored) {
-      // Ignore the interrupt quietly since it's probably the client timing out, which is a completely valid outcome
     }
   }
-
 }
