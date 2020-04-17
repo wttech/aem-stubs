@@ -1,4 +1,5 @@
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import com.github.tomakehurst.wiremock.http.Fault;
 
 stubs.define "hello-world", { wm ->
     wm.stubFor(delete("/fine")
@@ -30,4 +31,20 @@ stubs.define "hello-world", { wm ->
                     .withStatus(200)
                     .withStatusMessage("Everything was just fine!")
                     .withHeader("Some-Header", "value")))
+
+
+    //Not supported BY AEM Stubs
+    wm.stubFor(get(urlEqualTo("/delayed")).willReturn(
+            aResponse()
+                    .withStatus(200)
+                    .withFixedDelay(2000)));
+
+    wm.stubFor(get("/chunked/delayed").willReturn(
+            aResponse()
+                    .withStatus(200)
+                    .withBody("Hello world!")
+                    .withChunkedDribbleDelay(5, 1000)));
+
+    wm.stubFor(get(urlEqualTo("/fault"))
+            .willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
 }

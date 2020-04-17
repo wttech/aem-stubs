@@ -23,10 +23,6 @@ public class WiremockStubs implements Stubs<WireMockApp> {
 
   private WireMockApp app;
 
-  protected RequestHandler buildStubRequestHandler() {
-    return app.buildStubRequestHandler();
-  }
-
   @Activate
   protected void start() {
     app = new WiremockApp(new WiremockConfig(), new NotImplementedContainer());
@@ -42,5 +38,9 @@ public class WiremockStubs implements Stubs<WireMockApp> {
   public void define(String id, Stub<WireMockApp> definition) {
     stubs.put(id, definition);
     reload();
+  }
+
+  public RequestHandler buildStubRequestHandler() {
+    return app.buildStubRequestHandler();
   }
 }

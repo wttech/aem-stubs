@@ -1,8 +1,10 @@
-package com.cognifide.aem.stubs.wiremock;
+package com.cognifide.aem.stubs.wiremock.servlet;
 
 import javax.servlet.ServletException;
 
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
+import com.cognifide.aem.stubs.wiremock.WiremockStubs;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
