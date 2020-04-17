@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpResponder;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -23,6 +26,7 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.google.common.io.ByteStreams;
 
 public class WiremockServlet extends HttpServlet {
+  private static Logger LOG = LoggerFactory.getLogger(WiremockServlet.class);
 
   private final RequestHandler requestHandler;
   private final MultipartRequestConfigurer multipartRequestConfigurer;
@@ -87,6 +91,7 @@ public class WiremockServlet extends HttpServlet {
       try {
         content.close();
       } catch (IOException e) {
+        LOG.error("Cannot write Wiremock AEM Stubs response", e);
         // well, we tried
       }
     }

@@ -33,7 +33,7 @@ public class WiremockServletRegister {
       httpService.registerServlet(getServletPath(), createServlet(),null, null);
       scripts.runAll();
     } catch (ServletException | NamespaceException e) {
-      LOG.error("Cannot register servlet under path {}", getServletPath(), e);
+      LOG.error("Cannot register AEM Stubs Wiremock integration servlet at path {}", getServletPath(), e);
     }
   }
 

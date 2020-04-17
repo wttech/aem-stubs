@@ -35,11 +35,11 @@ public class GroovyReloader implements ResourceChangeListener {
   @Override
   public void onChange(List<ResourceChange> changes) {
     if (changes.stream().anyMatch(c -> c.getType() == REMOVED)) {
-      LOG.debug("Reload wiremock definitions and run all script");
+      LOG.debug("Reloading wiremock definitions and running all script");
       stubs.reload();
       scripts.runAll();
     } else {
-      LOG.debug("Run changed wiremock stub scripts");
+      LOG.debug("Running changed wiremock stub scripts");
       changes.forEach(rc -> scripts.run(rc.getPath()));
     }
   }
