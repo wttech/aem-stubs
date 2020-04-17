@@ -91,7 +91,7 @@ public class HelloWorldMocksIntegrationTest {
       .get("http://localhost:4502/wiremock/delayed")
       .then()
       .statusCode(400)
-      .statusLine(containsString("Faults not supported by AEM Stubs. Tried to simulate DELAY"));
+      .statusLine(containsString("Delay not supported by AEM Stubs"));
   }
 
   @Test
@@ -101,7 +101,7 @@ public class HelloWorldMocksIntegrationTest {
       .get("http://localhost:4502/wiremock/chunked/delayed")
       .then()
       .statusCode(400)
-      .statusLine(containsString("Faults not supported by AEM Stubs. Tried to simulate Chunked dribble delay"));
+      .statusLine(containsString("Chunked dribble delay not supported by AEM Stubs"));
   }
 
 
@@ -112,7 +112,7 @@ public class HelloWorldMocksIntegrationTest {
       .get("http://localhost:4502/wiremock/fault")
       .then()
       .statusCode(400)
-      .statusLine(containsString("Faults not supported by AEM Stubs. Tried to simulate MALFORMED_RESPONSE_CHUNK"));
+      .statusLine(containsString("MALFORMED_RESPONSE_CHUNK not supported by AEM Stubs"));
   }
 
   @Test

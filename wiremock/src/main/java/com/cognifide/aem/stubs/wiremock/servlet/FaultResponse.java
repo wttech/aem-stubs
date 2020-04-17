@@ -34,18 +34,18 @@ class FaultResponse {
 
     if (response.shouldAddChunkedDribbleDelay()) {
       return FaultResponse
-        .notSupported("Faults not supported by AEM Stubs. Tried to simulate Chunked dribble delay");
+        .notSupported("Chunked dribble delay not supported by AEM Stubs");
     }
     Fault fault = response.getFault();
     if (fault != null) {
       return FaultResponse
         .notSupported(
-          String.format("Faults not supported by AEM Stubs. Tried to simulate %s", fault.name()));
+          String.format("%s not supported by AEM Stubs", fault.name()));
     }
 
     if (response.getInitialDelay() != 0) {
       return FaultResponse
-        .notSupported("Faults not supported by AEM Stubs. Tried to simulate DELAY");
+        .notSupported("Delay not supported by AEM Stubs");
     }
 
     return FaultResponse.supported();
