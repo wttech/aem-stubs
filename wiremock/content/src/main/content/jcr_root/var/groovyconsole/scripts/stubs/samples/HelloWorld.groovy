@@ -30,6 +30,10 @@ stubs.define "hello-world", { wm ->
                     .withStatusMessage("Everything was just fine!")
                     .withHeader("Some-Header", "value")))
 
+    //Proxies
+    wm.stubFor(get(urlMatching("/api/.*"))
+            .willReturn(aResponse().proxiedFrom("http://api.nbp.pl"))); //example http://localhost:4502/wiremock/api/exchangerates/rates/a/chf/
+
 
     //Not supported BY AEM Stubs
     wm.stubFor(get(urlEqualTo("/delayed")).willReturn(
