@@ -1,8 +1,22 @@
 import com.cognifide.gradle.aem.common.instance.local.Source
+import com.cognifide.gradle.aem.common.instance.local.OpenMode
 import com.neva.gradle.fork.ForkExtension
 
 configure<ForkExtension> {
     properties {
+        define("Build", mapOf(
+                "webpackMode" to {
+                    label = "Webpack Mode"
+                    description = "Controls optimization of front-end resources (CSS/JS/assets) "
+                    select("dev", "prod")
+                },
+                "testBrowser" to {
+                    label = "Test Browser"
+                    description = "Browser used when running functional tests powered by Cypress"
+                    select("auto", "chrome", "chrome:canary", "chromium", "electron", "edge", "edge:canary", "firefox", "firefox:nightly")
+                }
+        ))
+
         define("Instance", mapOf(
                 "instanceType" to {
                     label = "Type"
@@ -43,6 +57,11 @@ configure<ForkExtension> {
                     label = "Provisioner Enabled"
                     description = "Turns on/off automated instance configuration."
                     checkbox(true)
+                },
+                "instanceAwaitUpHelpEnabled" to {
+                    label = "Await Up Helping"
+                    description = "Tries to start bundles automatically when instance is not stable longer time"
+                    checkbox(true)
                 }
         ))
 
@@ -77,16 +96,19 @@ configure<ForkExtension> {
                 "localInstanceJvmOpts" to {
                     label = "JVM Options"
                     text("-server -Xmx2048m -XX:MaxPermSize=512M -Djava.awt.headless=true")
+                },
+                "localInstanceOpenMode" to {
+                    label = "Open Automatically"
+                    description = "Open web browser when instances are up."
+                    select(OpenMode.values().map { it.name.toLowerCase() }, OpenMode.ALWAYS.name.toLowerCase())
+                },
+                "localInstanceOpenPath" to {
+                    label = "Open Path"
+                    text("/")
                 }
         ))
 
         define("Package", mapOf(
-                "packageDamAssetToggle" to {
-                    label = "Deploy Without DAM Worklows"
-                    description = "Turns on/off temporary disablement of assets processing for package deployment time.\n" +
-                            "Useful to avoid redundant rendition generation when package contains renditions synchronized earlier."
-                    checkbox(true)
-                },
                 "packageValidatorEnabled" to {
                     label = "Validator Enabled"
                     description = "Turns on/off package validation using OakPAL."
@@ -100,6 +122,12 @@ configure<ForkExtension> {
                 "packageBundleTest" to {
                     label = "Bundle Test"
                     description = "Turns on/off running tests for built bundles put under install path."
+                    checkbox(true)
+                },
+                "packageDamAssetToggle" to {
+                    label = "Deploy Without DAM Worklows"
+                    description = "Turns on/off temporary disablement of assets processing for package deployment time.\n" +
+                            "Useful to avoid redundant rendition generation when package contains renditions synchronized earlier."
                     checkbox(true)
                 }
         ))
