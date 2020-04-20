@@ -11,10 +11,12 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
+@Designate(ocd = WiremockServletConfiguration.class)
 public class WiremockServletRegister {
   private static Logger LOG = LoggerFactory.getLogger(WiremockServletRegister.class);
 
@@ -28,25 +30,27 @@ public class WiremockServletRegister {
   private GroovyScriptManager scripts;
 
   @Activate
-  public void start() {
+  public void start(WiremockServletConfiguration configuration) {
+    String servletPath = getServletPath(configuration.path());
     try {
-      httpService.registerServlet(getServletPath(), createServlet(),null, null);
+      httpService.registerServlet(servletPath,
+        createServlet(configuration.path()),null, null);
       scripts.runAll();
     } catch (ServletException | NamespaceException e) {
-      LOG.error("Cannot register AEM Stubs Wiremock integration servlet at path {}", getServletPath(), e);
+      LOG.error("Cannot register AEM Stubs Wiremock integration servlet at path {}", servletPath, e);
     }
   }
 
   @Deactivate
-  public void stop(){
-    httpService.unregister(getServletPath());
+  public void stop(WiremockServletConfiguration configuration){
+    httpService.unregister(getServletPath(configuration.path()));
   }
 
-  private WiremockServlet createServlet(){
-    return new WiremockServlet("/wiremock", stubs.buildStubRequestHandler());
+  private WiremockServlet createServlet(String path){
+    return new WiremockServlet(path, stubs.buildStubRequestHandler());
   }
 
-  private String getServletPath(){
-    return "/wiremock/*"; // TODO make it configurable
+  private String getServletPath(String path){
+    return String.format("%s/*", path);
   }
 }

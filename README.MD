@@ -17,7 +17,7 @@ sh gradlew
 ## TODO
 
 ### 1. Single system user for moco and wiremock
- - rename wiremock-system-user -> stub-system-user
+ - rename wiremock-system-user -> stubs-system-user
  - service mapping move from core to moco and wiremock module
 
 ### 2.  

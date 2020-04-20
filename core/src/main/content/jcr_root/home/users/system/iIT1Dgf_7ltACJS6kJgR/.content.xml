@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
     jcr:primaryType="rep:SystemUser"
-    jcr:uuid="7784c45b-0d24-399d-9285-49f907f2b3ab"
-    rep:authorizableId="wiremock-system-user"
-    rep:principalName="wiremock-system-user"/>
+    jcr:uuid="e13f6f99-e09e-34d0-affc-d699abbcc229"
+    rep:authorizableId="stubs-system-user"
+    rep:principalName="stubs-system-user"/>

@@ -3,6 +3,6 @@
           jcr:primaryType="rep:ACL">
     <allow
         jcr:primaryType="rep:GrantACE"
-        rep:principalName="wiremock-system-user"
+        rep:principalName="stubs-system-user"
         rep:privileges="{Name}[jcr:all]"/>
 </jcr:root>
