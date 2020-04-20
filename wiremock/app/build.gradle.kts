@@ -10,8 +10,8 @@ tasks {
         archiveClassifier.set("wiremock")
 
         installBundleProject(":wiremock:system")
-        nestPackageProject(":core")
-        nestPackageProject(":wiremock")
-        nestPackageProject(":wiremock:content")
+        mergePackageProject(":core")
+        mergePackageProject(":wiremock")
+        mergePackageProject(":wiremock:content")
     }
 }
