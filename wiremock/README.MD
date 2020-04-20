@@ -3,13 +3,24 @@
 AEM Stubs implementation for [Wiremock](http://wiremock.org).
 
 ## Getting Started
-The tool is delivered as a typical AEM (CRX) package ready to be installed using [Package Manager](https://docs.adobe.com/content/help/en/experience-manager-65/administering/contentmanagement/package-manager.html#installing-packages)
-
-The newest AEM packages are available [here](https://). 
 
 ### Prerequisites
 
 It is required [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console) installed 
+
+### Instalation
+
+The tool is delivered as a typical AEM (CRX) package ready to be installed using [Package Manager](https://docs.adobe.com/content/help/en/experience-manager-65/administering/contentmanagement/package-manager.html#installing-packages)
+
+The newest AEM packages are available [here](https://). 
+
+There two distributions variants:
+
+| Package name | Description |
+ :---: | :---: | 
+| stubs-all-wiremock | Package includes [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console) |
+| stubs-wiremock | Only AEM Stubs - Wiremock|
+
 
 ## OSGi Configuration
 
@@ -22,7 +33,7 @@ AEM Stubs - Wiremock Servlet Configuration (com.cognifide.aem.stubs.wiremock.ser
 
 ## How to use
 
-All stubs need to be defined via groovy script. For example:
+All stubs need to be defined via a groovy script. For example:
 
 ```
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -35,8 +46,8 @@ stubs.define "example", { wm ->
 ```
 Above stub will be available under `http://localhost:4502/wiremock/json`
 
-
-All scripts need to be placed under `/var/groovyconsole/scripts/stubs/` in JCR. Every script change will automatically reload stubs definition.
+### Scripts location
+All scripts need to be placed under `/var/groovyconsole/scripts/stubs/`. Every script change will automatically reload stubs definitions.
 
 More stubs examples can be found under `/var/groovyconsole/scripts/stubs/samples`.
 
@@ -46,9 +57,12 @@ Almost all Wiremock Java features are supported. Code snippets can be found dire
  
  - [Wiremock stubbing](http://wiremock.org/docs/stubbing/)  
  - [Request Matching](http://wiremock.org/docs/request-matching/)
- - 
+ - [Proxying](http://wiremock.org/docs/proxying/)
+ 
 ### Not supported features
 
  - JSON API 
  - [Simulating Faults](http://wiremock.org/docs/simulating-faults/)
- -  
+ 
+
+## Comparison to other tools
