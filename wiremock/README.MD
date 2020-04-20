@@ -45,11 +45,12 @@ stubs.define "example", { wm ->
 
 ```
 Above stub will be available under `http://localhost:4502/wiremock/json`
-
 ### Scripts location
-All scripts need to be placed under `/var/groovyconsole/scripts/stubs/`. Every script change will automatically reload stubs definitions.
+All scripts need to be placed under `/var/groovyconsole/scripts/stubs/` Every script change will automatically reload stubs definitions.
 
-More stubs examples can be found under `/var/groovyconsole/scripts/stubs/samples`.
+### Examples
+More examples can be found under `/var/groovyconsole/scripts/stubs/samples`.
+
 
 ## Supported features
 
@@ -59,11 +60,11 @@ Almost all Wiremock Java features are supported. Code snippets can be found dire
  - [Request Matching](http://wiremock.org/docs/request-matching/)
  - [Proxying](http://wiremock.org/docs/proxying/)
  
-### Not supported features
+## Not supported features
 
  - JSON API 
  - [Simulating Faults](http://wiremock.org/docs/simulating-faults/)
  
 
 ## Comparison to other tools
-There no other tools for stubbing API available for AEM.
+There no other tools for stubbing API availbe for AEM
