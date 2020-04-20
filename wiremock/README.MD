@@ -6,7 +6,7 @@ AEM Stubs implementation for [Wiremock](http://wiremock.org).
 
 ### Prerequisites
 
-It is required [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console) installed 
+It is required [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console)
 
 ### Instalation
 
@@ -16,10 +16,10 @@ The newest AEM packages are available [here](https://).
 
 There two distributions variants:
 
-| Package name | Description |
+| Package name | Description 
  :---: | :---: | 
-| stubs-all-wiremock | Package includes [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console) |
-| stubs-wiremock | Only AEM Stubs - Wiremock|
+| stubs-all-wiremock | Package includes [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console) 
+| stubs-wiremock | Only AEM Stubs - Wiremock
 
 
 ## OSGi Configuration
@@ -28,7 +28,7 @@ AEM Stubs - Wiremock Servlet Configuration (com.cognifide.aem.stubs.wiremock.ser
 
 | Property | Description | Default |
  :---: | :---: | :---: |
-| path | URL prefix for AEM Stubs. | /wiremock |
+| path | URL prefix for AEM Stubs.  | /wiremock 
 
 
 ## How to use
@@ -53,7 +53,7 @@ More stubs examples can be found under `/var/groovyconsole/scripts/stubs/samples
 
 ## Supported features
 
-Almost all Wiremock Java features are supported. Code snippets can be found directly on Wiremock documentation:   
+Almost all Wiremock Java features are supported. Code snippets can be found directly on Wiremock documentation:
  
  - [Wiremock stubbing](http://wiremock.org/docs/stubbing/)  
  - [Request Matching](http://wiremock.org/docs/request-matching/)
@@ -66,3 +66,4 @@ Almost all Wiremock Java features are supported. Code snippets can be found dire
  
 
 ## Comparison to other tools
+There no other tools for stubbing API available for AEM.
