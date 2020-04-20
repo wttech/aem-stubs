@@ -13,6 +13,6 @@ tasks {
         mergePackageProject(":moco")
         mergePackageProject(":moco:content")
 
-        nestPackage("https://github.com/icfnext/aem-groovy-console/releases/download/14.0.0/aem-groovy-console-14.0.0.zip")
+        nestPackage("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
     }
 }
