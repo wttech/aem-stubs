@@ -3,13 +3,18 @@ package com.cognifide.aem.stubs.moco;
 import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
-import com.github.dreamhead.moco.HttpServer;
-import com.github.dreamhead.moco.Runner;
+import com.github.dreamhead.moco.*;
+import com.github.dreamhead.moco.internal.ApiUtils;
+import com.github.dreamhead.moco.monitor.AbstractMonitor;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.dreamhead.moco.Moco.httpServer;
 import static com.github.dreamhead.moco.Runner.runner;
@@ -20,6 +25,8 @@ import static com.github.dreamhead.moco.Runner.runner;
 )
 @Designate(ocd = MocoStubs.Config.class)
 public class MocoStubs extends AbstractStubs {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
   @Reference
   private GroovyScriptManager groovyScriptManager;
@@ -32,6 +39,15 @@ public class MocoStubs extends AbstractStubs {
 
   public HttpServer getServer() {
     return server;
+  }
+
+  private final AtomicBoolean initialized = new AtomicBoolean(false);
+
+  // TODO does not work such approach, to be redesigned
+  private void init() {
+    if (initialized.compareAndSet(false, true)) {
+      reset();
+    }
   }
 
   @Override
@@ -58,7 +74,12 @@ public class MocoStubs extends AbstractStubs {
   }
 
   private void start() {
-    server = httpServer(config.port());
+    server = httpServer(config.port(), ApiUtils.log(LOG::info), new AbstractMonitor() {
+      @Override
+      public void onMessageArrived(Request request) {
+        init();
+      }
+    });
     runner = runner(server);
     runner.start();
   }

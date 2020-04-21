@@ -31,7 +31,7 @@ stubs.server.with {
                     .withHeader("Some-Header", "value")))
 
 
-    // Not supported BY AEM Stubs
+    // Not supported by AEM Stubs
     stubFor(get(urlEqualTo("/delayed")).willReturn(
             aResponse()
                     .withStatus(200)
