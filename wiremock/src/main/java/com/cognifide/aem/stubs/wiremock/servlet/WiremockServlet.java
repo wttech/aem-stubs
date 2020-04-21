@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cognifide.aem.stubs.wiremock.WiremockServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +27,19 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.google.common.io.ByteStreams;
 
 public class WiremockServlet extends HttpServlet {
+
   private static Logger LOG = LoggerFactory.getLogger(WiremockServlet.class);
 
+  private final WiremockServer server;
+
   private final RequestHandler requestHandler;
+
   private final MultipartRequestConfigurer multipartRequestConfigurer;
+
   private final String path;
 
-  WiremockServlet(String path, RequestHandler requestHandler) {
+  public WiremockServlet(WiremockServer server, String path, RequestHandler requestHandler) {
+    this.server = server;
     this.requestHandler = requestHandler;
     this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
     this.path = path;
@@ -40,6 +47,7 @@ public class WiremockServlet extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    server.init();
     Request request = new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
       path);
     requestHandler.handle(request, responder(request, httpRequest, httpResponse));

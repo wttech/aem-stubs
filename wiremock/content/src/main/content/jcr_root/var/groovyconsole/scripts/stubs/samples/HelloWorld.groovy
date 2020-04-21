@@ -1,9 +1,7 @@
 import com.github.tomakehurst.wiremock.http.Fault
-
 import static com.cognifide.aem.stubs.wiremock.Wiremock.*
 
-stubs.define "hello-world", {
-    it.with {
+wiremock.with {
         stubFor(delete("/fine")
                 .willReturn(ok()))
 
@@ -52,5 +50,4 @@ stubs.define "hello-world", {
 
         stubFor(get(urlEqualTo("/fault"))
                 .willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
-    }
 }

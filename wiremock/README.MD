@@ -35,11 +35,9 @@ All stubs need to be defined via a groovy script. For example:
 ```
 import static com.cognifide.aem.stubs.wiremock.Wiremock.*
 
-stubs.define "hello-world", {
-    it.with {
+wiremock.with {
         stubFor(get("/json")
             .willReturn(okJson("{ \"message\": \"Hello\" }")))
-    }
 }
 ```
 Above stub will be accessible via HTTP at `http://localhost:4502/wiremock/json`. Note that prefix `/wiremock` is configurable. See [OSGi Configuration](osgi-configuration)
@@ -63,10 +61,8 @@ Code snippets can be copied directly from [Wiremock](http://wiremock.org) into [
 
 ```
 import static com.cognifide.aem.stubs.wiremock.Wiremock.*
-stubs.define "my-definition", {
-    it.with {
+wiremock.with {
         [SNIPPET]
-    }
 }
 ```
 
