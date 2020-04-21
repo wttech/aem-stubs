@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component(
   service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class},
@@ -41,30 +40,22 @@ public class WiremockStubs extends AbstractStubs {
 
   private String servletPath;
 
-  private final AtomicBoolean initialized = new AtomicBoolean(false);
-
-  public void init() {
-    if (initialized.compareAndSet(false, true)) {
-      reset();
-    }
-  }
-
   @Override
   public void clear() {
-    app.resetAll();
+    restart();
   }
 
   @Override
   public void reset() {
     clear();
-    groovyScriptManager.runAll();
+    groovyScriptManager.runAll(getClass());
   }
 
   @Activate
   @Modified
   protected void activate(Config config) {
     this.config = config;
-    start();
+    reset();
   }
 
   @Deactivate
@@ -103,7 +94,7 @@ public class WiremockStubs extends AbstractStubs {
   }
 
   private WiremockServlet createServlet() {
-    return new WiremockServlet(this, config.path(), app.buildStubRequestHandler());
+    return new WiremockServlet(config.path(), app.buildStubRequestHandler());
   }
 
   @ObjectClassDefinition(name = "AEM Stubs - Wiremock Stubs")

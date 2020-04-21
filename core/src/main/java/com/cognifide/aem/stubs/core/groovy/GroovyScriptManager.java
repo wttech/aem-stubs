@@ -1,5 +1,6 @@
 package com.cognifide.aem.stubs.core.groovy;
 
+import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.cognifide.aem.stubs.core.utils.StreamUtils;
 import com.icfolson.aem.groovy.console.GroovyConsoleService;
@@ -7,7 +8,9 @@ import com.icfolson.aem.groovy.console.response.RunScriptResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.apache.commons.io.FilenameUtils;
 import org.osgi.service.component.annotations.Component;
@@ -22,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.query.Query;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.apache.sling.api.resource.observation.ResourceChange.ChangeType.REMOVED;
 
@@ -40,6 +44,8 @@ public class GroovyScriptManager implements ResourceChangeListener {
   private static final Logger LOG = LoggerFactory.getLogger(GroovyScriptManager.class);
 
   private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
+
+  private static final String CONSOLE_SYMBOLIC_NAME = "aem-groovy-console";
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -75,6 +81,44 @@ public class GroovyScriptManager implements ResourceChangeListener {
           .forEach(this::run);
            } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
+      }
+    });
+  }
+
+  public void runAll(Class<?> clazz) {
+    await(clazz, this::runAll);
+  }
+
+  private <T> void await(Class<T> extensionClass, Runnable action) {
+    CompletableFuture.runAsync(() -> {
+      LOG.info("Awaiting registration AEM Stubs Groovy Console extension: {}", extensionClass);
+
+      boolean ready = false;
+      for (int i = 0; i < 30; i++) {
+        ServiceReference<T> reference = bundleContext.getServiceReference(extensionClass);
+        Bundle[] usingBundles = reference.getUsingBundles();
+        if (usingBundles != null) {
+          for (Bundle usingBundle : usingBundles) {
+            if (CONSOLE_SYMBOLIC_NAME.equals(usingBundle.getSymbolicName())) {
+              ready = true;
+              break;
+            }
+          }
+        }
+        if (ready) {
+          break;
+        }
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          // ignore
+        }
+      }
+
+      if (ready) {
+        action.run();
+      } else {
+        throw new StubsException(String.format("AEM Stubs Groovy Console extension cannot be registered: %s!", extensionClass));
       }
     });
   }
