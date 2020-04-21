@@ -55,7 +55,7 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
 
   @Override
   public void clear() {
-    restart();
+    app.resetAll();
   }
 
   @Override
