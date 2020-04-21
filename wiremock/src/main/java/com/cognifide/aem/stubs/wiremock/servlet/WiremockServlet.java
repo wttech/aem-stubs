@@ -48,8 +48,7 @@ public class WiremockServlet extends HttpServlet {
   @Override
   protected void service(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
     server.init();
-    Request request = new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer,
-      path);
+    Request request = new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer, path);
     requestHandler.handle(request, responder(request, httpRequest, httpResponse));
   }
 

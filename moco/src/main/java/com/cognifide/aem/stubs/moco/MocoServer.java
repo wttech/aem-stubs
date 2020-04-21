@@ -45,7 +45,7 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
 
   @Override
   public void reset() {
-    clear();
+    clear(); // TODO reset moco via reflection
     groovyScriptManager.runAll();
   }
 
