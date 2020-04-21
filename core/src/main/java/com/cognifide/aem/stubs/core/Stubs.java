@@ -1,8 +1,9 @@
 package com.cognifide.aem.stubs.core;
 
-public interface Stubs<T> {
+public interface Stubs {
 
-  void reload();
+  void clear();
 
-  void define(String id, Stub<T> definition);
+  void reset();
+
 }
