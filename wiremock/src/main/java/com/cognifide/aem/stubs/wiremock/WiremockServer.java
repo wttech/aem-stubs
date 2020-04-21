@@ -118,7 +118,7 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
   @ObjectClassDefinition(name = "AEM Stubs - Wiremock Server")
   public @interface Config {
 
-    @AttributeDefinition(description = "Servlet Prefix")
+    @AttributeDefinition(name = "Servlet Prefix")
     String path() default "/wiremock";
   }
 }

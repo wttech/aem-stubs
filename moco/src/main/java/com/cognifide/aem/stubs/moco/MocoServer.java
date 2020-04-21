@@ -53,7 +53,7 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
   @Modified
   protected void activate(Config config) {
     this.config = config;
-    groovyScriptManager.await(getClass(), this::reset);
+    start();
   }
 
   @Deactivate
@@ -88,7 +88,7 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
   @ObjectClassDefinition(name = "AEM Stubs - Moco Server")
   public @interface Config {
 
-    @AttributeDefinition(description = "HTTP Server Port")
+    @AttributeDefinition(name = "HTTP Server Port")
     int port() default 5555;
   }
 }

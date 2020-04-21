@@ -26,7 +26,7 @@ import java.util.List;
 import static org.apache.sling.api.resource.observation.ResourceChange.ChangeType.REMOVED;
 
 @Component(
-  service = GroovyScriptManager.class,
+  service = {GroovyScriptManager.class, ResourceChangeListener.class},
   immediate = true,
   property = {
     ResourceChangeListener.CHANGES + "=" + "REMOVED",
@@ -69,8 +69,8 @@ public class GroovyScriptManager implements ResourceChangeListener {
   public void runAll() {
     resolverAccessor.consume(resolver -> {
       try {
-        StreamUtils.from(resolver.findResources(String.format(QUERY, config.rootPath()), Query.JCR_SQL2))
-          .filter(r -> Arrays.stream(config.excludedPaths()).noneMatch(p -> FilenameUtils.wildcardMatch(r.getPath(), p)))
+        StreamUtils.from(resolver.findResources(String.format(QUERY, config.resource_paths()), Query.JCR_SQL2))
+          .filter(r -> Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(r.getPath(), p)))
           .map(Resource::getPath)
           .forEach(this::run);
            } catch (Exception e) {
@@ -93,13 +93,10 @@ public class GroovyScriptManager implements ResourceChangeListener {
   @ObjectClassDefinition(name = "AEM Stubs - Groovy Script Manager")
   public @interface Config {
 
-    @AttributeDefinition(
-      name = ResourceChangeListener.PATHS,
-      description = "Scripts Root Path"
-    )
-    String rootPath() default "/var/groovyconsole/scripts/stubs";
+    @AttributeDefinition(name = "Scripts Root Path")
+    String resource_paths() default "/var/groovyconsole/scripts/stubs";
 
-    @AttributeDefinition(description = "Scripts Excluded Paths")
-    String[] excludedPaths() default {"**/internals/*"};
+    @AttributeDefinition(name = "Scripts Excluded Paths")
+    String[] excluded_paths() default {"**/internals/*"};
   }
 }
