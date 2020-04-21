@@ -21,7 +21,7 @@ import static com.github.dreamhead.moco.Runner.runner;
   immediate = true
 )
 @Designate(ocd = MocoStubs.Config.class)
-public class MocoStubs extends AbstractStubs {
+public class MocoStubs extends AbstractStubs<HttpServer> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
@@ -34,6 +34,7 @@ public class MocoStubs extends AbstractStubs {
 
   private Config config;
 
+  @Override
   public HttpServer getServer() {
     return server;
   }

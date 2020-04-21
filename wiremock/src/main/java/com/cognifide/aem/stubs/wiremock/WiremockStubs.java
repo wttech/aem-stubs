@@ -24,11 +24,11 @@ import javax.servlet.ServletException;
   immediate = true
 )
 @Designate(ocd = WiremockStubs.Config.class)
-public class WiremockStubs extends AbstractStubs {
+public class WiremockStubs extends AbstractStubs<WireMockApp> {
 
   private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
 
-  private WireMockApp app;
+  private WiremockApp app;
 
   private Config config;
 
@@ -39,6 +39,11 @@ public class WiremockStubs extends AbstractStubs {
   private GroovyScriptManager groovyScriptManager;
 
   private String servletPath;
+
+  @Override
+  public WiremockApp getServer() {
+    return app;
+  }
 
   @Override
   public void clear() {

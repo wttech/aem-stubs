@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
-public abstract class AbstractStubs implements Stubs, BindingExtensionProvider {
+public abstract class AbstractStubs<T> implements Stubs<T>, BindingExtensionProvider {
 
   @Override
   public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
