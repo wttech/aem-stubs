@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cognifide.aem.stubs.wiremock.WiremockServer;
+import com.cognifide.aem.stubs.wiremock.WiremockStubs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class WiremockServlet extends HttpServlet {
 
   private static Logger LOG = LoggerFactory.getLogger(WiremockServlet.class);
 
-  private final WiremockServer server;
+  private final WiremockStubs server;
 
   private final RequestHandler requestHandler;
 
@@ -38,7 +38,7 @@ public class WiremockServlet extends HttpServlet {
 
   private final String path;
 
-  public WiremockServlet(WiremockServer server, String path, RequestHandler requestHandler) {
+  public WiremockServlet(WiremockStubs server, String path, RequestHandler requestHandler) {
     this.server = server;
     this.requestHandler = requestHandler;
     this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();

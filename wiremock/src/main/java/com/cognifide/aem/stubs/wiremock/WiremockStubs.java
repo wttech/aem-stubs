@@ -1,10 +1,9 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
 import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
-import com.icfolson.aem.groovy.console.api.BindingVariable;
-import com.icfolson.aem.groovy.console.api.ScriptContext;
 import org.osgi.service.component.annotations.*;
 
 import com.cognifide.aem.stubs.core.Stubs;
@@ -19,19 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.util.Collections.singletonMap;
-
 @Component(
-  service = {Stubs.class, WiremockServer.class, BindingExtensionProvider.class},
+  service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class},
   immediate = true
 )
-@Designate(ocd = WiremockServer.Config.class)
-public class WiremockServer implements Stubs, BindingExtensionProvider {
+@Designate(ocd = WiremockStubs.Config.class)
+public class WiremockStubs extends AbstractStubs {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WiremockServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
 
   private WireMockApp app;
 
@@ -110,12 +106,7 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
     return new WiremockServlet(this, config.path(), app.buildStubRequestHandler());
   }
 
-  @Override
-  public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
-    return singletonMap("wiremock", new BindingVariable(app, WiremockApp.class, ""));
-  }
-
-  @ObjectClassDefinition(name = "AEM Stubs - Wiremock Server")
+  @ObjectClassDefinition(name = "AEM Stubs - Wiremock Stubs")
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")

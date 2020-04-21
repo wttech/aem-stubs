@@ -1,29 +1,25 @@
 package com.cognifide.aem.stubs.moco;
 
+import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
 import com.github.dreamhead.moco.HttpServer;
 import com.github.dreamhead.moco.Runner;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
-import com.icfolson.aem.groovy.console.api.BindingVariable;
-import com.icfolson.aem.groovy.console.api.ScriptContext;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-import java.util.Map;
-
 import static com.github.dreamhead.moco.Moco.httpServer;
 import static com.github.dreamhead.moco.Runner.runner;
-import static java.util.Collections.singletonMap;
 
 @Component(
-  service = {Stubs.class, MocoServer.class, BindingExtensionProvider.class},
+  service = {Stubs.class, MocoStubs.class, BindingExtensionProvider.class},
   immediate = true
 )
-@Designate(ocd = MocoServer.Config.class)
-public class MocoServer implements Stubs, BindingExtensionProvider {
+@Designate(ocd = MocoStubs.Config.class)
+public class MocoStubs extends AbstractStubs {
 
   @Reference
   private GroovyScriptManager groovyScriptManager;
@@ -80,12 +76,7 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
     start();
   }
 
-  @Override
-  public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
-    return singletonMap("moco", new BindingVariable(server, HttpServer.class, ""));
-  }
-
-  @ObjectClassDefinition(name = "AEM Stubs - Moco Server")
+  @ObjectClassDefinition(name = "AEM Stubs - Moco Stubs")
   public @interface Config {
 
     @AttributeDefinition(name = "HTTP Server Port")
