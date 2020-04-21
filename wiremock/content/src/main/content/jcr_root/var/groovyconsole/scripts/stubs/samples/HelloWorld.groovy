@@ -1,4 +1,5 @@
 import com.github.tomakehurst.wiremock.http.Fault
+
 import static com.cognifide.aem.stubs.wiremock.Wiremock.*
 
 stubs.define "hello-world", {
@@ -31,12 +32,13 @@ stubs.define "hello-world", {
                         .withStatusMessage("Everything was just fine!")
                         .withHeader("Some-Header", "value")))
 
-    //Proxies
-    wm.stubFor(get(urlMatching("/api/.*"))
-            .willReturn(aResponse().proxiedFrom("http://api.nbp.pl"))); //example http://localhost:4502/wiremock/api/exchangerates/rates/a/chf/
+        // Proxies
+        stubFor(get(urlMatching("/api/.*"))
+                .willReturn(aResponse().proxiedFrom("http://api.nbp.pl")));
+        //example http://localhost:4502/wiremock/api/exchangerates/rates/a/chf/
 
 
-        //Not supported BY AEM Stubs
+        // Not supported BY AEM Stubs
         stubFor(get(urlEqualTo("/delayed")).willReturn(
                 aResponse()
                         .withStatus(200)

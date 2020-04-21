@@ -1,16 +1,12 @@
 # AEM Stubs - Wiremock
 
-AEM Stubs implementation for [Wiremock](http://wiremock.org).
+Implementation for [Wiremock](http://wiremock.org).
 
 ## Getting Started
 
-### Prerequisites
-
-It is required [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console)
-
 ### Instalation
 
-The tool is delivered as a typical AEM (CRX) package ready to be installed using [Package Manager](https://docs.adobe.com/content/help/en/experience-manager-65/administering/contentmanagement/package-manager.html#installing-packages)
+It is a typical AEM package ready to be installed in CRX Package Manage [Package Manager](https://docs.adobe.com/content/help/en/experience-manager-65/administering/contentmanagement/package-manager.html#installing-packages)
 
 The newest AEM packages are available [here](https://). 
 
@@ -22,6 +18,7 @@ There two distributions variants:
 | stubs-wiremock | Only AEM Stubs - Wiremock
 
 
+<a id="osgi-configuration"/>
 ## OSGi Configuration
 
 AEM Stubs - Wiremock Servlet Configuration (com.cognifide.aem.stubs.wiremock.servlet.WiremockServletRegister)
@@ -36,15 +33,17 @@ AEM Stubs - Wiremock Servlet Configuration (com.cognifide.aem.stubs.wiremock.ser
 All stubs need to be defined via a groovy script. For example:
 
 ```
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.cognifide.aem.stubs.wiremock.Wiremock.*
 
-stubs.define "example", { wm ->
-    wm.stubFor(get("/json")
+stubs.define "hello-world", {
+    it.with {
+        stubFor(get("/json")
             .willReturn(okJson("{ \"message\": \"Hello\" }")))
+    }
 }
-
 ```
-Above stub will be available under `http://localhost:4502/wiremock/json`
+Above stub will be accessible via HTTP at `http://localhost:4502/wiremock/json`. Note that prefix `/wiremock` is configurable. See [OSGi Configuration](osgi-configuration)
+
 ### Scripts location
 All scripts need to be placed under `/var/groovyconsole/scripts/stubs/` Every script change will automatically reload stubs definitions.
 
@@ -59,12 +58,24 @@ Almost all Wiremock Java features are supported. Code snippets can be found dire
  - [Wiremock stubbing](http://wiremock.org/docs/stubbing/)  
  - [Request Matching](http://wiremock.org/docs/request-matching/)
  - [Proxying](http://wiremock.org/docs/proxying/)
- 
+
+Code snippets can be copied directly from [Wiremock](http://wiremock.org) into [SNIPPET] placeholder.
+
+```
+import static com.cognifide.aem.stubs.wiremock.Wiremock.*
+stubs.define "my-definition", {
+    it.with {
+        [SNIPPET]
+    }
+}
+```
+
 ## Not supported features
 
  - JSON API 
  - [Simulating Faults](http://wiremock.org/docs/simulating-faults/)
- 
+
+Not sure if it will be a part of next version of AEM Stub due to complexity and much effort to be done. 
 
 ## Comparison to other tools
 There no other tools for stubbing API availbe for AEM
