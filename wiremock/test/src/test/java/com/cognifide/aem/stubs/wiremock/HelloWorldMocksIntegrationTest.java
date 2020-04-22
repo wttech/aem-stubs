@@ -12,7 +12,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldReturnJson() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/json")
+      .get("http://localhost:4502/stubs/json")
       .then()
       .body("message", equalTo("Hello"))
       .statusCode(200);
@@ -22,7 +22,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldDeleteFine() {
     given()
       .when()
-      .delete("http://localhost:4502/wiremock/fine")
+      .delete("http://localhost:4502/stubs/fine")
       .then()
       .statusCode(200);
   }
@@ -31,7 +31,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldGetFineWithBody() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/fine-with-body")
+      .get("http://localhost:4502/stubs/fine-with-body")
       .then()
       .body(equalTo("body content"))
       .statusCode(200);
@@ -41,7 +41,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldPost() {
     given()
       .when()
-      .post("http://localhost:4502/wiremock/post")
+      .post("http://localhost:4502/stubs/post")
       .then()
       .body("message", equalTo("Hello Post"))
       .statusCode(200);
@@ -51,7 +51,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldPostRedirect() {
     given()
       .when()
-      .post("http://localhost:4502/wiremock/redirect")
+      .post("http://localhost:4502/stubs/redirect")
       .then()
       .statusCode(302);
   }
@@ -60,7 +60,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldPostUnauthorized() {
     given()
       .when()
-      .post("http://localhost:4502/wiremock/sorry-no")
+      .post("http://localhost:4502/stubs/sorry-no")
       .then()
       .statusCode(401);
   }
@@ -69,7 +69,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldPutStatusOnly() {
     given()
       .when()
-      .put("http://localhost:4502/wiremock/status-only")
+      .put("http://localhost:4502/stubs/status-only")
       .then()
       .statusCode(418);
   }
@@ -78,7 +78,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldHaveHeader() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/with-header")
+      .get("http://localhost:4502/stubs/with-header")
       .then()
       .header("Some-Header", "value")
       .statusCode(200);
@@ -88,7 +88,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldReturnNotSupportedForDelays() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/delayed")
+      .get("http://localhost:4502/stubs/delayed")
       .then()
       .statusCode(400)
       .statusLine(containsString("Delay not supported by AEM Stubs"));
@@ -98,7 +98,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldReturnNotSupportedForChunkedDelays() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/chunked/delayed")
+      .get("http://localhost:4502/stubs/chunked/delayed")
       .then()
       .statusCode(400)
       .statusLine(containsString("Chunked dribble delay not supported by AEM Stubs"));
@@ -109,7 +109,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldReturnNotSupportedForFault() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/fault")
+      .get("http://localhost:4502/stubs/fault")
       .then()
       .statusCode(400)
       .statusLine(containsString("MALFORMED_RESPONSE_CHUNK not supported by AEM Stubs"));
@@ -119,7 +119,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldReturn404ForNoStubDefined() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/not-defined-stub")
+      .get("http://localhost:4502/stubs/not-defined-stub")
       .then()
       .statusCode(404)
       .statusLine(containsString("No stub defined for this request"));

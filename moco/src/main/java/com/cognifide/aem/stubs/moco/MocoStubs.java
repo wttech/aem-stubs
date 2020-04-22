@@ -1,29 +1,32 @@
 package com.cognifide.aem.stubs.moco;
 
+import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
-import com.github.dreamhead.moco.HttpServer;
-import com.github.dreamhead.moco.Runner;
+import com.github.dreamhead.moco.*;
+import com.github.dreamhead.moco.internal.ApiUtils;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
-import com.icfolson.aem.groovy.console.api.BindingVariable;
-import com.icfolson.aem.groovy.console.api.ScriptContext;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
-
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.dreamhead.moco.Moco.httpServer;
 import static com.github.dreamhead.moco.Runner.runner;
-import static java.util.Collections.singletonMap;
 
 @Component(
-  service = {Stubs.class, MocoServer.class, BindingExtensionProvider.class},
+  service = {Stubs.class, MocoStubs.class, BindingExtensionProvider.class, EventHandler.class},
+  property = EventConstants.EVENT_TOPIC + "=" + GroovyScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
   immediate = true
 )
-@Designate(ocd = MocoServer.Config.class)
-public class MocoServer implements Stubs, BindingExtensionProvider {
+@Designate(ocd = MocoStubs.Config.class)
+public class MocoStubs extends AbstractStubs<HttpServer> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
   @Reference
   private GroovyScriptManager groovyScriptManager;
@@ -34,6 +37,7 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
 
   private Config config;
 
+  @Override
   public HttpServer getServer() {
     return server;
   }
@@ -45,15 +49,15 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
 
   @Override
   public void reset() {
-    clear(); // TODO reset moco via reflection
-    groovyScriptManager.runAll();
+    clear();
+    groovyScriptManager.runAll(getClass());
   }
 
   @Activate
   @Modified
   protected void activate(Config config) {
     this.config = config;
-    start();
+    reset();
   }
 
   @Deactivate
@@ -62,12 +66,14 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
   }
 
   private void start() {
-    server = httpServer(config.port());
+    LOG.info("Starting AEM Stubs Moco Server");
+    server = httpServer(config.port(), ApiUtils.log(LOG::info)); // TODO better handle this
     runner = runner(server);
     runner.start();
   }
 
   private void stop() {
+    LOG.info("Stopping AEM Stubs Moco Server");
     if (runner != null) {
       runner.stop();
     }
@@ -78,11 +84,6 @@ public class MocoServer implements Stubs, BindingExtensionProvider {
   private void restart() {
     stop();
     start();
-  }
-
-  @Override
-  public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
-    return singletonMap("moco", new BindingVariable(server, HttpServer.class, ""));
   }
 
   @ObjectClassDefinition(name = "AEM Stubs - Moco Server")
