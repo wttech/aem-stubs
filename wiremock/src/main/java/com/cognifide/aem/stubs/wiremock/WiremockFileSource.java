@@ -18,11 +18,11 @@ class WiremockFileSource implements FileSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(WiremockFileSource.class);
   private final ResolverAccessor resolverAccessor;
-  private final String filesPath;
+  private final String rootPath;
 
   WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
-    filesPath = String.format("%s/files", rootPath);
+    this.rootPath = rootPath;
   }
 
   @Override
@@ -67,13 +67,13 @@ class WiremockFileSource implements FileSource {
 
   @Override
   public String getPath() {
-    return filesPath;
+    return rootPath;
   }
 
   @Override
   public URI getUri() {
     try {
-      return new URI("aem", null, this.filesPath, null);
+      return toUri(rootPath);
     } catch (URISyntaxException e) {
       LOG.error("AEM Stubs cannot create URI", e);
       throw new IllegalStateException(e);
@@ -111,7 +111,7 @@ class WiremockFileSource implements FileSource {
   }
 
   private String getAbsolutePath(String name){
-    return String.format("%s/%s", filesPath, name);
+    return String.format("%s/%s", rootPath, name);
   }
 
   private URI toUri(String name) throws URISyntaxException {
