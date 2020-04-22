@@ -105,9 +105,16 @@ public class GroovyScriptManager implements ResourceChangeListener {
   }
 
   private boolean filter(String path) {
+    return isNotExcludedPath(path) && isGroovyScript(path);
+  }
+
+  private boolean isNotExcludedPath(String path){
     return Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(path, p));
   }
 
+  private boolean isGroovyScript(String path){
+    return path.endsWith(".groovy");
+  }
   /**
    * Runs all stub scripts, but first awaits for registration of extension in Groovy Console.
    *
@@ -157,6 +164,10 @@ public class GroovyScriptManager implements ResourceChangeListener {
         SCRIPT_CHANGE_EVENT_RESOURCE_CHANGES, scriptChanges
       )));
     }
+  }
+
+  public String getScriptRootPath(){
+    return config.resource_paths();
   }
 
   @ObjectClassDefinition(name = "AEM Stubs - Groovy Script Manager")
