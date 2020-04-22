@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.HttpsSettings;
@@ -35,13 +37,20 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 class WiremockConfig implements Options {
+  private final ResolverAccessor resolverAccessor;
+  private final String rootPath;
+
+  WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
+    this.resolverAccessor = resolverAccessor;
+    this.rootPath = rootPath;
+  }
 
   private Map<String, Extension> extensions = newLinkedHashMap();
   ;
 
   public WiremockConfig addExtenstions() {
     extensions.putAll(ExtensionLoader.asMap(
-      Arrays.asList(new ResponseTemplateTransformer(false))));
+      Arrays.asList(new PebbleTransformer())));
 
     return this;
   }
@@ -78,12 +87,12 @@ class WiremockConfig implements Options {
 
   @Override
   public FileSource filesRoot() {
-    return new WiremockFileSource("wiremock"); // TODO
+    return new WiremockFileSource(resolverAccessor, rootPath);
   }
 
   @Override
   public MappingsLoader mappingsLoader() {
-    return new JsonFileMappingsSource(filesRoot().child("mappings")); // TODO
+    return new JsonFileMappingsSource(filesRoot()); // TODO
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.cognifide.aem.stubs.core.utils;
 import static java.util.Collections.singletonMap;
 import static org.apache.sling.api.resource.ResourceResolverFactory.SUBSERVICE;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -35,6 +36,13 @@ public class ResolverAccessor {
       throw new RuntimeException(
         "Cannot create resource resolver for mapper service. Is service user mapper configured?");
     }
+  }
+
+  public void consume(Consumer<ResourceResolver> consumer) {
+    resolve(resolver -> {
+      consumer.accept(resolver);
+      return null;
+    });
   }
 
   private ResourceResolver retrieveResourceResolver() throws LoginException {

@@ -10,11 +10,10 @@ tasks {
         archiveClassifier.set("wiremock")
 
         installBundleProject(":wiremock:system")
-        nestPackageProject(":core")
-        nestPackageProject(":wiremock")
-        nestPackageProject(":wiremock:content")
+        mergePackageProject(":core")
+        mergePackageProject(":wiremock")
+        mergePackageProject(":wiremock:content")
 
-        mergePackageProject(":wiremock:all.config")
-        nestPackage("https://github.com/icfnext/aem-groovy-console/releases/download/14.0.0/aem-groovy-console-14.0.0.zip")
+        nestPackage("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
     }
 }

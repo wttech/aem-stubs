@@ -25,7 +25,11 @@ aem {
                         "com.github.tomakehurst.wiremock.jetty94.*",
                         "org.eclipse.jetty.servlets.gzip.*"
                 )
-                embedPackage("com.github.jknack:handlebars:4.1.2", "com.github.jknack.handlebars.*")
+                embedPackage("io.pebbletemplates:pebble:3.1.2", "com.mitchellbosecke.pebble.*")
+                embedPackage("org.unbescape:unbescape:1.0", "org.unbescape.*")
+                embedPackage("org.checkerframework:checker-qual:3.3.0", "org.checkerframework.checker.index.qual.*")
+                embedPackage("com.github.ben-manes.caffeine:caffeine:2.8.1", "com.github.benmanes.caffeine.cache.*",
+                "com.github.benmanes.caffeine.base")
                 embedPackage("org.apache.commons:commons-lang3:3.9", "org.apache.commons.lang3.*")
                 embedPackage("org.apache.commons:commons-collections4:4.4", "org.apache.commons.collections4.*")
                 embedPackage("com.github.tomakehurst:wiremock:2.21.0", "com.github.tomakehurst.wiremock.*")
@@ -86,6 +90,10 @@ aem {
                 embedPackage("org.ow2.asm:asm:7.0", "org.objectweb.asm")
                 embedPackage("com.flipkart.zjsonpatch:zjsonpatch:0.4.9", "com.flipkart.zjsonpatch")
             }
+        }
+
+        packageCompose {
+            installBundleProject(":core")
         }
     }
 }

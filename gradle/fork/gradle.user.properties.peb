@@ -1,30 +1,40 @@
-# AEM configuration
+# === Project specific configuration ===
+webpack.mode={{webpackMode}}
+test.browser={{testBrowser}}
+
+# === GAP configuration ===
+
 notifier.enabled={{notifierEnabled}}
-instance.author={{instanceAuthorOnly}}
-instance.publish={{instancePublishOnly}}
-instance.satisfy.enabled={{instanceSatisfierEnabled}}
-instance.provision.enabled={{instanceProvisionerEnabled}}
+
+fileTransfer.user={{companyUser}}
+fileTransfer.password={{companyPassword}}
+fileTransfer.domain={{companyDomain}}
+
 package.validator.enabled={{packageValidatorEnabled}}
 package.bundleTest={{packageBundleTest}}
 package.nestedValidation={{packageNestedValidation}}
 package.manager.workflowToggle=[dam_asset={{packageDamAssetToggle}}]
 
-fileTransfer.user={{companyUser}}
-fileTransfer.password={{companyPassword}}
-fileTransfer.domain={{companyDomain}}
+instance.author={{instanceAuthorOnly}}
+instance.publish={{instancePublishOnly}}
+instance.satisfy.enabled={{instanceSatisfierEnabled}}
+instance.provision.enabled={{instanceProvisionerEnabled}}
+instance.awaitUp.help.enabled={{ instanceAwaitUpHelpEnabled }}
 
 {% if instanceAuthorHttpUrl is not empty %}
 instance.local-author.httpUrl={{instanceAuthorHttpUrl}}
 instance.local-author.type={{instanceType}}
 instance.local-author.runModes={{localInstanceRunModes}}
 instance.local-author.jvmOpts={{localInstanceJvmOpts}}
+instance.local-author.openPath={{localInstanceOpenPath}}
 {% endif %}
 
 {% if instancePublishHttpUrl is not empty %}
 instance.local-publish.httpUrl={{instancePublishHttpUrl}}
 instance.local-publish.type={{instanceType}}
 instance.local-publish.runModes={{localInstanceRunModes}}
-instance.local-publish.jvmOpts={{localInstanceJvmOpts}}
+instance.local-publish.jvmOpt={{localInstanceJvmOpts}}
+instance.local-publish.openPath={{localInstanceOpenPath}}
 {% endif %}
 
 {% if instanceType == 'local' %}
@@ -33,4 +43,5 @@ localInstance.quickstart.jarUrl={{ localInstanceQuickstartJarUri }}
 localInstance.quickstart.licenseUrl={{ localInstanceQuickstartLicenseUri }}
 localInstance.backup.uploadUrl={{ localInstanceBackupUploadUri}}
 localInstance.backup.downloadUrl={{ localInstanceBackupDownloadUri }}
+localInstance.openMode={{ localInstanceOpenMode }}
 {% endif %}

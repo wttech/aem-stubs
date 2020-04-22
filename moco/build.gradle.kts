@@ -37,6 +37,8 @@ aem {
         }
 
         packageCompose {
+            installBundleProject(":core")
+
             installBundle("io.netty:netty-common:4.1.46.Final")
             installBundle("io.netty:netty-handler:4.1.46.Final")
             installBundle("io.netty:netty-buffer:4.1.46.Final")
