@@ -15,11 +15,13 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and [st
 At first, it is needed to decide which framework is more preferred to use.
 Both frameworks have their own pros and cons, see comparison:
 
-| Topic \ Framework   	| Wiremock               	| Moco                                                 	| Comments                                                                                                                                                                     	|   	|
-|---------------------	|------------------------	|------------------------------------------------------	|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|---	|
-| Installation        	| All-in-one AEM package 	| All-in-one AEM package                               	| Both distributions could be easily deployed via single package installation in CRX Package Manager.                                                                                                                                                                             	|   	|
-| Type of HTTP server 	| Jetty - AEM built-in   	| Netty - deployed on AEM, running on separate port 	| As of Moco is not using AEM HTTP Server but running its own, it is required to ensure that port used by Moco is free and not blocked by firewall on some deployment servers. 	|   	|
-|                     	|                        	|                                                      	|                                                                                                                                                                              	|   	| 
+| Topic \ Framework   	| Wiremock               	| Moco                                                 	| Comments                                                                                                                                                                     	| 
+|---------------------	|------------------------	|------------------------------------------------------ |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
+| Installation        	| All-in-one AEM package 	| All-in-one AEM package                               	| Both distributions could be easily deployed via single package installation in CRX Package Manager.|                                                                                                                                             	|   	|
+| HTTP server       	| AEM built-in (Jetty)  	| Separate running also on AEM at dedicated port (Netty)| As of Moco is not using AEM HTTP Server but running its own, it is required to ensure that port<br>used by Moco is free and not blocked by firewall on some deployment servers.|
+| Popularity            | Big                     	| Small                                              	| Wiremock is much more popular and has probably better documentation and more materials available on the web.|                                                                                                                                                                	|   	| 
+| API                   | Rich, old-fashioned     	| Rich, modern                                       	| Moco API seems to be written with extendability in mind. Has many interfaces, builders etc available. Wiremock API has less such extension points and generally does not look so elegant.|
+
 
 ## Building
 
