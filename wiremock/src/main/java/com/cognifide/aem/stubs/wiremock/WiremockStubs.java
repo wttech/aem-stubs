@@ -1,15 +1,16 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
 import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
-import com.icfolson.aem.groovy.console.api.BindingVariable;
-import com.icfolson.aem.groovy.console.api.ScriptContext;
 import org.osgi.service.component.annotations.*;
 
 import com.cognifide.aem.stubs.core.Stubs;
-import com.github.tomakehurst.wiremock.core.WireMockApp;
+import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -19,21 +20,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.util.Collections.singletonMap;
 
 @Component(
-  service = {Stubs.class, WiremockServer.class, BindingExtensionProvider.class},
+  service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class, EventHandler.class},
+  property = EventConstants.EVENT_TOPIC + "=" + GroovyScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
   immediate = true
 )
-@Designate(ocd = WiremockServer.Config.class)
-public class WiremockServer implements Stubs, BindingExtensionProvider {
+@Designate(ocd = WiremockStubs.Config.class)
+public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WiremockServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
 
-  private WireMockApp app;
+  private WiremockApp app;
 
   private Config config;
 
@@ -43,32 +41,32 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
   @Reference
   private GroovyScriptManager groovyScriptManager;
 
+  @Reference
+  ResolverAccessor resolverAccessor;
+
   private String servletPath;
 
-  private final AtomicBoolean initialized = new AtomicBoolean(false);
-
-  public void init() {
-    if (initialized.compareAndSet(false, true)) {
-      reset();
-    }
+  @Override
+  public WiremockApp getServer() {
+    return app;
   }
 
   @Override
   public void clear() {
-    app.resetAll();
+    restart();
   }
 
   @Override
   public void reset() {
     clear();
-    groovyScriptManager.runAll();
+    groovyScriptManager.runAll(getClass());
   }
 
   @Activate
   @Modified
   protected void activate(Config config) {
     this.config = config;
-    start();
+    reset();
   }
 
   @Deactivate
@@ -77,7 +75,10 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
   }
 
   private void start() {
-    this.app = new WiremockApp(new WiremockConfig(), new NotImplementedContainer());
+    LOG.info("Starting AEM Stubs Wiremock Server");
+    WiremockConfig wiremockConfig = new WiremockConfig(resolverAccessor,
+      groovyScriptManager.getScriptRootPath());
+    this.app = new WiremockApp(wiremockConfig, new NotImplementedContainer());
     this.servletPath = getServletPath(config.path());
 
     try {
@@ -88,6 +89,7 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
   }
 
   private void stop() {
+    LOG.info("Stopping AEM Stubs Wiremock Server");
     if (servletPath != null) {
       httpService.unregister(servletPath);
       servletPath = null;
@@ -107,18 +109,13 @@ public class WiremockServer implements Stubs, BindingExtensionProvider {
   }
 
   private WiremockServlet createServlet() {
-    return new WiremockServlet(this, config.path(), app.buildStubRequestHandler());
-  }
-
-  @Override
-  public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
-    return singletonMap("wiremock", new BindingVariable(app, WiremockApp.class, ""));
+    return new WiremockServlet(config.path(), app.buildStubRequestHandler());
   }
 
   @ObjectClassDefinition(name = "AEM Stubs - Wiremock Server")
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")
-    String path() default "/wiremock";
+    String path() default "/stubs";
   }
 }

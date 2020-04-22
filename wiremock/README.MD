@@ -21,12 +21,18 @@ There two distributions variants:
 <a id="osgi-configuration"/>
 ## OSGi Configuration
 
-AEM Stubs - Wiremock Servlet Configuration (com.cognifide.aem.stubs.wiremock.servlet.WiremockServletRegister)
+AEM Stubs - Wiremock Server 
 
 | Property | Description | Default |
  :---: | :---: | :---: |
-| path | URL prefix for AEM Stubs.  | /wiremock 
+| Servlet Prefix | URL prefix for AEM Stubs.  | /stubs 
 
+AEM Stubs - Groovy Script Manager
+
+| Property | Description | Default |
+ :---: | :---: | :---: |
+| Scripts Root Path | Root path for groovy stub scripts  | /var/groovyconsole/scripts/stubs
+| Scripts Excluded Paths | Excluded paths from automatic rerun script after change  | \*\*/internals/\*
 
 ## How to use
 
