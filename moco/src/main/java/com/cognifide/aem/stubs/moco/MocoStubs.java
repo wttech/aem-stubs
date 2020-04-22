@@ -7,6 +7,8 @@ import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ApiUtils;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -17,7 +19,8 @@ import static com.github.dreamhead.moco.Moco.httpServer;
 import static com.github.dreamhead.moco.Runner.runner;
 
 @Component(
-  service = {Stubs.class, MocoStubs.class, BindingExtensionProvider.class},
+  service = {Stubs.class, MocoStubs.class, BindingExtensionProvider.class, EventHandler.class},
+  property = EventConstants.EVENT_TOPIC + "=" + GroovyScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
   immediate = true
 )
 @Designate(ocd = MocoStubs.Config.class)
@@ -63,12 +66,14 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
   }
 
   private void start() {
+    LOG.info("Starting AEM Stubs Moco Server");
     server = httpServer(config.port(), ApiUtils.log(LOG::info)); // TODO better handle this
     runner = runner(server);
     runner.start();
   }
 
   private void stop() {
+    LOG.info("Stopping AEM Stubs Moco Server");
     if (runner != null) {
       runner.stop();
     }
@@ -81,7 +86,7 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
     start();
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs - Moco Stubs")
+  @ObjectClassDefinition(name = "AEM Stubs - Moco Server")
   public @interface Config {
 
     @AttributeDefinition(name = "HTTP Server Port")

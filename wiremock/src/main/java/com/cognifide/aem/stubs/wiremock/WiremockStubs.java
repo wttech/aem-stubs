@@ -7,8 +7,9 @@ import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import org.osgi.service.component.annotations.*;
 
 import com.cognifide.aem.stubs.core.Stubs;
-import com.github.tomakehurst.wiremock.core.WireMockApp;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -20,11 +21,12 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 
 @Component(
-  service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class},
+  service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class, EventHandler.class},
+  property = EventConstants.EVENT_TOPIC + "=" + GroovyScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
   immediate = true
 )
 @Designate(ocd = WiremockStubs.Config.class)
-public class WiremockStubs extends AbstractStubs<WireMockApp> {
+public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
   private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
 
@@ -69,6 +71,7 @@ public class WiremockStubs extends AbstractStubs<WireMockApp> {
   }
 
   private void start() {
+    LOG.info("Starting AEM Stubs Wiremock Server");
     this.app = new WiremockApp(new WiremockConfig(), new NotImplementedContainer());
     this.servletPath = getServletPath(config.path());
 
@@ -80,6 +83,7 @@ public class WiremockStubs extends AbstractStubs<WireMockApp> {
   }
 
   private void stop() {
+    LOG.info("Stopping AEM Stubs Wiremock Server");
     if (servletPath != null) {
       httpService.unregister(servletPath);
       servletPath = null;
@@ -102,7 +106,7 @@ public class WiremockStubs extends AbstractStubs<WireMockApp> {
     return new WiremockServlet(config.path(), app.buildStubRequestHandler());
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs - Wiremock Stubs")
+  @ObjectClassDefinition(name = "AEM Stubs - Wiremock Server")
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")

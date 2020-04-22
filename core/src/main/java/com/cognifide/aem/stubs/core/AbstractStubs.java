@@ -3,12 +3,14 @@ package com.cognifide.aem.stubs.core;
 import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import com.icfolson.aem.groovy.console.api.BindingVariable;
 import com.icfolson.aem.groovy.console.api.ScriptContext;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
-public abstract class AbstractStubs<T> implements Stubs<T>, BindingExtensionProvider {
+public abstract class AbstractStubs<T> implements Stubs<T>, BindingExtensionProvider, EventHandler {
 
   @Override
   public Map<String, BindingVariable> getBindingVariables(ScriptContext scriptContext) {
@@ -18,4 +20,8 @@ public abstract class AbstractStubs<T> implements Stubs<T>, BindingExtensionProv
     );
   }
 
+  @Override
+  public void handleEvent(Event event) {
+    reset();
+  }
 }
