@@ -1,6 +1,20 @@
-# Wiremock on AEM
+[![Cognifide logo](docs/cognifide-logo.png)](http://cognifide.com)
 
-## Description
+[![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
+
+# AEM Stubs
+
+Tool for providing sample data for AEM applications in a simple and flexible way.
+
+By implementing a script in [Groovy Console](https://github.com/icfnext/aem-groovy-console) using [Wiremock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
+
+Simply [install](#installation) ready-to-use CRX package on AEM instance and [start stubbing](#getting-started)!
+
+## Installation
+
+TBD
+
+## Getting started
 
 TBD
 
@@ -14,10 +28,6 @@ To build CRX package and deploy it on AEM instance, simply run command:
 sh gradlew
 ```
 
-## TODO
+## License
 
-### 1. Single system user for moco and wiremock
- - rename wiremock-system-user -> stubs-system-user
- - service mapping move from core to moco and wiremock module
-
-### 2.  
+**AEM Stubs** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
