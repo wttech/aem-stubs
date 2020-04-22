@@ -1,6 +1,7 @@
 plugins {
     id("com.neva.fork")
     id("com.cognifide.aem.instance.local")
+    id("net.researchgate.release")
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
@@ -29,5 +30,19 @@ aem {
                 }
             }
         }
+    }
+}
+
+tasks {
+    register("publishToInternal") {
+        dependsOn(
+                ":extender:publishMavenPublicationToInternalRepository",
+                ":core:publishMavenPublicationToInternalRepository",
+                ":aem:publishMavenPublicationToInternalRepository",
+                ":full:publishMavenPublicationToInternalRepository"
+        )
+    }
+    afterReleaseBuild {
+        dependsOn("publishToInternal")
     }
 }

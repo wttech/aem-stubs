@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import com.cognifide.gradle.aem.AemExtension
 
 group = "com.cognifide.aem.stubs"
@@ -58,11 +56,16 @@ plugins.withId("java") {
         withType<Test>().configureEach {
             failFast = true
             useJUnitPlatform()
-            testLogging {
-                events = setOf(TestLogEvent.FAILED)
-                exceptionFormat = TestExceptionFormat.SHORT
-            }
+            testLogging.showStandardStreams = true
         }
     }
 
+}
+
+plugins.withId("org.gradle.pmd") {
+    configure<PmdExtension> {
+        isConsoleOutput = true
+        rulePriority = 2 // TODO 5
+        // ruleSets = listOf("category/java/errorprone.xml", "category/java/bestpractices.xml")
+    }
 }
