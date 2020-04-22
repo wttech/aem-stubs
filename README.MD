@@ -23,7 +23,7 @@ Both frameworks have their own pros and cons, see comparison:
 | API                   | Rich, old-fashioned     	| Rich, modern                                       	| Moco API seems to be written with extendability in mind. Has many interfaces, builders etc available. Wiremock API has less such extension points and generally does not look so elegant.|
 
 
-After choosing framework, it is recommended to explore dedicated AEM Stubs framework related documentation:
+After choosing framework, it is recommended to explore dedicated AEM Stubs **framework related documentation**:
 
 * [AEM Stubs - Wiremock](wiremock)
 * [AEM Stubs - Moco](moco)
