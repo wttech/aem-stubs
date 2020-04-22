@@ -15,7 +15,7 @@ stubs.server.with {
             .willReturn(okJson("{ \"message\": \"Hello Post\" }")))
 
     stubFor(post("/redirect")
-            .willReturn(temporaryRedirect("/wiremock/fine-with-body")))
+            .willReturn(temporaryRedirect("/stubs/fine-with-body")))
 
     stubFor(post("/sorry-no")
             .willReturn(unauthorized()))

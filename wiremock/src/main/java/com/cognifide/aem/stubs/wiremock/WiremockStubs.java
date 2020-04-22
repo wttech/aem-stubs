@@ -106,6 +106,6 @@ public class WiremockStubs extends AbstractStubs<WireMockApp> {
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")
-    String path() default "/wiremock";
+    String path() default "/stubs";
   }
 }
