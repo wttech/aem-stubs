@@ -48,6 +48,16 @@ public class HelloWorldMocksIntegrationTest {
   }
 
   @Test
+  public void shouldGetFineWithBodyTemplated() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/templated")
+      .then()
+      .body(equalTo("templated"))
+      .statusCode(200);
+  }
+
+  @Test
   public void shouldPost() {
     given()
       .when()

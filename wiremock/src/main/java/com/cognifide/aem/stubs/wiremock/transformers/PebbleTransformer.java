@@ -28,7 +28,10 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
 
   public PebbleTransformer() {
-    this.engine = new PebbleEngine.Builder().loader(new StringLoader()).build();;
+    this.engine = new PebbleEngine.Builder()
+      .loader(new StringLoader())
+      .build();
+    ;
   }
 
   @Override

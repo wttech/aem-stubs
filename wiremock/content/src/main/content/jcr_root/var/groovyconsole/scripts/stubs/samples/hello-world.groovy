@@ -38,7 +38,7 @@ stubs.server.with {
     // template
     stubFor(get(urlPathEqualTo("/templated"))
             .willReturn(aResponse()
-                    .withBody("{{request.path.[0]}}")
+                    .withBody("{{request.path[0]}}")
                     .withTransformers("pebble-response-template")))
 
     // Proxies
