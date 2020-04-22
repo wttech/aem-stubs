@@ -19,6 +19,16 @@ public class HelloWorldMocksIntegrationTest {
   }
 
   @Test
+  public void shouldReturnJsonFromFile() {
+    given()
+      .when()
+      .get("http://localhost:4502/wiremock/body-file")
+      .then()
+      .body("message", equalTo("Hello World!"))
+      .statusCode(200);
+  }
+
+  @Test
   public void shouldDeleteFine() {
     given()
       .when()

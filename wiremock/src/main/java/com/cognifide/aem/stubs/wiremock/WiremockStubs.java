@@ -7,6 +7,7 @@ import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 import org.osgi.service.component.annotations.*;
 
 import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -40,6 +41,9 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
   @Reference
   private GroovyScriptManager groovyScriptManager;
 
+  @Reference
+  ResolverAccessor resolverAccessor;
+
   private String servletPath;
 
   @Override
@@ -72,7 +76,9 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WiremockApp(new WiremockConfig(), new NotImplementedContainer());
+    WiremockConfig wiremockConfig = new WiremockConfig(resolverAccessor,
+      groovyScriptManager.getScriptRootPath());
+    this.app = new WiremockApp(wiremockConfig, new NotImplementedContainer());
     this.servletPath = getServletPath(config.path());
 
     try {

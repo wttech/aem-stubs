@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.HttpsSettings;
@@ -28,6 +29,13 @@ import com.github.tomakehurst.wiremock.verification.notmatched.PlainTextStubNotM
 import com.google.common.base.Optional;
 
 class WiremockConfig implements Options {
+  private final ResolverAccessor resolverAccessor;
+  private final String rootPath;
+
+  WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
+    this.resolverAccessor = resolverAccessor;
+    this.rootPath = rootPath;
+  }
 
   @Override
   public int portNumber() {
@@ -61,12 +69,12 @@ class WiremockConfig implements Options {
 
   @Override
   public FileSource filesRoot() {
-    return new WiremockFileSource("wiremock"); // TODO
+    return new WiremockFileSource(resolverAccessor, rootPath);
   }
 
   @Override
   public MappingsLoader mappingsLoader() {
-    return new JsonFileMappingsSource(filesRoot().child("mappings")); // TODO
+    return new JsonFileMappingsSource(filesRoot()); // TODO
   }
 
   @Override
