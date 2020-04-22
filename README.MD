@@ -10,13 +10,16 @@ By implementing a script in [Groovy Console](https://github.com/icfnext/aem-groo
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and [start stubbing](#getting-started)!
 
-## Installation
+## Frameworks
 
-TBD
+At first, it is needed to decide which framework is more preferred to use.
+Both frameworks have their own pros and cons, see comparison:
 
-## Getting started
-
-TBD
+| Topic \ Framework   	| Wiremock               	| Moco                                                 	| Comments                                                                                                                                                                     	|   	|
+|---------------------	|------------------------	|------------------------------------------------------	|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|---	|
+| Installation        	| All-in-one AEM package 	| All-in-one AEM package                               	|                                                                                                                                                                              	|   	|
+| Type of HTTP server 	| AEM built-in (Jetty)   	| Additional deployed on AEM, running on separate port 	| As of Moco is not using AEM HTTP Server but running its own, it is required to ensure that port used by Moco is free and not blocked by firewall on some deployment servers. 	|   	|
+|                     	|                        	|                                                      	|                                                                                                                                                                              	|   	| 
 
 ## Building
 
