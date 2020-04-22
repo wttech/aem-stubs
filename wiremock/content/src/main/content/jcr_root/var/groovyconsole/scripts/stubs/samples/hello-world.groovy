@@ -35,6 +35,10 @@ stubs.server.with {
                     .withStatusMessage("Everything was just fine!")
                     .withHeader("Some-Header", "value")))
 
+    // Proxies
+    stubFor(get(urlMatching("/api/.*"))
+            .willReturn(aResponse().proxiedFrom("http://api.nbp.pl")));
+    //example http://localhost:4502/stubs/api/exchangerates/rates/a/chf/
 
     // Not supported by AEM Stubs
     stubFor(get(urlEqualTo("/delayed")).willReturn(
