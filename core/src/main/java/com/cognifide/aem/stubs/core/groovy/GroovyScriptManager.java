@@ -177,6 +177,6 @@ public class GroovyScriptManager implements ResourceChangeListener {
     String resource_paths() default "/var/groovyconsole/scripts/stubs";
 
     @AttributeDefinition(name = "Scripts Excluded Paths")
-    String[] excluded_paths() default {"**/internals/*", "**/files/*"};
+    String[] excluded_paths() default {"**/internals/*"};
   }
 }
