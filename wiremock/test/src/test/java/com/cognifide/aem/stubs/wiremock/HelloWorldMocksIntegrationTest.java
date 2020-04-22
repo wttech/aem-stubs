@@ -22,7 +22,7 @@ public class HelloWorldMocksIntegrationTest {
   public void shouldReturnJsonFromFile() {
     given()
       .when()
-      .get("http://localhost:4502/wiremock/body-file")
+      .get("http://localhost:4502/stubs/body-file")
       .then()
       .body("message", equalTo("Hello World!"))
       .statusCode(200);
