@@ -8,7 +8,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
@@ -18,10 +20,13 @@ import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.RequestTemplateModel;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.loader.StringLoader;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+
+import groovy.lang.Closure;
 
 public class PebbleTransformer extends ResponseDefinitionTransformer {
 
@@ -43,19 +48,34 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     ResponseDefinitionBuilder newResponseDefBuilder = ResponseDefinitionBuilder
       .like(responseDefinition);
     final ImmutableMap<String, Object> model = ImmutableMap.<String, Object>builder()
-      .put("parameters", firstNonNull(parameters, Collections.<String, Object>emptyMap()))
+      .put("parameters", calculateParameters(parameters))
       .put("request", RequestTemplateModel.from(request)).build();
 
     PebbleTemplate bodyTemplate = engine.getTemplate(getTemplateString(responseDefinition));
     String newBody = applyTemplatedResponseBody(model, bodyTemplate);
 
     if (responseDefinition.specifiesBodyFile()) {
-      newResponseDefBuilder.withBody(jcrFileReader.readAsText(newBody));
+      PebbleTemplate fileTemplate = engine.getTemplate(jcrFileReader.readAsText(newBody));
+      newResponseDefBuilder.withBody(applyTemplatedResponseBody(model, fileTemplate));
     } else {
       newResponseDefBuilder.withBody(newBody);
     }
 
     return newResponseDefBuilder.build();
+  }
+
+  private Map<String, Object> calculateParameters(Parameters parameters) {
+    return firstNonNull(parameters, Collections.<String, Object>emptyMap()).entrySet()
+      .stream()
+      .collect(Collectors.toMap(Entry::getKey, e -> {
+        if (e.getValue() instanceof Closure) {
+          return ((Closure) e.getValue()).call();
+        } else if (e.getValue() instanceof Supplier<?>) {
+          return ((Supplier) e.getValue()).get();
+        } else {
+          return e.getValue();
+        }
+      }));
   }
 
   private String getTemplateString(ResponseDefinition definition) {

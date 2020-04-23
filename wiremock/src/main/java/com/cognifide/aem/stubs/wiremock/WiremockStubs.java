@@ -1,14 +1,12 @@
 package com.cognifide.aem.stubs.wiremock;
 
-import com.cognifide.aem.stubs.core.AbstractStubs;
-import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
-import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
-import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
-import org.osgi.service.component.annotations.*;
+import javax.servlet.ServletException;
 
-import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
-import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
@@ -19,7 +17,12 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
+import com.cognifide.aem.stubs.core.AbstractStubs;
+import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
+import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
+import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 
 @Component(
   service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class, EventHandler.class},
@@ -76,9 +79,7 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    WiremockConfig wiremockConfig = new WiremockConfig(resolverAccessor,
-      groovyScriptManager.getScriptRootPath());
-    this.app = new WiremockApp(wiremockConfig, new NotImplementedContainer());
+    this.app = new WiremockApp(resolverAccessor, groovyScriptManager.getScriptRootPath());
     this.servletPath = getServletPath(config.path());
 
     try {
