@@ -41,6 +41,12 @@ stubs.server.with {
                     .withBody("{{request.path[0]}}")
                     .withTransformers("pebble-response-template")))
 
+    stubFor(get(urlPathEqualTo("/header-body-file"))
+            .willReturn(aResponse()
+                    .withBodyFile("{{request.headers.BodyFile}}")
+                    .withHeader("Content-Type", "application/json")
+                    .withTransformers("pebble-response-template")))
+
     // Proxies
     stubFor(get(urlMatching("/api/.*"))
             .willReturn(aResponse().proxiedFrom("http://api.nbp.pl")));

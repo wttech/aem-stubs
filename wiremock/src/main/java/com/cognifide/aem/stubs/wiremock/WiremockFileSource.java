@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
 import com.github.tomakehurst.wiremock.common.BinaryFile;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.TextFile;
@@ -17,11 +18,12 @@ import com.github.tomakehurst.wiremock.common.TextFile;
 class WiremockFileSource implements FileSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(WiremockFileSource.class);
-  private final ResolverAccessor resolverAccessor;
+
+  private final JcrFileReader jcrFileReader;
   private final String rootPath;
 
   WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
-    this.resolverAccessor = resolverAccessor;
+    this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
   }
 
@@ -31,7 +33,7 @@ class WiremockFileSource implements FileSource {
       return new BinaryFile(toUri(name)) {
         @Override
         public InputStream getStream() {
-          return getInputStream(name);
+          return jcrFileReader.getInputStream(name);
         }
       };
     } catch (Exception e) {
@@ -46,7 +48,7 @@ class WiremockFileSource implements FileSource {
       return new TextFile(toUri(name)) {
         @Override
         public InputStream getStream() {
-          return getInputStream(name);
+          return jcrFileReader.getInputStream(name);
         }
       };
     } catch (Exception e) {
@@ -105,17 +107,8 @@ class WiremockFileSource implements FileSource {
     //ignore
   }
 
-  private InputStream getInputStream(String name) {
-    String path = String.format("%s/jcr:content", getAbsolutePath(name));
-    return resolverAccessor.resolve(r -> r.getResource(path).adaptTo(InputStream.class));
-  }
-
-  private String getAbsolutePath(String name){
-    return String.format("%s/%s", rootPath, name);
-  }
-
   private URI toUri(String name) throws URISyntaxException {
-    String absolutePath = getAbsolutePath(name);
+    String absolutePath = jcrFileReader.getAbsolutePath(name);
     return new URI("aem", null, absolutePath, null);
   }
 }

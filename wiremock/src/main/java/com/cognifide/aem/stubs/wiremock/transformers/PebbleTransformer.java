@@ -8,7 +8,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
+import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.extension.Parameters;
@@ -25,9 +27,10 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
   private static final String NAME = "pebble-response-template";
   private final PebbleEngine engine;
+  private final JcrFileReader jcrFileReader;
 
-
-  public PebbleTransformer() {
+  public PebbleTransformer(JcrFileReader jcrFileReader) {
+    this.jcrFileReader = jcrFileReader;
     this.engine = new PebbleEngine.Builder()
       .loader(new StringLoader())
       .build();
@@ -43,16 +46,27 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
       .put("parameters", firstNonNull(parameters, Collections.<String, Object>emptyMap()))
       .put("request", RequestTemplateModel.from(request)).build();
 
-    PebbleTemplate bodyTemplate = engine.getTemplate(responseDefinition.getBody());
-    applyTemplatedResponseBody(newResponseDefBuilder, model, bodyTemplate);
+    PebbleTemplate bodyTemplate = engine.getTemplate(getTemplateString(responseDefinition));
+    String newBody = applyTemplatedResponseBody(model, bodyTemplate);
+
+    if(responseDefinition.specifiesBodyFile()) {
+      newResponseDefBuilder.withBody(jcrFileReader.readAsText(newBody));
+    }else{
+      newResponseDefBuilder.withBody(newBody);
+    }
+
     return newResponseDefBuilder.build();
   }
 
+  private String getTemplateString(ResponseDefinition definition) {
+    return Optional.of(definition)
+      .map(ResponseDefinition::getBody)
+      .orElse(definition.getBodyFileName());
+  }
 
-  private void applyTemplatedResponseBody(ResponseDefinitionBuilder newResponseDefBuilder,
-    ImmutableMap<String, Object> model, PebbleTemplate bodyTemplate) {
-    String newBody = uncheckedApplyTemplate(bodyTemplate, model);
-    newResponseDefBuilder.withBody(newBody);
+
+  private String applyTemplatedResponseBody(ImmutableMap<String, Object> model, PebbleTemplate bodyTemplate) {
+    return uncheckedApplyTemplate(bodyTemplate, model);
   }
 
   private String uncheckedApplyTemplate(PebbleTemplate template, Map<String, Object> context) {

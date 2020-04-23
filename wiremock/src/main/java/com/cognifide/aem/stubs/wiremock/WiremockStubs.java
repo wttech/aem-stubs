@@ -78,7 +78,7 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
     LOG.info("Starting AEM Stubs Wiremock Server");
     WiremockConfig wiremockConfig = new WiremockConfig(resolverAccessor,
       groovyScriptManager.getScriptRootPath());
-    this.app = new WiremockApp(wiremockConfig.addExtenstions(), new NotImplementedContainer());
+    this.app = new WiremockApp(wiremockConfig, new NotImplementedContainer());
     this.servletPath = getServletPath(config.path());
 
     try {

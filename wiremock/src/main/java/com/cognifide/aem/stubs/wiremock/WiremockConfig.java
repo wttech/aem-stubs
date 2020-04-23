@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
@@ -38,20 +39,19 @@ import com.google.common.collect.Maps;
 class WiremockConfig implements Options {
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
+  private Map<String, Extension> extensions = newLinkedHashMap();
+
 
   WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
+    addExtenstions();
   }
 
-  private Map<String, Extension> extensions = newLinkedHashMap();
-  ;
-
-  public WiremockConfig addExtenstions() {
+  private void addExtenstions() {
+    JcrFileReader jcrFileReader= new JcrFileReader(resolverAccessor, rootPath);
     extensions.putAll(ExtensionLoader.asMap(
-      Arrays.asList(new PebbleTransformer())));
-
-    return this;
+      Arrays.asList(new PebbleTransformer(jcrFileReader))));
   }
 
   @Override
