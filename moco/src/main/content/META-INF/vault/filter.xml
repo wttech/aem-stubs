@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/var/groovyconsole/scripts/stubs" mode="update"/>
+    <filter root="/var/groovyconsole/scripts/stubs/internals"/>
+    <filter root="/var/groovyconsole/scripts/stubs/samples"/>
 </workspaceFilter>
