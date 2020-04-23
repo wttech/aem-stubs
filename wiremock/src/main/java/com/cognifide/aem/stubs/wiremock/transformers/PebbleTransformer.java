@@ -49,9 +49,9 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     PebbleTemplate bodyTemplate = engine.getTemplate(getTemplateString(responseDefinition));
     String newBody = applyTemplatedResponseBody(model, bodyTemplate);
 
-    if(responseDefinition.specifiesBodyFile()) {
+    if (responseDefinition.specifiesBodyFile()) {
       newResponseDefBuilder.withBody(jcrFileReader.readAsText(newBody));
-    }else{
+    } else {
       newResponseDefBuilder.withBody(newBody);
     }
 
@@ -65,7 +65,8 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
   }
 
 
-  private String applyTemplatedResponseBody(ImmutableMap<String, Object> model, PebbleTemplate bodyTemplate) {
+  private String applyTemplatedResponseBody(ImmutableMap<String, Object> model,
+    PebbleTemplate bodyTemplate) {
     return uncheckedApplyTemplate(bodyTemplate, model);
   }
 
