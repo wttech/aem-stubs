@@ -2,6 +2,9 @@
 webpack.mode={{webpackMode}}
 test.browser={{testBrowser}}
 
+nexusUsername={{ companyUser }}
+nexusPassword={{ companyPassword }}
+
 # === GAP configuration ===
 
 notifier.enabled={{notifierEnabled}}

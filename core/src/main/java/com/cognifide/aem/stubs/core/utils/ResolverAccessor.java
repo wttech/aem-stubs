@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = ResolverAccessor.class)
 public class ResolverAccessor {
 
-
-  private static Logger LOG = LoggerFactory.getLogger(ResolverAccessor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ResolverAccessor.class);
 
   @Reference
   private ResourceResolverFactory resourceResolverFactory;

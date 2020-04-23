@@ -1,13 +1,26 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import com.cognifide.gradle.aem.AemExtension
 
 group = "com.cognifide.aem.stubs"
+
 repositories {
     jcenter()
     mavenCentral()
     maven("https://repo.adobe.com/nexus/content/groups/public")
     maven("https://dl.bintray.com/acs/releases")
+}
+
+plugins.withId("maven-publish") {
+    configure<PublishingExtension> {
+        repositories {
+            maven("https://nexus.cognifide.com/content/repositories/cognifide-internal") {
+                name = "internal"
+                credentials {
+                    username = project.findProperty("nexusUsername")?.toString()
+                    password = project.findProperty("nexusPassword")?.toString()
+                }
+            }
+        }
+    }
 }
 
 plugins.withId("com.cognifide.aem.common") {
@@ -58,11 +71,16 @@ plugins.withId("java") {
         withType<Test>().configureEach {
             failFast = true
             useJUnitPlatform()
-            testLogging {
-                events = setOf(TestLogEvent.FAILED)
-                exceptionFormat = TestExceptionFormat.SHORT
-            }
+            testLogging.showStandardStreams = true
         }
     }
 
+}
+
+plugins.withId("org.gradle.pmd") {
+    configure<PmdExtension> {
+        isConsoleOutput = true
+        rulePriority = 2 // TODO 5
+        // ruleSets = listOf("category/java/errorprone.xml", "category/java/bestpractices.xml")
+    }
 }
