@@ -41,6 +41,13 @@ stubs.server.with {
                     .withBody("{{request.path[0]}}")
                     .withTransformers("pebble-response-template")))
 
+    stubFor(get(urlPathEqualTo("/templated-file"))
+            .willReturn(aResponse()
+                    .withBodyFile("samples/template.json")
+                    .withHeader("Content-Type", "application/json")
+                    .withTransformerParameter("message", "Hello Templates!")
+                    .withTransformers("pebble-response-template")))
+
     stubFor(get(urlPathEqualTo("/header-body-file"))
             .willReturn(aResponse()
                     .withBodyFile("{{request.headers.BodyFile}}")
@@ -58,6 +65,7 @@ stubs.server.with {
     stubFor(get(urlMatching("/api/.*"))
             .willReturn(aResponse().proxiedFrom("http://api.nbp.pl")));
     //example http://localhost:4502/stubs/api/exchangerates/rates/a/chf/
+
 
     // Not supported by AEM Stubs
     stubFor(get(urlEqualTo("/delayed")).willReturn(

@@ -54,7 +54,8 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     String newBody = applyTemplatedResponseBody(model, bodyTemplate);
 
     if (responseDefinition.specifiesBodyFile()) {
-      newResponseDefBuilder.withBody(jcrFileReader.readAsText(newBody));
+      PebbleTemplate fileTemplate = engine.getTemplate(jcrFileReader.readAsText(newBody));
+      newResponseDefBuilder.withBody(applyTemplatedResponseBody(model, fileTemplate));
     } else {
       newResponseDefBuilder.withBody(newBody);
     }
