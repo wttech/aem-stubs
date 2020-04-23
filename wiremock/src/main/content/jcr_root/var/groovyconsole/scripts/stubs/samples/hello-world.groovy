@@ -47,6 +47,13 @@ stubs.server.with {
                     .withHeader("Content-Type", "application/json")
                     .withTransformers("pebble-response-template")))
 
+    stubFor(get(urlPathEqualTo("/templated-dynamic"))
+            .willReturn(aResponse()
+                    .withBody("{{parameters.date}}")
+                    .withTransformerParameter("date", {new Date()})
+                    .withTransformers("pebble-response-template")))
+
+
     // Proxies
     stubFor(get(urlMatching("/api/.*"))
             .willReturn(aResponse().proxiedFrom("http://api.nbp.pl")));
