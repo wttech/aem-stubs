@@ -37,8 +37,13 @@ It is because Groovy Console API is changing and its version is changing when AE
 
 In other words, version:
 
-* 12.x.x is compatible with AEM 6.4 (SP7 at least).
-* 14.x.x is compatible with AEM 6.5
+* 12.x.x is compatible with AEM 6.4 (SP7 at least),
+* 14.x.x is compatible with AEM 6.5.
+
+Distribution types:
+
+* all - with AEM Groovy Console built-in
+* app - without AEM Groovy Console.
 
 ## Building
 
