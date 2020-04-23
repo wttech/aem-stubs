@@ -19,14 +19,12 @@ aem {
         }
         provisioner {
             step("enable-crxde") {
-                step("enable-crxde") {
-                    description = "Enables CRX DE"
-                    condition { once() && instance.env != "prod" }
-                    sync {
-                        osgi.configure("org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet", mapOf(
-                                "alias" to "/crx/server"
-                        ))
-                    }
+                description = "Enables CRX DE"
+                condition { once() && instance.env != "prod" }
+                sync {
+                    osgi.configure("org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet", mapOf(
+                            "alias" to "/crx/server"
+                    ))
                 }
             }
         }
