@@ -26,6 +26,11 @@ aem {
                         "com.github.tomakehurst.wiremock.jetty94.*",
                         "org.eclipse.jetty.servlets.gzip.*"
                 )
+                        embedPackage("io.pebbletemplates:pebble:3.1.0", "com.mitchellbosecke.pebble.*")
+                embedPackage("org.unbescape:unbescape:1.0", "org.unbescape.*")
+                embedPackage("org.checkerframework:checker-qual:3.3.0", "org.checkerframework.checker.index.qual.*")
+                embedPackage("com.github.ben-manes.caffeine:caffeine:2.8.1", "com.github.benmanes.caffeine.cache.*",
+                "com.github.benmanes.caffeine.base")
                 embedPackage("org.apache.commons:commons-lang3:3.9", "org.apache.commons.lang3.*")
                 embedPackage("org.apache.commons:commons-collections4:4.4", "org.apache.commons.collections4.*")
                 embedPackage("com.github.tomakehurst:wiremock:2.21.0", "com.github.tomakehurst.wiremock.*")

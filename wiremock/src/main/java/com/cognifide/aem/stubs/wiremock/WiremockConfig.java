@@ -1,10 +1,16 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import static com.github.tomakehurst.wiremock.extension.ExtensionLoader.valueAssignableFrom;
+import static com.google.common.collect.Maps.newLinkedHashMap;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
+import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.HttpsSettings;
@@ -14,6 +20,7 @@ import com.github.tomakehurst.wiremock.common.ProxySettings;
 import com.github.tomakehurst.wiremock.core.MappingsSaver;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.github.tomakehurst.wiremock.extension.Extension;
+import com.github.tomakehurst.wiremock.extension.ExtensionLoader;
 import com.github.tomakehurst.wiremock.http.CaseInsensitiveKey;
 import com.github.tomakehurst.wiremock.http.HttpServerFactory;
 import com.github.tomakehurst.wiremock.http.ThreadPoolFactory;
@@ -27,14 +34,24 @@ import com.github.tomakehurst.wiremock.standalone.MappingsLoader;
 import com.github.tomakehurst.wiremock.verification.notmatched.NotMatchedRenderer;
 import com.github.tomakehurst.wiremock.verification.notmatched.PlainTextStubNotMatchedRenderer;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 class WiremockConfig implements Options {
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
+  private Map<String, Extension> extensions = newLinkedHashMap();
+
 
   WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
+    addExtenstions();
+  }
+
+  private void addExtenstions() {
+    JcrFileReader jcrFileReader= new JcrFileReader(resolverAccessor, rootPath);
+    extensions.putAll(ExtensionLoader.asMap(
+      Arrays.asList(new PebbleTransformer(jcrFileReader))));
   }
 
   @Override
@@ -44,7 +61,7 @@ class WiremockConfig implements Options {
 
   @Override
   public HttpsSettings httpsSettings() {
-    return new HttpsSettings(-1, "", "", "", null, "","", false);
+    return new HttpsSettings(-1, "", "", "", null, "", "", false);
   }
 
   @Override
@@ -128,8 +145,9 @@ class WiremockConfig implements Options {
   }
 
   @Override
-  public <T extends Extension> Map<String, T> extensionsOfType(Class<T> extensionType) {
-    return Collections.emptyMap();
+  @SuppressWarnings("unchecked")
+  public <T extends Extension> Map<String, T> extensionsOfType(final Class<T> extensionType) {
+    return (Map<String, T>) Maps.filterEntries(extensions, valueAssignableFrom(extensionType));
   }
 
   @Override
