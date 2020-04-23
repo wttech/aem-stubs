@@ -1,11 +1,26 @@
 import com.cognifide.gradle.aem.AemExtension
 
 group = "com.cognifide.aem.stubs"
+
 repositories {
     jcenter()
     mavenCentral()
     maven("https://repo.adobe.com/nexus/content/groups/public")
     maven("https://dl.bintray.com/acs/releases")
+}
+
+plugins.withId("maven-publish") {
+    configure<PublishingExtension> {
+        repositories {
+            maven("https://nexus.cognifide.com/content/repositories/cognifide-internal") {
+                name = "internal"
+                credentials {
+                    username = project.findProperty("nexusUsername")?.toString()
+                    password = project.findProperty("nexusPassword")?.toString()
+                }
+            }
+        }
+    }
 }
 
 plugins.withId("com.cognifide.aem.common") {

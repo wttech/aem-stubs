@@ -1,5 +1,6 @@
 plugins {
     id("com.cognifide.aem.package")
+    `maven-publish`
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
@@ -7,10 +8,15 @@ description = "AEM Stubs - Moco App"
 
 tasks {
     packageCompose {
-        archiveClassifier.set("moco")
-
         nestPackageProject(":core")
         nestPackageProject(":moco")
-        nestPackageProject(":moco:content")
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(common.publicationArtifact("packageCompose"))
+        }
     }
 }

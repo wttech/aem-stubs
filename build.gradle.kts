@@ -36,10 +36,10 @@ aem {
 tasks {
     register("publishToInternal") {
         dependsOn(
-                ":extender:publishMavenPublicationToInternalRepository",
-                ":core:publishMavenPublicationToInternalRepository",
-                ":aem:publishMavenPublicationToInternalRepository",
-                ":full:publishMavenPublicationToInternalRepository"
+                ":assembly:wiremock-all:publishMavenPublicationToInternalRepository",
+                ":assembly:wiremock-app:publishMavenPublicationToInternalRepository",
+                ":assembly:moco-all:publishMavenPublicationToInternalRepository",
+                ":assembly:moco-app:publishMavenPublicationToInternalRepository"
         )
     }
     afterReleaseBuild {
