@@ -51,17 +51,23 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
       .put("parameters", calculateParameters(parameters))
       .put("request", RequestTemplateModel.from(request)).build();
 
-    PebbleTemplate bodyTemplate = engine.getTemplate(getTemplateString(responseDefinition));
-    String newBody = applyTemplatedResponseBody(model, bodyTemplate);
+    //proxy
+    if(responseDefinition.isProxyResponse()){
+      PebbleTemplate baseUrlTemplate = engine.getTemplate(responseDefinition.getProxyBaseUrl());
+      newResponseDefBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
+      return newResponseDefBuilder.build();
+    }
+
+    //body
+    PebbleTemplate bodyTemplate = engine.getTemplate(getBodyTemplateString(responseDefinition));
+    String newBody = evaluate(bodyTemplate, model);
 
     if (responseDefinition.specifiesBodyFile()) {
       PebbleTemplate fileTemplate = engine.getTemplate(jcrFileReader.readAsText(newBody));
-      newResponseDefBuilder.withBody(applyTemplatedResponseBody(model, fileTemplate));
-    } else {
-      newResponseDefBuilder.withBody(newBody);
+      newBody = evaluate(fileTemplate, model);
     }
 
-    return newResponseDefBuilder.build();
+    return newResponseDefBuilder.withBody(newBody).build();
   }
 
   private Map<String, Object> calculateParameters(Parameters parameters) {
@@ -78,19 +84,14 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
       }));
   }
 
-  private String getTemplateString(ResponseDefinition definition) {
+  private String getBodyTemplateString(ResponseDefinition definition) {
     return Optional.of(definition)
       .map(ResponseDefinition::getBody)
       .orElse(definition.getBodyFileName());
   }
 
 
-  private String applyTemplatedResponseBody(ImmutableMap<String, Object> model,
-    PebbleTemplate bodyTemplate) {
-    return uncheckedApplyTemplate(bodyTemplate, model);
-  }
-
-  private String uncheckedApplyTemplate(PebbleTemplate template, Map<String, Object> context) {
+  private String evaluate(PebbleTemplate template, Map<String, Object> context) {
     try {
       Writer writer = new StringWriter();
       template.evaluate(writer, context);

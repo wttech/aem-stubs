@@ -29,6 +29,17 @@ public class HelloWorldMocksIntegrationTest {
   }
 
   @Test
+  public void shouldReturnJsonFromTemplateFile() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/templated-file")
+      .then()
+      .body("message", equalTo("Hello Templates!"))
+      .statusCode(200);
+  }
+
+
+  @Test
   public void shouldDeleteFine() {
     given()
       .when()
@@ -59,7 +70,7 @@ public class HelloWorldMocksIntegrationTest {
 
   @Test
   public void shouldReturnJsonFromFilePointedInHeader() {
-    given().header("BodyFile", "samples/message.json")
+    given().header("X-WM-Body-File", "samples/message.json")
       .when()
       .get("http://localhost:4502/stubs/header-body-file")
       .then()
