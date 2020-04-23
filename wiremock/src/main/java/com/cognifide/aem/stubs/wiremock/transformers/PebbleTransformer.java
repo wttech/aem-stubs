@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.RequestTemplateModel;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.loader.StringLoader;
@@ -63,16 +64,20 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     return newResponseDefBuilder.build();
   }
 
-  private Map<String, Object> calculateParameters(Parameters parameters){
+  private Map<String, Object> calculateParameters(Parameters parameters) {
     return firstNonNull(parameters, Collections.<String, Object>emptyMap()).entrySet()
       .stream()
       .collect(Collectors.toMap(Entry::getKey, e -> {
-        if(e.getValue() instanceof Closure){
-          return ((Closure)e.getValue()).call();
-        }else
+        if (e.getValue() instanceof Closure) {
+          return ((Closure) e.getValue()).call();
+        } else if (e.getValue() instanceof Supplier<?>) {
+          return ((Supplier) e.getValue()).get();
+        } else {
           return e.getValue();
+        }
       }));
-   }
+  }
+
   private String getTemplateString(ResponseDefinition definition) {
     return Optional.of(definition)
       .map(ResponseDefinition::getBody)
