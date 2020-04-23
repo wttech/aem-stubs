@@ -1,5 +1,5 @@
 release {
     git {
-        requireBranch = "/release\\/aem-6.4|release\\/aem-6.5/"
+        requireBranch = "release/.*"
     }
 }
