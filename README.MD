@@ -28,6 +28,18 @@ After choosing framework, it is recommended to explore dedicated AEM Stubs **fra
 * [AEM Stubs - Wiremock](wiremock)
 * [AEM Stubs - Moco](moco)
 
+## Downloads
+
+Published artifacts are available in Nexus repository at URL: <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/>.
+
+Note that artifact versioning reflects AEM Groovy Console versioning intentionally.
+It is because Groovy Console API is changing and its version is changing when AEM version is changing.
+
+In other words, version:
+
+* 12.x.x is compatible with AEM 6.4 (SP7 at least).
+* 14.x.x is compatible with AEM 6.5
+
 ## Building
 
 Project build is based on [Gradle](https://docs.gradle.org/current/userguide/userguide.html) and using [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
