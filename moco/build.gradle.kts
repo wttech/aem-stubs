@@ -3,6 +3,7 @@ import com.cognifide.gradle.aem.bundle.tasks.bundle
 plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
+    pmd
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))

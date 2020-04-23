@@ -1,6 +1,7 @@
 plugins {
     id("com.neva.fork")
     id("com.cognifide.aem.instance.local")
+    id("net.researchgate.release")
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
@@ -18,16 +19,28 @@ aem {
         }
         provisioner {
             step("enable-crxde") {
-                step("enable-crxde") {
-                    description = "Enables CRX DE"
-                    condition { once() && instance.env != "prod" }
-                    sync {
-                        osgi.configure("org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet", mapOf(
-                                "alias" to "/crx/server"
-                        ))
-                    }
+                description = "Enables CRX DE"
+                condition { once() && instance.env != "prod" }
+                sync {
+                    osgi.configure("org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet", mapOf(
+                            "alias" to "/crx/server"
+                    ))
                 }
             }
         }
+    }
+}
+
+tasks {
+    register("publishToInternal") {
+        dependsOn(
+                ":assembly:wiremock-all:publishMavenPublicationToInternalRepository",
+                ":assembly:wiremock-app:publishMavenPublicationToInternalRepository",
+                ":assembly:moco-all:publishMavenPublicationToInternalRepository",
+                ":assembly:moco-app:publishMavenPublicationToInternalRepository"
+        )
+    }
+    afterReleaseBuild {
+        dependsOn("publishToInternal")
     }
 }
