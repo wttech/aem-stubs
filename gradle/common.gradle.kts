@@ -15,8 +15,8 @@ plugins.withId("maven-publish") {
             maven("https://nexus.cognifide.com/content/repositories/cognifide-internal") {
                 name = "internal"
                 credentials {
-                    username = project.findProperty("nexusUsername")?.toString()
-                    password = project.findProperty("nexusPassword")?.toString()
+                    username = project.findProperty("releaseUsername")?.toString()
+                    password = project.findProperty("releasePassword")?.toString()
                 }
             }
         }

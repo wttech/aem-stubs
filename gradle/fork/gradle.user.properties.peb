@@ -2,8 +2,8 @@
 webpack.mode={{webpackMode}}
 test.browser={{testBrowser}}
 
-nexusUsername={{ companyUser }}
-nexusPassword={{ companyPassword }}
+releaseUsername={{ releaseUser }}
+releasePassword={{ releasePassword }}
 
 # === GAP configuration ===
 
