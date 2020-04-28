@@ -100,7 +100,7 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
     start();
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs - Moco Server")
+  @ObjectClassDefinition(name = "AEM Stubs Moco Server")
   public @interface Config {
 
     @AttributeDefinition(name = "HTTP Server Port")
