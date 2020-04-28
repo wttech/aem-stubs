@@ -17,6 +17,7 @@ aem {
     tasks {
         jar {
             bundle {
+                importPackage("javax.annotation;version=0.0.0")
                 exportPackage("com.github.tomakehurst.wiremock.*")
                 excludePackage(
                         "junit.*",
