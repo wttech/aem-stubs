@@ -8,7 +8,7 @@ description = "AEM Stubs - Wiremock All-In-One"
 
 tasks {
     packageCompose {
-        installBundleProject(":wiremock:system")
+        //installBundleProject(":wiremock:system")
         mergePackageProject(":core")
         mergePackageProject(":wiremock")
 

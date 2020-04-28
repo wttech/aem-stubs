@@ -17,17 +17,13 @@ aem {
     tasks {
         jar {
             bundle {
+                attribute("DynamicImport-Package", "*")
+                importPackageSuffix.set("*;resolution:=optional")
                 importPackage("javax.annotation;version=0.0.0")
+
                 exportPackage("com.github.tomakehurst.wiremock.*")
-                excludePackage(
-                        "junit.*",
-                        "org.junit.*",
-                        "com.github.tomakehurst.wiremock.junit.*",
-                        "com.github.tomakehurst.wiremock.jetty92.*",
-                        "com.github.tomakehurst.wiremock.jetty94.*",
-                        "org.eclipse.jetty.servlets.gzip.*"
-                )
-                        embedPackage("io.pebbletemplates:pebble:3.1.0", "com.mitchellbosecke.pebble.*")
+
+                embedPackage("io.pebbletemplates:pebble:3.1.0", "com.mitchellbosecke.pebble.*")
                 embedPackage("org.unbescape:unbescape:1.0", "org.unbescape.*")
                 embedPackage("org.checkerframework:checker-qual:3.3.0", "org.checkerframework.checker.index.qual.*")
                 embedPackage("com.github.ben-manes.caffeine:caffeine:2.8.1", "com.github.benmanes.caffeine.cache.*",
