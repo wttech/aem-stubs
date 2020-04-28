@@ -17,6 +17,7 @@ aem {
     tasks {
         jar {
             bundle {
+                importPackage("javax.annotation;version=0.0.0")
                 embedPackage("com.github.dreamhead:moco-core:1.1.0", "com.github.dreamhead.moco.*", export = true)
                 embedPackage("com.github.dreamhead:moco-runner:1.1.0")
                 embedPackage("com.google.guava:guava:28.2-jre", "com.google.common.*")

@@ -15,8 +15,17 @@ import org.slf4j.LoggerFactory;
 )
 public class StubScriptExecutor {
 
+  private Stubs stubs;
+
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-  private volatile Stubs stubs;
+  protected void bindStubs(Stubs stubs) {
+    this.stubs = stubs;
+    stubs.reset();
+  }
+
+  protected void unbindStubs(Stubs stubs) {
+    this.stubs = null;
+  }
 
   private static final Logger LOG = LoggerFactory.getLogger(StubScriptExecutor.class);
 

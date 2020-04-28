@@ -81,7 +81,6 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
   @Modified
   protected void activate(Config config) {
     this.config = config;
-    reset();
   }
 
   @Deactivate
