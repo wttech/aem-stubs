@@ -24,7 +24,15 @@ aem {
                 embedPackage("com.github.dreamhead:moco-core:1.1.0", "com.github.dreamhead.moco.*", export = true)
                 embedPackage("com.github.dreamhead:moco-runner:1.1.0")
                 embedPackage("com.google.guava:guava:28.2-jre", "com.google.common.*")
-                // embedPackage("com.jayway.jsonpath:json-path:2.4.0", "com.jayway.jsonpath.*") // TODO support json path
+                embedPackage("com.jayway.jsonpath:json-path:2.4.0",
+                        "com.jayway.jsonpath",
+                        "com.jayway.jsonpath.internal.*",
+                        "com.jayway.jsonpath.internal.filter",
+                        "com.jayway.jsonpath.internal.path",
+                        "com.jayway.jsonpath.spi.cache",
+                        "com.jayway.jsonpath.spi.json",
+                        "com.jayway.jsonpath.spi.mapper"
+                )
             }
         }
 
