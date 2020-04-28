@@ -59,6 +59,7 @@ public class WiremockServlet extends HttpServlet {
     };
   }
 
+  @SuppressWarnings("deprecation")
   private void applyResponse(Response response, HttpServletResponse httpServletResponse)
     throws IOException {
     FaultResponse faultResponse = FaultResponse.of(response);
@@ -71,7 +72,7 @@ public class WiremockServlet extends HttpServlet {
     if (response.getStatusMessage() == null) {
       httpServletResponse.setStatus(response.getStatus());
     } else {
-      httpServletResponse.sendError(response.getStatus(), response.getStatusMessage());
+      httpServletResponse.setStatus(response.getStatus(), response.getStatusMessage());
     }
 
     for (HttpHeader header : response.getHeaders().all()) {
