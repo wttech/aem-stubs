@@ -1,5 +1,7 @@
 package com.cognifide.aem.stubs.core;
 
+import com.cognifide.aem.stubs.core.script.StubScript;
+
 public interface Stubs<T> {
 
   T getServer();
@@ -8,4 +10,5 @@ public interface Stubs<T> {
 
   void reset();
 
+  void prepare(StubScript script);
 }

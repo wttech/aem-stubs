@@ -2,6 +2,10 @@ package com.cognifide.aem.stubs.wiremock;
 
 import javax.servlet.ServletException;
 
+import com.cognifide.aem.stubs.core.script.StubScript;
+import com.github.tomakehurst.wiremock.http.Fault;
+import com.github.tomakehurst.wiremock.http.Request;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -19,14 +23,13 @@ import org.slf4j.LoggerFactory;
 
 import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.groovy.GroovyScriptManager;
+import com.cognifide.aem.stubs.core.script.StubScriptManager;
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
-import com.icfolson.aem.groovy.console.api.BindingExtensionProvider;
 
 @Component(
-  service = {Stubs.class, WiremockStubs.class, BindingExtensionProvider.class, EventHandler.class},
-  property = EventConstants.EVENT_TOPIC + "=" + GroovyScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
+  service = {Stubs.class, WiremockStubs.class, EventHandler.class},
+  property = EventConstants.EVENT_TOPIC + "=" + StubScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
   immediate = true
 )
 @Designate(ocd = WiremockStubs.Config.class)
@@ -42,7 +45,7 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
   private HttpService httpService;
 
   @Reference
-  private GroovyScriptManager groovyScriptManager;
+  private StubScriptManager stubScriptManager;
 
   @Reference
   ResolverAccessor resolverAccessor;
@@ -62,7 +65,16 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
   @Override
   public void reset() {
     clear();
-    groovyScriptManager.runAll(getClass());
+    stubScriptManager.runAll();
+  }
+
+  @Override
+  public void prepare(StubScript script) {
+    script.getBinding().setVariable("stubs", this);
+    script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer()
+      .addStaticStars(Wiremock.class.getName())
+      .addStarImports(Request.class.getPackage().getName())
+    );
   }
 
   @Activate
@@ -79,7 +91,7 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WiremockApp(resolverAccessor, groovyScriptManager.getScriptRootPath());
+    this.app = new WiremockApp(resolverAccessor, stubScriptManager.getScriptRootPath());
     this.servletPath = getServletPath(config.path());
 
     try {

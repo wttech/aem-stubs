@@ -1,6 +1,3 @@
-import com.github.tomakehurst.wiremock.http.Fault
-import static com.cognifide.aem.stubs.wiremock.Wiremock.*
-
 stubs.server.with {
     stubFor(delete("/fine")
             .willReturn(ok()))

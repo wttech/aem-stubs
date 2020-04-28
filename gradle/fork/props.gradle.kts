@@ -149,7 +149,10 @@ configure<ForkExtension> {
                     description = "Needed only when accessing AEM files over SMB"
                     defaultValue = System.getenv("USERDOMAIN").orEmpty()
                     optional()
-                },
+                }
+        ))
+
+        define("Release", mapOf(
                 "releaseUser" to {
                     label = "User"
                     description = "Authorized to upload released artifacts to Nexus"

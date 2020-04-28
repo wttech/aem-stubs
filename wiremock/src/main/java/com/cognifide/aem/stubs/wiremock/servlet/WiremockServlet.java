@@ -59,6 +59,7 @@ public class WiremockServlet extends HttpServlet {
     };
   }
 
+  @SuppressWarnings("deprecation")
   private void applyResponse(Response response, HttpServletResponse httpServletResponse)
     throws IOException {
     FaultResponse faultResponse = FaultResponse.of(response);
