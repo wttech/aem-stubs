@@ -3,6 +3,8 @@ package com.cognifide.aem.stubs.wiremock;
 import javax.servlet.ServletException;
 
 import com.cognifide.aem.stubs.core.script.StubScript;
+import com.github.tomakehurst.wiremock.http.Fault;
+import com.github.tomakehurst.wiremock.http.Request;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -69,7 +71,10 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
   @Override
   public void prepare(StubScript script) {
     script.getBinding().setVariable("stubs", this);
-    script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer().addStaticStars(Wiremock.class.getName()));
+    script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer()
+      .addStaticStars(Wiremock.class.getName())
+      .addStarImports(Request.class.getPackage().getName())
+    );
   }
 
   @Activate
