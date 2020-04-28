@@ -71,7 +71,7 @@ public class WiremockServlet extends HttpServlet {
     if (response.getStatusMessage() == null) {
       httpServletResponse.setStatus(response.getStatus());
     } else {
-      httpServletResponse.setStatus(response.getStatus(), response.getStatusMessage());
+      httpServletResponse.sendError(response.getStatus(), response.getStatusMessage());
     }
 
     for (HttpHeader header : response.getHeaders().all()) {

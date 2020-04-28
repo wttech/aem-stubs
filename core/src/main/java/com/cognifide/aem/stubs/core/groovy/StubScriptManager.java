@@ -1,16 +1,12 @@
 package com.cognifide.aem.stubs.core.groovy;
 
-import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.cognifide.aem.stubs.core.utils.StreamUtils;
 import com.google.common.collect.ImmutableMap;
-import com.icfolson.aem.groovy.console.GroovyConsoleService;
-import com.icfolson.aem.groovy.console.response.RunScriptResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.apache.commons.io.FilenameUtils;
 import org.osgi.service.component.annotations.Component;
@@ -27,13 +23,10 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.query.Query;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component(
-  service = {GroovyScriptManager.class, ResourceChangeListener.class},
+  service = {StubScriptManager.class, ResourceChangeListener.class},
   immediate = true,
   property = {
     ResourceChangeListener.CHANGES + "=" + "REMOVED",
@@ -41,24 +34,22 @@ import java.util.stream.Stream;
     ResourceChangeListener.CHANGES + "=" + "CHANGED"
   }
 )
-@Designate(ocd = GroovyScriptManager.Config.class)
-public class GroovyScriptManager implements ResourceChangeListener {
+@Designate(ocd = StubScriptManager.Config.class)
+public class StubScriptManager implements ResourceChangeListener {
 
   public static final String SCRIPT_CHANGE_EVENT_TOPIC = "com/cognifide/aem/stubs/ScriptChange";
 
   public static final String SCRIPT_CHANGE_EVENT_RESOURCE_CHANGES = "resourceChanges";
 
-  private static final Logger LOG = LoggerFactory.getLogger(GroovyScriptManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(StubScriptManager.class);
 
   private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
-
-  private static final String CONSOLE_SYMBOLIC_NAME = "aem-groovy-console";
 
   @Reference
   private ResolverAccessor resolverAccessor;
 
   @Reference
-  private GroovyConsoleService groovyConsole;
+  private StubScriptExecutor stubScriptExecutor;
 
   @Reference
   private EventAdmin eventAdmin;
@@ -78,11 +69,7 @@ public class GroovyScriptManager implements ResourceChangeListener {
    * Run stub script at specified path
    */
   public void run(String path) {
-    LOG.info("Executing AEM Stubs script at path '{}'", path);
-    RunScriptResponse response = resolverAccessor.resolve(resolver ->
-      groovyConsole.runScript(new DummyRequest(resolver), new DummyResponse(), path)
-    );
-    LOG.info("Executed AEM Stubs script at path '{}'\nOutput:\n{}\nError:\n{}", path, response.getOutput(), response.getExceptionStackTrace());
+    resolverAccessor.resolve(resolver -> stubScriptExecutor.execute(resolver, path));
   }
 
   /**
@@ -115,43 +102,6 @@ public class GroovyScriptManager implements ResourceChangeListener {
   private boolean isGroovyScript(String path){
     return path.endsWith(".groovy");
   }
-  /**
-   * Runs all stub scripts, but first awaits for registration of extension in Groovy Console.
-   *
-   * Protects against running scripts with variables not yet bound by extension as of Groovy Console
-   * is using dynamic OSGi component references for extensions.
-   */
-  public void runAll(Class<?> extensionClass) {
-    await(extensionClass, this::runAll);
-  }
-
-  private <T> void await(Class<T> extensionClass, Runnable action) {
-    CompletableFuture.runAsync(() -> {
-      LOG.info("Awaiting registration of AEM Stubs Groovy Console extension: {}", extensionClass);
-
-      for (int i = 0; i < 30; i++) {
-        if (isConsoleReady(extensionClass)) {
-          action.run();
-          return;
-        }
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
-          // ignore
-        }
-      }
-
-      throw new StubsException(String.format("AEM Stubs Groovy Console extension cannot be registered: %s!", extensionClass));
-    });
-  }
-
-  private <T> boolean isConsoleReady(Class<T> extensionClass) {
-    return Optional.ofNullable(bundleContext.getServiceReference(extensionClass))
-      .map(ServiceReference::getUsingBundles)
-      .map(Stream::of)
-      .map(s -> s.anyMatch(bundle -> CONSOLE_SYMBOLIC_NAME.equals(bundle.getSymbolicName())))
-      .orElse(false);
-  }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
@@ -170,11 +120,11 @@ public class GroovyScriptManager implements ResourceChangeListener {
     return config.resource_paths();
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs - Groovy Script Manager")
+  @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
   public @interface Config {
 
     @AttributeDefinition(name = "Scripts Root Path")
-    String resource_paths() default "/var/groovyconsole/scripts/stubs";
+    String resource_paths() default "/var/stubs";
 
     @AttributeDefinition(name = "Scripts Excluded Paths")
     String[] excluded_paths() default {"**/internals/*"};
