@@ -67,7 +67,6 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
   @Modified
   protected void activate(Config config) {
     this.config = config;
-    reset();
   }
 
   @Deactivate
