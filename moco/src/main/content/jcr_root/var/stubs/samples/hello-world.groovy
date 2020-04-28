@@ -1,6 +1,3 @@
-import static com.github.dreamhead.moco.Moco.*
-import static com.cognifide.aem.stubs.moco.Moco.*
-
 stubs.server
         .get(by(uri("/hello-world")))
         .response("Hello! I am sample stub.")
