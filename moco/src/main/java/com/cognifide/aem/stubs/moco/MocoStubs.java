@@ -64,9 +64,14 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
   }
 
   @Activate
-  @Modified
   protected void activate(Config config) {
     this.config = config;
+  }
+
+  @Modified
+  protected void modify(Config config) {
+    this.config = config;
+    reset();
   }
 
   @Deactivate
@@ -95,7 +100,7 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
     start();
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs - Moco Server")
+  @ObjectClassDefinition(name = "AEM Stubs Moco Server")
   public @interface Config {
 
     @AttributeDefinition(name = "HTTP Server Port")

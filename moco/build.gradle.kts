@@ -17,23 +17,21 @@ aem {
     tasks {
         jar {
             bundle {
+                attribute("DynamicImport-Package", "*")
+                importPackageSuffix.set("*;resolution:=optional")
                 importPackage("javax.annotation;version=0.0.0")
+
                 embedPackage("com.github.dreamhead:moco-core:1.1.0", "com.github.dreamhead.moco.*", export = true)
                 embedPackage("com.github.dreamhead:moco-runner:1.1.0")
                 embedPackage("com.google.guava:guava:28.2-jre", "com.google.common.*")
-                // embedPackage("com.jayway.jsonpath:json-path:2.4.0", "com.jayway.jsonpath.*") // TODO support json path
-                excludePackage(
-                        "sun.misc",
+                embedPackage("com.jayway.jsonpath:json-path:2.4.0",
                         "com.jayway.jsonpath",
-                        "com.sun.nio.file",
-                        "org.apache.commons.cli",
-                        "com.google.appengine.api",
-                        "com.google.appengine.api.utils",
-                        "com.google.apphosting.api",
-                        "com.google.errorprone.annotations",
-                        "com.google.errorprone.annotations.concurrent",
-                        "com.google.thirdparty.publicsuffix",
-                        "org.checkerframework.checker.nullness.qual"
+                        "com.jayway.jsonpath.internal.*",
+                        "com.jayway.jsonpath.internal.filter",
+                        "com.jayway.jsonpath.internal.path",
+                        "com.jayway.jsonpath.spi.cache",
+                        "com.jayway.jsonpath.spi.json",
+                        "com.jayway.jsonpath.spi.mapper"
                 )
             }
         }
