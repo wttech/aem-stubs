@@ -2,8 +2,8 @@ package com.cognifide.aem.stubs.moco;
 
 import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.groovy.StubScript;
-import com.cognifide.aem.stubs.core.groovy.StubScriptManager;
+import com.cognifide.aem.stubs.core.script.StubScript;
+import com.cognifide.aem.stubs.core.script.StubScriptManager;
 import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ApiUtils;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;

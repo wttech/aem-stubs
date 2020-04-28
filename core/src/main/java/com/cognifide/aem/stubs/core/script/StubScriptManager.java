@@ -1,4 +1,4 @@
-package com.cognifide.aem.stubs.core.groovy;
+package com.cognifide.aem.stubs.core.script;
 
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.cognifide.aem.stubs.core.utils.StreamUtils;

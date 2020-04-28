@@ -2,7 +2,7 @@ package com.cognifide.aem.stubs.wiremock;
 
 import javax.servlet.ServletException;
 
-import com.cognifide.aem.stubs.core.groovy.StubScript;
+import com.cognifide.aem.stubs.core.script.StubScript;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.groovy.StubScriptManager;
+import com.cognifide.aem.stubs.core.script.StubScriptManager;
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
 

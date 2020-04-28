@@ -1,4 +1,4 @@
-package com.cognifide.aem.stubs.core.groovy;
+package com.cognifide.aem.stubs.core.script;
 
 import com.cognifide.aem.stubs.core.StubsException;
 import groovy.lang.Binding;
@@ -16,11 +16,11 @@ public class StubScript {
 
   private final String path;
 
-  final Binding binding = new Binding();
+  private final Binding binding = new Binding();
 
-  final CompilerConfiguration compilerConfiguration = new CompilerConfiguration();// TODO add static imports
+  private final CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
 
-  final GroovyShell shell = new GroovyShell(binding, compilerConfiguration);
+  private final GroovyShell shell = new GroovyShell(binding, compilerConfiguration);
 
   public StubScript(ResourceResolver resourceResolver, String path) {
     this.resourceResolver = resourceResolver;

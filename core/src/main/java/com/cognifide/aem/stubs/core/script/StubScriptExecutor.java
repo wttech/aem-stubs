@@ -1,9 +1,6 @@
-package com.cognifide.aem.stubs.core.groovy;
+package com.cognifide.aem.stubs.core.script;
 
 import com.cognifide.aem.stubs.core.Stubs;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +25,7 @@ public class StubScriptExecutor {
     LOG.info("Executing Stub Script '{}'", script.getPath());
     stubs.prepare(script);
     final Object result = script.run();
-    LOG.info("Executed Stub Script '{}'. `Result:\n{}", script.getPath(), result);
+    LOG.info("Executed Stub Script '{}'", script.getPath());
     return result;
   }
 
