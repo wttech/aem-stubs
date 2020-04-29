@@ -52,7 +52,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
       .put("request", RequestTemplateModel.from(request)).build();
 
     //proxy
-    if(responseDefinition.isProxyResponse()){
+    if (responseDefinition.isProxyResponse()) {
       PebbleTemplate baseUrlTemplate = engine.getTemplate(responseDefinition.getProxyBaseUrl());
       newResponseDefBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
       return newResponseDefBuilder.build();

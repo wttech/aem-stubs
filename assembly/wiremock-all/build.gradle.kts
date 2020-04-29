@@ -8,19 +8,17 @@ description = "AEM Stubs - Wiremock All-In-One"
 
 tasks {
     packageCompose {
-        installBundleProject(":wiremock:system")
         mergePackageProject(":core")
         mergePackageProject(":wiremock")
 
-        nestPackage("com.icfolson.aem.groovy.console:aem-groovy-console:14.0.0")
+        installBundle("org.codehaus.groovy:groovy-all:2.4.15")
     }
 }
-
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(common.publicationArtifact("packageCompose"))
+            artifact(common.publicationArtifact(tasks.packageCompose))
         }
     }
 }

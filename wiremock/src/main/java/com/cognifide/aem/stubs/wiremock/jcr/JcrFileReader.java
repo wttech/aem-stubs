@@ -1,12 +1,13 @@
 package com.cognifide.aem.stubs.wiremock.jcr;
 
-import static java.util.stream.Collectors.joining;
-
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
+import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import org.apache.commons.io.IOUtils;
 
 public class JcrFileReader {
 
@@ -24,11 +25,12 @@ public class JcrFileReader {
   }
 
   public String readAsText(String fileName) {
-    return new BufferedReader(new InputStreamReader(getInputStream(fileName)))
-      .lines()
-      .collect(joining("\n"));
+    try {
+      return IOUtils.toString(new BufferedInputStream(getInputStream(fileName)), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new StubsException(String.format("Cannot read JCR file '%s'!", fileName), e);
+    }
   }
-
 
   public String getAbsolutePath(String name) {
     return String.format("%s/%s", rootPath, name);
