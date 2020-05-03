@@ -6,6 +6,8 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Optional;
@@ -22,12 +24,16 @@ public class StubScript {
 
   private final GroovyShell shell = new GroovyShell(binding, compilerConfiguration);
 
+  private final Logger logger;
+
   public StubScript(ResourceResolver resourceResolver, String path) {
     this.resourceResolver = resourceResolver;
     this.path = path;
+    this.logger = LoggerFactory.getLogger(path);
 
     binding.setVariable("script", this);
     binding.setVariable("resourceResolver", resourceResolver);
+    binding.setVariable("logger", logger);
   }
 
   public Reader getSourceCode() {
