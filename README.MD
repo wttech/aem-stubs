@@ -6,7 +6,7 @@
 
 Tool for providing sample data for AEM applications in a simple and flexible way.
 
-By implementing a script in [Groovy Console](https://github.com/icfnext/aem-groovy-console) using [Wiremock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
+By implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [Wiremock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and [start stubbing](#getting-started)!
 
@@ -32,18 +32,19 @@ After choosing framework, it is recommended to explore dedicated AEM Stubs **fra
 
 Published artifacts are available in Nexus repository at URL: <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/>.
 
-Note that artifact versioning reflects AEM Groovy Console versioning intentionally.
-It is because Groovy Console API is changing and its version is changing when AEM version is changing.
-
-In other words, version:
-
-* 12.x.x is compatible with AEM 6.4 (SP7 at least),
-* 14.x.x is compatible with AEM 6.5.
-
 Distribution types:
 
-* all - with AEM Groovy Console built-in
-* app - without AEM Groovy Console.
+* all - with Groovy OSGi bundle included,
+* app - without Groovy OSGi bundle included.
+
+## Compatibility
+
+| AEM Stubs | AEM          |
+|-----------|--------------|
+| 1.x       | 6.4.x, 6.5.x |
+
+Note that AEM Stubs are **not** based on [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
+AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more error-prone when AEM version is changing. 
 
 ## Building
 
