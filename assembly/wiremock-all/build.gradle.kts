@@ -8,7 +8,6 @@ description = "AEM Stubs - Wiremock All-In-One"
 
 tasks {
     packageCompose {
-        installBundleProject(":wiremock:system")
         mergePackageProject(":core")
         mergePackageProject(":wiremock")
 
@@ -16,11 +15,10 @@ tasks {
     }
 }
 
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(common.publicationArtifact("packageCompose"))
+            artifact(common.publicationArtifact(tasks.packageCompose))
         }
     }
 }

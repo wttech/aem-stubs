@@ -18,7 +18,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(common.publicationArtifact("packageCompose"))
+            artifact(common.publicationArtifact(tasks.packageCompose))
         }
     }
 }

@@ -8,31 +8,19 @@ Implementation for [WireMock](http://wiremock.org).
 
 It is a typical AEM package ready to be installed in CRX Package Manage [Package Manager](https://docs.adobe.com/content/help/en/experience-manager-65/administering/contentmanagement/package-manager.html#installing-packages)
 
-The newest AEM packages are available [here](https://). 
-
-There two distributions variants:
-
-| Package name | Description 
- :---: | :---: | 
-| stubs-wiremock-all | Package includes [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console) 
-| stubs-wiremock-app | Only AEM Stubs - WireMock
+The newest AEM packages are available <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/>. 
 
 
 <a id="osgi-configuration"/>
 ## OSGi Configuration
 
-AEM Stubs - Wiremock Server 
+### AEM Stubs - Wiremock Server 
 
-| Property | Description | Default |
- :---: | :---: | :---: |
-| Servlet Prefix | URL prefix for AEM Stubs.  | /stubs 
+![Cognifide logo](../docs/osgi-wiremock-server.png)
 
-AEM Stubs - Groovy Script Manager
+### AEM Stubs - Groovy Script Manager
 
-| Property | Description | Default |
- :---: | :---: | :---: |
-| Scripts Root Path | Root path for groovy stub scripts  | /var/groovyconsole/scripts/stubs
-| Scripts Excluded Paths | Excluded paths from automatic rerun stub script after change  | \*\*/internals/\*
+![Cognifide logo](../docs/osgi-groovy-script-manager.png)
 
 ## How to use
 
@@ -63,10 +51,9 @@ Almost all WireMock Java features are supported. Code snippets can be found dire
 ```
 import static com.cognifide.aem.stubs.wiremock.Wiremock.*
 stubs.server.with {
-        [SNIPPET]
+        /* use WireMock snippets here */
 }
 ```
-Placeholder [SNIPPET] can be replaced directly by code examples from [WireMock](http://wiremock.org)
  
 ### Stubbing
 

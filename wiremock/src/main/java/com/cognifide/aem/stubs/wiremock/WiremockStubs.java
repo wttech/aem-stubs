@@ -78,9 +78,14 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
   }
 
   @Activate
-  @Modified
   protected void activate(Config config) {
     this.config = config;
+  }
+
+  @Modified
+  protected void modify(Config config) {
+    this.config = config;
+    reset();
   }
 
   @Deactivate
@@ -124,7 +129,7 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
     return new WiremockServlet(config.path(), app.buildStubRequestHandler());
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs - Wiremock Server")
+  @ObjectClassDefinition(name = "AEM Stubs Wiremock Server")
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")
