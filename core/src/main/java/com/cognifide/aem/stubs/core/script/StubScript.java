@@ -29,7 +29,8 @@ public class StubScript {
   private final GroovyShell shell = new GroovyShell(binding, compilerConfig);
 
   @SuppressWarnings({"PMD.LoggerIsNotStaticFinal", "PMD.SingularField"})
-  private final transient Logger logger;
+  private final Logger logger;
+
   private final RepositoryFacade repository;
 
   public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
@@ -39,14 +40,10 @@ public class StubScript {
     this.logger = LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), path));
     this.repository = new RepositoryFacade(resourceResolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath());
 
-    binding.setVariable("script", path);
+    binding.setVariable("script", this);
     binding.setVariable("resourceResolver", resourceResolver);
-    binding.setVariable("logger", logger);
     binding.setVariable("repository", repository);
-  }
-
-  public ResourceResolver getResourceResolver() {
-    return resourceResolver;
+    binding.setVariable("logger", logger);
   }
 
   public Binding getBinding() {
