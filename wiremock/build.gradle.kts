@@ -93,3 +93,9 @@ aem {
         }
     }
 }
+
+tasks {
+    pmdMain {
+        enabled = false // TODO remove this line
+    }
+}

@@ -13,5 +13,8 @@ stubs.server
 
 stubs.server
         .get(by(uri("/current-date")))
-        .response(template('Today date is "${date}"', "date", dynamicVar({ new Date() })))
+        .response(template('Today date is "${date}"', "date", suppliedVar({ new Date() })))
 
+stubs.server
+        .get(by(uri("/read-itself")))
+        .response(repository.readText("./hello-world.groovy"))

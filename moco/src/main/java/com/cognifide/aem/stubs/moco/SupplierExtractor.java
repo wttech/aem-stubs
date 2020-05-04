@@ -8,11 +8,11 @@ import java.util.function.Supplier;
 
 import static java.util.Optional.of;
 
-public final class DynamicExtractor<T> implements RequestExtractor<T> {
+public final class SupplierExtractor<T> implements RequestExtractor<T> {
 
   private final Supplier<T> objectSupplier;
 
-  public DynamicExtractor(final Supplier<T> objectSupplier) {
+  public SupplierExtractor(final Supplier<T> objectSupplier) {
     this.objectSupplier = objectSupplier;
   }
 

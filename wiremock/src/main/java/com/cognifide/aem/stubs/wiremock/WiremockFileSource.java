@@ -6,11 +6,11 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
+import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
-import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.tomakehurst.wiremock.common.BinaryFile;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.TextFile;
@@ -20,6 +20,7 @@ class WiremockFileSource implements FileSource {
   private static final Logger LOG = LoggerFactory.getLogger(WiremockFileSource.class);
 
   private final JcrFileReader jcrFileReader;
+
   private final String rootPath;
 
   WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
@@ -33,7 +34,7 @@ class WiremockFileSource implements FileSource {
       return new BinaryFile(toUri(name)) {
         @Override
         public InputStream getStream() {
-          return jcrFileReader.getInputStream(name);
+          return jcrFileReader.readStream(name);
         }
       };
     } catch (Exception e) {
@@ -48,7 +49,7 @@ class WiremockFileSource implements FileSource {
       return new TextFile(toUri(name)) {
         @Override
         public InputStream getStream() {
-          return jcrFileReader.getInputStream(name);
+          return jcrFileReader.readStream(name);
         }
       };
     } catch (Exception e) {

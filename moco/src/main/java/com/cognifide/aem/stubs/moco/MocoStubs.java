@@ -1,6 +1,5 @@
 package com.cognifide.aem.stubs.moco;
 
-import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
 import com.cognifide.aem.stubs.core.script.StubScriptManager;
@@ -8,29 +7,26 @@ import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ApiUtils;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.*;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.github.dreamhead.moco.Moco.httpServer;
+import static com.github.dreamhead.moco.Moco.*;
 import static com.github.dreamhead.moco.Runner.runner;
 
 @Component(
-  service = {Stubs.class, MocoStubs.class, EventHandler.class},
-  property = EventConstants.EVENT_TOPIC + "=" + StubScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
+  service = {Stubs.class, MocoStubs.class},
   immediate = true
 )
 @Designate(ocd = MocoStubs.Config.class)
-public class MocoStubs extends AbstractStubs<HttpServer> {
+public class MocoStubs implements Stubs<HttpServer> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
   @Reference
-  private StubScriptManager groovyScriptManager;
+  private StubScriptManager scriptManager;
 
   private HttpServer server;
 
@@ -51,15 +47,14 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
   @Override
   public void reset() {
     clear();
-    groovyScriptManager.runAll();
+    scriptManager.runAll();
   }
 
   @Override
   public void prepare(StubScript script) {
-    script.getBinding().setVariable("stubs", this);
-    script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
-      Moco.class.getName(),
-      com.github.dreamhead.moco.Moco.class.getName()
+    script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
+      MocoUtils.class.getName(),
+      Moco.class.getName()
     ));
   }
 
@@ -81,11 +76,16 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Moco Server");
-    server = httpServer(config.port(), ApiUtils.log(LOG::info)); // TODO better handle this
+    if (config.logging()) {
+      httpServer(config.port(), ApiUtils.log(LOG::info));
+    } else {
+      server = httpServer(config.port());
+    }
     runner = runner(server);
     runner.start();
   }
 
+  @SuppressWarnings("PMD.NullAssignment")
   private void stop() {
     LOG.info("Stopping AEM Stubs Moco Server");
     if (runner != null) {
@@ -105,5 +105,8 @@ public class MocoStubs extends AbstractStubs<HttpServer> {
 
     @AttributeDefinition(name = "HTTP Server Port")
     int port() default 5555;
+
+    @AttributeDefinition(name = "Log requests and responses")
+    boolean logging() default false;
   }
 }

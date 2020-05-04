@@ -8,7 +8,7 @@ apply(from = "gradle/fork/props.gradle.kts")
 apply(from = "gradle/common.gradle.kts")
 
 description = "AEM Stubs"
-defaultTasks(":wiremock:app:packageDeploy")
+defaultTasks(":assembly:wiremock-app:packageDeploy")
 
 aem {
     instance {

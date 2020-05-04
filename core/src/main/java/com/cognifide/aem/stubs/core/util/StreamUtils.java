@@ -1,11 +1,11 @@
-package com.cognifide.aem.stubs.core.utils;
+package com.cognifide.aem.stubs.core.util;
 
 import java.util.Iterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class StreamUtils {
+public final class StreamUtils {
 
   private StreamUtils() {
     // intentionally empty

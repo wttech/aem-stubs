@@ -52,6 +52,7 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.codehaus.groovy:groovy-all:2.4.15")
         "compileOnly"("org.apache.felix:org.apache.felix.http.servlet-api:1.1.2")
         "compileOnly"("commons-io:commons-io:2.6")
+        "compileOnly"("org.apache.commons:commons-lang3:3.6")
     }
 }
 
@@ -76,7 +77,8 @@ plugins.withId("java") {
 plugins.withId("org.gradle.pmd") {
     configure<PmdExtension> {
         isConsoleOutput = true
-        rulePriority = 2 // TODO 5
-        // ruleSets = listOf("category/java/errorprone.xml", "category/java/bestpractices.xml")
+        ruleSets = listOf()
+        ruleSetFiles = files(rootProject.file("pmd.xml"))
+        rulePriority = 5
     }
 }

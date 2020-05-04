@@ -1,19 +1,14 @@
 package com.cognifide.aem.stubs.core.script;
 
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
-import com.cognifide.aem.stubs.core.utils.StreamUtils;
-import com.google.common.collect.ImmutableMap;
+import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.core.util.StreamUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.*;
 import org.apache.commons.io.FilenameUtils;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -37,10 +32,6 @@ import java.util.stream.Collectors;
 @Designate(ocd = StubScriptManager.Config.class)
 public class StubScriptManager implements ResourceChangeListener {
 
-  public static final String SCRIPT_CHANGE_EVENT_TOPIC = "com/cognifide/aem/stubs/ScriptChange";
-
-  public static final String SCRIPT_CHANGE_EVENT_RESOURCE_CHANGES = "resourceChanges";
-
   private static final Logger LOG = LoggerFactory.getLogger(StubScriptManager.class);
 
   private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
@@ -48,28 +39,37 @@ public class StubScriptManager implements ResourceChangeListener {
   @Reference
   private ResolverAccessor resolverAccessor;
 
-  @Reference
-  private StubScriptExecutor stubScriptExecutor;
-
-  @Reference
-  private EventAdmin eventAdmin;
+  private Stubs stubs;
 
   private Config config;
 
-  private BundleContext bundleContext;
+  @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+  protected void bindStubs(Stubs stubs) {
+    this.stubs = stubs;
+    stubs.reset();
+  }
+
+  @SuppressWarnings("PMD.NullAssignment")
+  protected void unbindStubs(Stubs stubs) {
+    this.stubs = null;
+  }
 
   @Activate
   @Modified
-  protected void update(Config config, BundleContext bundleContext) {
+  protected void update(Config config) {
     this.config = config;
-    this.bundleContext = bundleContext;
   }
 
   /**
    * Run stub script at specified path
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void run(String path) {
-    resolverAccessor.resolve(resolver -> stubScriptExecutor.execute(resolver, path));
+    try {
+      resolverAccessor.resolve(resolver -> execute(resolver, path));
+    } catch (Exception e) {
+      LOG.error("Cannot run AEM Stub script '{}'! Cause: {}", path, e.getMessage(), e);
+    }
   }
 
   /**
@@ -77,6 +77,7 @@ public class StubScriptManager implements ResourceChangeListener {
    * - are located under configured root path,
    * - are not matching exclusion path patterns.
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll() {
     LOG.info("Executing all AEM Stub scripts under path '{}'", config.resource_paths());
     resolverAccessor.consume(resolver -> {
@@ -85,7 +86,7 @@ public class StubScriptManager implements ResourceChangeListener {
           .filter(r -> filter(r.getPath()))
           .map(Resource::getPath)
           .forEach(this::run);
-           } catch (Exception e) {
+      } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
@@ -95,29 +96,49 @@ public class StubScriptManager implements ResourceChangeListener {
     return isNotExcludedPath(path) && isGroovyScript(path);
   }
 
-  private boolean isNotExcludedPath(String path){
+  private boolean isNotExcludedPath(String path) {
     return Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(path, p));
   }
 
-  private boolean isGroovyScript(String path){
-    return path.endsWith(".groovy");
+  private boolean isGroovyScript(String path) {
+    return path.endsWith(config.extension());
   }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
+    if (stubs == null) {
+      return;
+    }
+
     final List<ResourceChange> scriptChanges = changes.stream()
       .filter(c -> filter(c.getPath()))
       .collect(Collectors.toList());
 
     if (!scriptChanges.isEmpty()) {
-      eventAdmin.postEvent(new Event(SCRIPT_CHANGE_EVENT_TOPIC, ImmutableMap.of(
-        SCRIPT_CHANGE_EVENT_RESOURCE_CHANGES, scriptChanges
-      )));
+      resolverAccessor.consume(resolver -> {
+        scriptChanges.forEach(change -> {
+          execute(resolver, change.getPath());
+        });
+      });
     }
   }
 
-  public String getScriptRootPath(){
+  private Object execute(ResourceResolver resolver, String path) {
+    final StubScript script = new StubScript(this, resolver, path);
+    LOG.info("Executing Stub Script '{}'", script.getPath());
+    script.getBinding().setVariable("stubs", stubs);
+    stubs.prepare(script);
+    final Object result = script.run();
+    LOG.info("Executed Stub Script '{}'", script.getPath());
+    return result;
+  }
+
+  public String getRootPath() {
     return config.resource_paths();
+  }
+
+  public String getExtension() {
+    return config.extension();
   }
 
   @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
@@ -125,6 +146,9 @@ public class StubScriptManager implements ResourceChangeListener {
 
     @AttributeDefinition(name = "Scripts Root Path")
     String resource_paths() default "/var/stubs";
+
+    @AttributeDefinition(name = "Scripts Extension")
+    String extension() default ".groovy";
 
     @AttributeDefinition(name = "Scripts Excluded Paths")
     String[] excluded_paths() default {"**/internals/*"};

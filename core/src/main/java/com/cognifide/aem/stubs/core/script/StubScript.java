@@ -4,6 +4,7 @@ import com.cognifide.aem.stubs.core.StubsException;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
@@ -12,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.Optional;
 
+@SuppressWarnings("PMD.DataClass")
 public class StubScript {
+
+  private final StubScriptManager manager;
 
   private final ResourceResolver resourceResolver;
 
@@ -20,48 +24,52 @@ public class StubScript {
 
   private final Binding binding = new Binding();
 
-  private final CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
+  private final CompilerConfiguration compilerConfig = new CompilerConfiguration();
 
-  private final GroovyShell shell = new GroovyShell(binding, compilerConfiguration);
+  private final GroovyShell shell = new GroovyShell(binding, compilerConfig);
 
+  @SuppressWarnings({"PMD.LoggerIsNotStaticFinal", "PMD.SingularField"})
   private final Logger logger;
 
-  public StubScript(ResourceResolver resourceResolver, String path) {
+  private final RepositoryFacade repository;
+
+  public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
+    this.manager = manager;
     this.resourceResolver = resourceResolver;
     this.path = path;
-    this.logger = LoggerFactory.getLogger(path);
+    this.logger = LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), path));
+    this.repository = new RepositoryFacade(resourceResolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath());
 
     binding.setVariable("script", this);
     binding.setVariable("resourceResolver", resourceResolver);
+    binding.setVariable("repository", repository);
     binding.setVariable("logger", logger);
-  }
-
-  public Reader getSourceCode() {
-    return Optional.ofNullable(resourceResolver.getResource(path + "/jcr:content"))
-      .map(r -> r.adaptTo(InputStream.class))
-      .map(BufferedInputStream::new)
-      .map(InputStreamReader::new)
-      .orElseThrow(() -> new StubsException(String.format("Cannot read Groovy Stub Script '%s'!", path)));
-  }
-
-  public ResourceResolver getResourceResolver() {
-    return resourceResolver;
   }
 
   public Binding getBinding() {
     return binding;
   }
 
-  public CompilerConfiguration getCompilerConfiguration() {
-    return compilerConfiguration;
+  public CompilerConfiguration getCompilerConfig() {
+    return compilerConfig;
   }
 
   public String getPath() {
     return path;
   }
 
+  public StubScriptManager getManager() {
+    return manager;
+  }
+
   public Object run() {
-    final Script shellScript = shell.parse(getSourceCode());
+    final Script shellScript = shell.parse(readSourceCode());
     return shellScript.run();
+  }
+
+  private Reader readSourceCode() {
+    return repository.useStream(path)
+      .map(InputStreamReader::new)
+      .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", path)));
   }
 }

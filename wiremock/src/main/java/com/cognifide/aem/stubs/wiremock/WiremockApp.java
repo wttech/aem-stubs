@@ -2,7 +2,7 @@ package com.cognifide.aem.stubs.wiremock;
 
 import java.util.Map;
 
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.github.tomakehurst.wiremock.core.WireMockApp;
