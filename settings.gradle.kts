@@ -4,9 +4,7 @@ include("system")
 include("core")
 
 include("moco")
-
 include("wiremock")
-include("wiremock:test")
 
 include("assembly:moco-all")
 include("assembly:moco-app")
