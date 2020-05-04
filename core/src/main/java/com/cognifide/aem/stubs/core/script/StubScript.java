@@ -30,29 +30,19 @@ public class StubScript {
 
   @SuppressWarnings({"PMD.LoggerIsNotStaticFinal", "PMD.SingularField"})
   private final transient Logger logger;
+  private final RepositoryFacade repository;
 
   public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
     this.manager = manager;
     this.resourceResolver = resourceResolver;
     this.path = path;
     this.logger = LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), path));
+    this.repository = new RepositoryFacade(resourceResolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath());
 
     binding.setVariable("script", path);
     binding.setVariable("resourceResolver", resourceResolver);
     binding.setVariable("logger", logger);
-    binding.setVariable("repository", new RepositoryFacade(
-      resourceResolver,
-      StringUtils.substringBeforeLast(path,"/"),
-      manager.getRootPath())
-    );
-  }
-
-  public Reader getSourceCode() {
-    return Optional.ofNullable(resourceResolver.getResource(path + "/jcr:content"))
-      .map(r -> r.adaptTo(InputStream.class))
-      .map(BufferedInputStream::new)
-      .map(InputStreamReader::new)
-      .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", path)));
+    binding.setVariable("repository", repository);
   }
 
   public ResourceResolver getResourceResolver() {
@@ -76,7 +66,13 @@ public class StubScript {
   }
 
   public Object run() {
-    final Script shellScript = shell.parse(getSourceCode());
+    final Script shellScript = shell.parse(readSourceCode());
     return shellScript.run();
+  }
+
+  private Reader readSourceCode() {
+    return repository.useStream(path)
+      .map(InputStreamReader::new)
+      .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", path)));
   }
 }
