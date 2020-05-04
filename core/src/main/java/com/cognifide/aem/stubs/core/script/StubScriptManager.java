@@ -101,7 +101,7 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private boolean isGroovyScript(String path) {
-    return path.endsWith(".groovy");
+    return path.endsWith(config.extension());
   }
 
   @Override
@@ -137,11 +137,18 @@ public class StubScriptManager implements ResourceChangeListener {
     return config.resource_paths();
   }
 
+  public String getExtension() {
+    return config.extension();
+  }
+
   @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
   public @interface Config {
 
     @AttributeDefinition(name = "Scripts Root Path")
     String resource_paths() default "/var/stubs";
+
+    @AttributeDefinition(name = "Scripts Extension")
+    String extension() default ".groovy";
 
     @AttributeDefinition(name = "Scripts Excluded Paths")
     String[] excluded_paths() default {"**/internals/*"};
