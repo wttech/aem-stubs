@@ -44,5 +44,3 @@ tasks {
         dependsOn("publishToInternal")
     }
 }
-
-apply(from = "gradle/release.gradle")
