@@ -43,7 +43,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
   private StubScriptManager stubScriptManager;
 
   @Reference
-  ResolverAccessor resolverAccessor;
+  private ResolverAccessor resolverAccessor;
 
   private String servletPath;
 
@@ -99,7 +99,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
     }
   }
 
-  @SuppressWarnings("PMD.NullAsignment")
+  @SuppressWarnings("PMD.NullAssignment")
   private void stop() {
     LOG.info("Stopping AEM Stubs Wiremock Server");
     if (servletPath != null) {

@@ -31,22 +31,24 @@ public class WiremockServlet extends HttpServlet {
 
   private final RequestHandler requestHandler;
 
-  private final MultipartRequestConfigurer multipartRequestConfigurer;
+  private final MultipartRequestConfigurer requestConfigurer;
 
   private final String path;
 
   public WiremockServlet(String path, RequestHandler requestHandler) {
+    super();
     this.requestHandler = requestHandler;
-    this.multipartRequestConfigurer = new DefaultMultipartRequestConfigurer();
+    this.requestConfigurer = new DefaultMultipartRequestConfigurer();
     this.path = path;
   }
 
   @Override
   protected void service(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-    Request request = new WireMockHttpServletRequestAdapter(httpRequest, multipartRequestConfigurer, path);
+    Request request = new WireMockHttpServletRequestAdapter(httpRequest, requestConfigurer, path);
     requestHandler.handle(request, responder(request, httpRequest, httpResponse));
   }
 
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   private HttpResponder responder(Request request, HttpServletRequest httpRequest,
     HttpServletResponse httpResponse) {
     return (req, resp) -> {
@@ -60,32 +62,32 @@ public class WiremockServlet extends HttpServlet {
   }
 
   @SuppressWarnings("deprecation")
-  private void applyResponse(Response response, HttpServletResponse httpServletResponse)
+  private void applyResponse(Response response, HttpServletResponse servletResponse)
     throws IOException {
-    FaultResponse faultResponse = FaultResponse.of(response);
+    FaultResponse faultResponse = FaultResponse.fromResponse(response);
 
     if (faultResponse.isNotSupported()) {
-      faultResponse.sendError(httpServletResponse);
+      faultResponse.sendError(servletResponse);
       return;
     }
 
     if (response.getStatusMessage() == null) {
-      httpServletResponse.setStatus(response.getStatus());
+      servletResponse.setStatus(response.getStatus());
     } else {
-      httpServletResponse.setStatus(response.getStatus(), response.getStatusMessage());
+      servletResponse.setStatus(response.getStatus(), response.getStatusMessage());
     }
 
     for (HttpHeader header : response.getHeaders().all()) {
       for (String value : header.values()) {
-        httpServletResponse.addHeader(header.key(), value);
+        servletResponse.addHeader(header.key(), value);
       }
     }
 
-    write(httpServletResponse, response.getBodyStream());
+    write(servletResponse, response.getBodyStream());
   }
 
-  private static void write(HttpServletResponse httpServletResponse, InputStream content) {
-    try (ServletOutputStream out = httpServletResponse.getOutputStream()) {
+  private static void write(HttpServletResponse response, InputStream content) {
+    try (ServletOutputStream out = response.getOutputStream()) {
       ByteStreams.copy(content, out);
       out.flush();
     } catch (IOException e) {

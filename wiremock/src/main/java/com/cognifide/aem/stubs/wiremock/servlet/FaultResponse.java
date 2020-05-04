@@ -9,57 +9,57 @@ import com.github.tomakehurst.wiremock.http.Response;
 
 final class FaultResponse {
 
-  private final boolean notSupported;
+  private final boolean supported;
   private final String msg;
   private final int statusCode;
 
-  private FaultResponse(boolean notSupported, String msg, int statusCode) {
-    this.notSupported = notSupported;
+  private FaultResponse(boolean supported, String msg, int statusCode) {
+    this.supported = supported;
     this.msg = msg;
     this.statusCode = statusCode;
   }
 
-  boolean isNotSupported() {
-    return notSupported;
+  public boolean isNotSupported() {
+    return !supported;
   }
 
-  void sendError(HttpServletResponse httpServletResponse) throws IOException {
-    httpServletResponse.sendError(statusCode, msg);
+  public void sendError(HttpServletResponse response) throws IOException {
+    response.sendError(statusCode, msg);
   }
 
-  static FaultResponse of(Response response) {
+  public static FaultResponse fromResponse(Response response) {
     if (!response.wasConfigured()) {
-      return FaultResponse.notSupported("No stub defined for this request", 404);
+      return FaultResponse.notSupportedResponse("No stub defined for this request", 404);
     }
 
     if (response.shouldAddChunkedDribbleDelay()) {
       return FaultResponse
-        .notSupported("Chunked dribble delay not supported by AEM Stubs");
+        .notSupportedResponse("Chunked dribble delay not supported by AEM Stubs");
     }
     Fault fault = response.getFault();
     if (fault != null) {
       return FaultResponse
-        .notSupported(
+        .notSupportedResponse(
           String.format("%s not supported by AEM Stubs", fault.name()));
     }
 
     if (response.getInitialDelay() != 0) {
       return FaultResponse
-        .notSupported("Delay not supported by AEM Stubs");
+        .notSupportedResponse("Delay not supported by AEM Stubs");
     }
 
-    return FaultResponse.supported();
+    return FaultResponse.supportedResponse();
   }
 
-  private static FaultResponse supported() {
+  private static FaultResponse supportedResponse() {
     return new FaultResponse(false, null, -1);
   }
 
-  private static FaultResponse notSupported(String msg) {
-    return new FaultResponse(true, msg, 400);
+  private static FaultResponse notSupportedResponse(String msg) {
+    return new FaultResponse(false, msg, 400);
   }
 
-  private static FaultResponse notSupported(String msg, int statusCode) {
-    return new FaultResponse(true, msg, statusCode);
+  private static FaultResponse notSupportedResponse(String msg, int statusCode) {
+    return new FaultResponse(false, msg, statusCode);
   }
 }
