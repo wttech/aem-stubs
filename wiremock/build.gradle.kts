@@ -102,4 +102,7 @@ tasks {
     pmdMain {
         enabled = false // TODO remove this line
     }
+    pmdIntegTest {
+        enabled = false
+    }
 }
