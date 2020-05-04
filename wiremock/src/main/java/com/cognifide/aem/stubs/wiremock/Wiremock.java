@@ -17,6 +17,7 @@ import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.matching.ValueMatcher;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Wiremock {
 
 

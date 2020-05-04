@@ -6,6 +6,7 @@ import static org.apache.sling.api.resource.ResourceResolverFactory.SUBSERVICE;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.cognifide.aem.stubs.core.StubsException;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -27,8 +28,9 @@ public class ResolverAccessor {
       return function.apply(resolver);
     } catch (LoginException e) {
       LOG.error("Cannot create resource resolver for mapper service.", e);
-      throw new RuntimeException(
-        "Cannot create resource resolver for mapper service. Is service user mapper configured?");
+      throw new StubsException(
+        "Cannot create resource resolver for mapper service. Is service user mapper configured?"
+      );
     }
   }
 

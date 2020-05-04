@@ -27,7 +27,8 @@ public class StubScript {
 
   private final GroovyShell shell = new GroovyShell(binding, compilerConfiguration);
 
-  private final Logger logger;
+  @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
+  private final transient Logger logger;
 
   public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
     this.manager = manager;

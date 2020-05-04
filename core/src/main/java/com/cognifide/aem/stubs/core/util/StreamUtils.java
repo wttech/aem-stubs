@@ -5,7 +5,7 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class StreamUtils {
+public final class StreamUtils {
 
   private StreamUtils() {
     // intentionally empty

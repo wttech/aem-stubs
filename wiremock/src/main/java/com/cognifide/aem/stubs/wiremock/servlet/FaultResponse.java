@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.Response;
 
-class FaultResponse {
+final class FaultResponse {
 
   private final boolean notSupported;
   private final String msg;
