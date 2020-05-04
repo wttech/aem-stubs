@@ -6,10 +6,9 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@SuppressWarnings("PMD.ClassNamingConventions")
-public final class Moco {
+public final class MocoUtils {
 
-  private Moco() {
+  private MocoUtils() {
     // intentionally empty
   }
 
