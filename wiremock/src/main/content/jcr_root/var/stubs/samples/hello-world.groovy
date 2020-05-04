@@ -5,6 +5,9 @@ stubs.server.with {
     stubFor(get("/fine-with-body")
             .willReturn(ok("body content")))
 
+    stubFor(get(urlEqualTo("/read-itself"))
+            .willReturn(ok(repository.readText("./hello-world.groovy"))))
+
     stubFor(get(urlEqualTo("/body-file"))
             .willReturn(aResponse()
                     .withBodyFile("samples/message.json")
