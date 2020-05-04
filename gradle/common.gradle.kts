@@ -52,6 +52,7 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.codehaus.groovy:groovy-all:2.4.15")
         "compileOnly"("org.apache.felix:org.apache.felix.http.servlet-api:1.1.2")
         "compileOnly"("commons-io:commons-io:2.6")
+        "compileOnly"("org.apache.commons:commons-lang3:3.6")
     }
 }
 

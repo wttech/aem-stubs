@@ -6,7 +6,7 @@ public class StubsException extends RuntimeException {
     super(message);
   }
 
-  public <T> StubsException(String message, Throwable throwable) {
+  public StubsException(String message, Throwable throwable) {
     super(message, throwable);
   }
 }

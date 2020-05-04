@@ -3,7 +3,6 @@ package com.cognifide.aem.stubs.wiremock;
 import javax.servlet.ServletException;
 
 import com.cognifide.aem.stubs.core.script.StubScript;
-import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.Request;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.Activate;
@@ -11,8 +10,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -21,19 +18,17 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.aem.stubs.core.AbstractStubs;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScriptManager;
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
 
 @Component(
-  service = {Stubs.class, WiremockStubs.class, EventHandler.class},
-  property = EventConstants.EVENT_TOPIC + "=" + StubScriptManager.SCRIPT_CHANGE_EVENT_TOPIC,
+  service = {Stubs.class, WiremockStubs.class},
   immediate = true
 )
 @Designate(ocd = WiremockStubs.Config.class)
-public class WiremockStubs extends AbstractStubs<WiremockApp> {
+public class WiremockStubs implements Stubs<WiremockApp> {
 
   private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
 
@@ -70,7 +65,6 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
   @Override
   public void prepare(StubScript script) {
-    script.getBinding().setVariable("stubs", this);
     script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer()
       .addStaticStars(Wiremock.class.getName())
       .addStarImports(Request.class.getPackage().getName())
@@ -95,7 +89,7 @@ public class WiremockStubs extends AbstractStubs<WiremockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WiremockApp(resolverAccessor, stubScriptManager.getScriptRootPath());
+    this.app = new WiremockApp(resolverAccessor, stubScriptManager.getRootPath());
     this.servletPath = getServletPath(config.path());
 
     try {

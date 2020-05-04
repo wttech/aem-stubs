@@ -12,7 +12,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
+import com.cognifide.aem.stubs.wiremock.WiremockException;
+import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.extension.Parameters;
@@ -31,7 +32,9 @@ import groovy.lang.Closure;
 public class PebbleTransformer extends ResponseDefinitionTransformer {
 
   private static final String NAME = "pebble-response-template";
+
   private final PebbleEngine engine;
+
   private final JcrFileReader jcrFileReader;
 
   public PebbleTransformer(JcrFileReader jcrFileReader) {
@@ -60,10 +63,13 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
     //body
     PebbleTemplate bodyTemplate = engine.getTemplate(getBodyTemplateString(responseDefinition));
-    String newBody = evaluate(bodyTemplate, model);
+    final String newBodyOrigin = evaluate(bodyTemplate, model);
+    String newBody = newBodyOrigin;
 
     if (responseDefinition.specifiesBodyFile()) {
-      PebbleTemplate fileTemplate = engine.getTemplate(jcrFileReader.readAsText(newBody));
+      String template = jcrFileReader.readText(newBodyOrigin)
+        .orElseThrow(() -> new WiremockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
+      PebbleTemplate fileTemplate = engine.getTemplate(template);
       newBody = evaluate(fileTemplate, model);
     }
 

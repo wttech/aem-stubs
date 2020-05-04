@@ -1,19 +1,16 @@
 package com.cognifide.aem.stubs.core.script;
 
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
-import com.cognifide.aem.stubs.core.utils.StreamUtils;
+import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.core.util.StreamUtils;
 import com.google.common.collect.ImmutableMap;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.*;
 import org.apache.commons.io.FilenameUtils;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -37,10 +34,6 @@ import java.util.stream.Collectors;
 @Designate(ocd = StubScriptManager.Config.class)
 public class StubScriptManager implements ResourceChangeListener {
 
-  public static final String SCRIPT_CHANGE_EVENT_TOPIC = "com/cognifide/aem/stubs/ScriptChange";
-
-  public static final String SCRIPT_CHANGE_EVENT_RESOURCE_CHANGES = "resourceChanges";
-
   private static final Logger LOG = LoggerFactory.getLogger(StubScriptManager.class);
 
   private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
@@ -48,11 +41,17 @@ public class StubScriptManager implements ResourceChangeListener {
   @Reference
   private ResolverAccessor resolverAccessor;
 
-  @Reference
-  private StubScriptExecutor stubScriptExecutor;
+  private Stubs stubs;
 
-  @Reference
-  private EventAdmin eventAdmin;
+  @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+  protected void bindStubs(Stubs stubs) {
+    this.stubs = stubs;
+    stubs.reset();
+  }
+
+  protected void unbindStubs(Stubs stubs) {
+    this.stubs = null;
+  }
 
   private Config config;
 
@@ -69,7 +68,7 @@ public class StubScriptManager implements ResourceChangeListener {
    * Run stub script at specified path
    */
   public void run(String path) {
-    resolverAccessor.resolve(resolver -> stubScriptExecutor.execute(resolver, path));
+    resolverAccessor.resolve(resolver -> execute(resolver, path));
   }
 
   /**
@@ -105,18 +104,34 @@ public class StubScriptManager implements ResourceChangeListener {
 
   @Override
   public void onChange(List<ResourceChange> changes) {
+    if (stubs == null) {
+      return;
+    }
+
     final List<ResourceChange> scriptChanges = changes.stream()
       .filter(c -> filter(c.getPath()))
       .collect(Collectors.toList());
 
     if (!scriptChanges.isEmpty()) {
-      eventAdmin.postEvent(new Event(SCRIPT_CHANGE_EVENT_TOPIC, ImmutableMap.of(
-        SCRIPT_CHANGE_EVENT_RESOURCE_CHANGES, scriptChanges
-      )));
+      resolverAccessor.consume(resolver -> {
+        scriptChanges.forEach(change -> {
+          execute(resolver, change.getPath());
+        });
+      });
     }
   }
 
-  public String getScriptRootPath(){
+  private Object execute(ResourceResolver resolver, String path) {
+    final StubScript script = new StubScript(this, resolver, path);
+    LOG.info("Executing Stub Script '{}'", script.getPath());
+    script.getBinding().setVariable("stubs", stubs);
+    stubs.prepare(script);
+    final Object result = script.run();
+    LOG.info("Executed Stub Script '{}'", script.getPath());
+    return result;
+  }
+
+  public String getRootPath(){
     return config.resource_paths();
   }
 

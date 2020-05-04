@@ -1,4 +1,4 @@
-package com.cognifide.aem.stubs.core.utils;
+package com.cognifide.aem.stubs.core.util;
 
 import java.util.Iterator;
 import java.util.Spliterators;

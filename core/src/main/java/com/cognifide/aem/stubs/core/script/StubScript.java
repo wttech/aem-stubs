@@ -4,6 +4,7 @@ import com.cognifide.aem.stubs.core.StubsException;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import java.io.*;
 import java.util.Optional;
 
 public class StubScript {
+
+  private final StubScriptManager manager;
 
   private final ResourceResolver resourceResolver;
 
@@ -26,14 +29,20 @@ public class StubScript {
 
   private final Logger logger;
 
-  public StubScript(ResourceResolver resourceResolver, String path) {
+  public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
+    this.manager = manager;
     this.resourceResolver = resourceResolver;
     this.path = path;
-    this.logger = LoggerFactory.getLogger(path);
+    this.logger = LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), path));
 
-    binding.setVariable("script", this);
+    binding.setVariable("script", path);
     binding.setVariable("resourceResolver", resourceResolver);
     binding.setVariable("logger", logger);
+    binding.setVariable("repository", new RepositoryFacade(
+      resourceResolver,
+      StringUtils.substringBeforeLast(path,"/"),
+      manager.getRootPath())
+    );
   }
 
   public Reader getSourceCode() {
@@ -41,7 +50,7 @@ public class StubScript {
       .map(r -> r.adaptTo(InputStream.class))
       .map(BufferedInputStream::new)
       .map(InputStreamReader::new)
-      .orElseThrow(() -> new StubsException(String.format("Cannot read Groovy Stub Script '%s'!", path)));
+      .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", path)));
   }
 
   public ResourceResolver getResourceResolver() {
@@ -58,6 +67,10 @@ public class StubScript {
 
   public String getPath() {
     return path;
+  }
+
+  public StubScriptManager getManager() {
+    return manager;
   }
 
   public Object run() {

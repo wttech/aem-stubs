@@ -3,14 +3,13 @@ package com.cognifide.aem.stubs.wiremock;
 import static com.github.tomakehurst.wiremock.extension.ExtensionLoader.valueAssignableFrom;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.cognifide.aem.stubs.core.utils.ResolverAccessor;
-import com.cognifide.aem.stubs.wiremock.jcr.JcrFileReader;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
+import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.HttpsSettings;
@@ -51,7 +50,8 @@ class WiremockConfig implements Options {
   private void addExtenstions() {
     JcrFileReader jcrFileReader= new JcrFileReader(resolverAccessor, rootPath);
     extensions.putAll(ExtensionLoader.asMap(
-      Arrays.asList(new PebbleTransformer(jcrFileReader))));
+      Collections.singletonList(new PebbleTransformer(jcrFileReader)))
+    );
   }
 
   @Override
