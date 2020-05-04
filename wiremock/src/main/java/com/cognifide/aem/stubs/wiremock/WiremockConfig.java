@@ -44,10 +44,11 @@ class WiremockConfig implements Options {
   WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
-    addExtenstions();
+
+    addExtensions();
   }
 
-  private void addExtenstions() {
+  private void addExtensions() {
     JcrFileReader jcrFileReader= new JcrFileReader(resolverAccessor, rootPath);
     extensions.putAll(ExtensionLoader.asMap(
       Collections.singletonList(new PebbleTransformer(jcrFileReader)))

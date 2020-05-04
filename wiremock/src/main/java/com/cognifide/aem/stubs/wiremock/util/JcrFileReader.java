@@ -52,7 +52,7 @@ public class JcrFileReader {
   }
 
   public String getAbsolutePath(String name) {
-    if (rootPath == null || rootPath.isEmpty()) {
+    if (rootPath == null || rootPath.isEmpty() || name.startsWith("/")) {
       return name;
     }
     return String.format("%s/%s", rootPath, name);
