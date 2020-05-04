@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.Optional;
 
+@SuppressWarnings("PMD.DataClass")
 public class StubScript {
 
   private final StubScriptManager manager;
@@ -23,11 +24,11 @@ public class StubScript {
 
   private final Binding binding = new Binding();
 
-  private final CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
+  private final CompilerConfiguration compilerConfig = new CompilerConfiguration();
 
-  private final GroovyShell shell = new GroovyShell(binding, compilerConfiguration);
+  private final GroovyShell shell = new GroovyShell(binding, compilerConfig);
 
-  @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
+  @SuppressWarnings({"PMD.LoggerIsNotStaticFinal", "PMD.SingularField"})
   private final transient Logger logger;
 
   public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
@@ -62,8 +63,8 @@ public class StubScript {
     return binding;
   }
 
-  public CompilerConfiguration getCompilerConfiguration() {
-    return compilerConfiguration;
+  public CompilerConfiguration getCompilerConfig() {
+    return compilerConfig;
   }
 
   public String getPath() {

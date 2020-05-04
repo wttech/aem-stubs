@@ -21,7 +21,7 @@ public class ResolverAccessor {
   private static final Logger LOG = LoggerFactory.getLogger(ResolverAccessor.class);
 
   @Reference
-  private ResourceResolverFactory resourceResolverFactory;
+  private ResourceResolverFactory factory;
 
   public <T> T resolve(Function<ResourceResolver, T> function) {
     try (ResourceResolver resolver = retrieveResourceResolver()) {
@@ -29,7 +29,7 @@ public class ResolverAccessor {
     } catch (LoginException e) {
       LOG.error("Cannot create resource resolver for mapper service.", e);
       throw new StubsException(
-        "Cannot create resource resolver for mapper service. Is service user mapper configured?"
+        "Cannot create resource resolver for mapper service. Is service user mapper configured?", e
       );
     }
   }
@@ -42,6 +42,6 @@ public class ResolverAccessor {
   }
 
   private ResourceResolver retrieveResourceResolver() throws LoginException {
-    return resourceResolverFactory.getServiceResourceResolver(singletonMap(SUBSERVICE, "com.cognifide.aem.stubs"));
+    return factory.getServiceResourceResolver(singletonMap(SUBSERVICE, "com.cognifide.aem.stubs"));
   }
 }

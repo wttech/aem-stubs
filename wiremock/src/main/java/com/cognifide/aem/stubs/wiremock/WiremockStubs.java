@@ -65,7 +65,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
 
   @Override
   public void prepare(StubScript script) {
-    script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer()
+    script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer()
       .addStaticStars(Wiremock.class.getName())
       .addStarImports(Request.class.getPackage().getName())
     );
@@ -99,6 +99,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
     }
   }
 
+  @SuppressWarnings("PMD.NullAsignment")
   private void stop() {
     LOG.info("Stopping AEM Stubs Wiremock Server");
     if (servletPath != null) {

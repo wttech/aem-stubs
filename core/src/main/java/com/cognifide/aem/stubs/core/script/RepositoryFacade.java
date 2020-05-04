@@ -30,7 +30,7 @@ public class RepositoryFacade {
       .map(p -> {
         if (p.startsWith("./")) {
           return String.format("%s/%s/jcr:content", relativeRoot, StringUtils.removeStart(p, "./"));
-        } else if (!p.startsWith("/")) {
+        } else if (!StringUtils.startsWith(p, "/")) {
           return String.format("%s/%s/jcr:content", absoluteRoot, p);
         } else {
           return String.format("%s/jcr:content", p);

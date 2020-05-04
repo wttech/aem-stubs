@@ -52,7 +52,7 @@ public class MocoStubs implements Stubs<HttpServer> {
 
   @Override
   public void prepare(StubScript script) {
-    script.getCompilerConfiguration().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
+    script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
       Moco.class.getName(),
       com.github.dreamhead.moco.Moco.class.getName()
     ));
@@ -85,6 +85,7 @@ public class MocoStubs implements Stubs<HttpServer> {
     runner.start();
   }
 
+  @SuppressWarnings("PMD.NullAssignment")
   private void stop() {
     LOG.info("Stopping AEM Stubs Moco Server");
     if (runner != null) {

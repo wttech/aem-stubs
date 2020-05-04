@@ -43,32 +43,35 @@ public class StubScriptManager implements ResourceChangeListener {
 
   private Stubs stubs;
 
+  private Config config;
+
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
   protected void bindStubs(Stubs stubs) {
     this.stubs = stubs;
     stubs.reset();
   }
 
+  @SuppressWarnings("PMD.NullAssignment")
   protected void unbindStubs(Stubs stubs) {
     this.stubs = null;
   }
 
-  private Config config;
-
-  private BundleContext bundleContext;
-
   @Activate
   @Modified
-  protected void update(Config config, BundleContext bundleContext) {
+  protected void update(Config config) {
     this.config = config;
-    this.bundleContext = bundleContext;
   }
 
   /**
    * Run stub script at specified path
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void run(String path) {
-    resolverAccessor.resolve(resolver -> execute(resolver, path));
+    try {
+      resolverAccessor.resolve(resolver -> execute(resolver, path));
+    } catch (Exception e) {
+      LOG.error("Cannot run AEM Stub script '{}'! Cause: {}", path, e.getMessage(), e);
+    }
   }
 
   /**
@@ -76,6 +79,7 @@ public class StubScriptManager implements ResourceChangeListener {
    * - are located under configured root path,
    * - are not matching exclusion path patterns.
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll() {
     LOG.info("Executing all AEM Stub scripts under path '{}'", config.resource_paths());
     resolverAccessor.consume(resolver -> {
@@ -84,7 +88,7 @@ public class StubScriptManager implements ResourceChangeListener {
           .filter(r -> filter(r.getPath()))
           .map(Resource::getPath)
           .forEach(this::run);
-           } catch (Exception e) {
+      } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
@@ -94,11 +98,11 @@ public class StubScriptManager implements ResourceChangeListener {
     return isNotExcludedPath(path) && isGroovyScript(path);
   }
 
-  private boolean isNotExcludedPath(String path){
+  private boolean isNotExcludedPath(String path) {
     return Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(path, p));
   }
 
-  private boolean isGroovyScript(String path){
+  private boolean isGroovyScript(String path) {
     return path.endsWith(".groovy");
   }
 
@@ -131,7 +135,7 @@ public class StubScriptManager implements ResourceChangeListener {
     return result;
   }
 
-  public String getRootPath(){
+  public String getRootPath() {
     return config.resource_paths();
   }
 

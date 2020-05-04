@@ -77,7 +77,8 @@ plugins.withId("java") {
 plugins.withId("org.gradle.pmd") {
     configure<PmdExtension> {
         isConsoleOutput = true
-        rulePriority = 2 // TODO 5
+        ruleSets = listOf()
         ruleSetFiles = files(rootProject.file("pmd.xml"))
+        rulePriority = 3 // TODO 5
     }
 }
