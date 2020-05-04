@@ -4,21 +4,17 @@ import com.cognifide.aem.stubs.core.StubsException;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.Optional;
 
 @SuppressWarnings("PMD.DataClass")
 public class StubScript {
 
   private final StubScriptManager manager;
-
-  private final ResourceResolver resourceResolver;
 
   private final String path;
 
@@ -28,22 +24,20 @@ public class StubScript {
 
   private final GroovyShell shell = new GroovyShell(binding, compilerConfig);
 
-  @SuppressWarnings({"PMD.LoggerIsNotStaticFinal", "PMD.SingularField"})
-  private final Logger logger;
-
   private final RepositoryFacade repository;
 
-  public StubScript(StubScriptManager manager, ResourceResolver resourceResolver, String path) {
-    this.manager = manager;
-    this.resourceResolver = resourceResolver;
+  private final Logger logger;
+
+  public StubScript(String path, StubScriptManager manager, ResourceResolver resolver) {
     this.path = path;
-    this.logger = LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), path));
-    this.repository = new RepositoryFacade(resourceResolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath());
+    this.manager = manager;
+    this.logger = createLogger(path);
+    this.repository = RepositoryFacade.forScript(path, manager, resolver);
 
     binding.setVariable("script", this);
-    binding.setVariable("resourceResolver", resourceResolver);
-    binding.setVariable("repository", repository);
     binding.setVariable("logger", logger);
+    binding.setVariable("repository", repository);
+    binding.setVariable("resourceResolver", resolver);
   }
 
   public Binding getBinding() {
@@ -62,6 +56,14 @@ public class StubScript {
     return manager;
   }
 
+  public RepositoryFacade getRepository() {
+    return repository;
+  }
+
+  public Logger getLogger() {
+    return logger;
+  }
+
   public Object run() {
     final Script shellScript = shell.parse(readSourceCode());
     return shellScript.run();
@@ -71,5 +73,9 @@ public class StubScript {
     return repository.useStream(path)
       .map(InputStreamReader::new)
       .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", path)));
+  }
+
+  private Logger createLogger(String path) {
+    return LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), path));
   }
 }

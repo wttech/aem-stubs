@@ -25,6 +25,10 @@ public class RepositoryFacade {
     this.absoluteRoot = absoluteRoot;
   }
 
+  public static RepositoryFacade forScript(String path, StubScriptManager manager, ResourceResolver resolver) {
+    return new RepositoryFacade(resolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath());
+  }
+
   public Optional<InputStream> useStream(String path) {
     return Optional.ofNullable(path)
       .map(p -> {
