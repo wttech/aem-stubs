@@ -23,6 +23,7 @@ import static com.github.dreamhead.moco.Runner.runner;
 @Designate(ocd = MocoStubs.Config.class)
 public class MocoStubs implements Stubs<HttpServer> {
 
+  @SuppressWarnings("PMD.ShortVariable")
   public static final String ID = "moco";
 
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);

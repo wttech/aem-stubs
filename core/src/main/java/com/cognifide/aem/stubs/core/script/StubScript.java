@@ -60,6 +60,10 @@ public class StubScript {
     return manager;
   }
 
+  public Stubs<?> getRunnable() {
+    return runnable;
+  }
+
   public RepositoryFacade getRepository() {
     return repository;
   }
