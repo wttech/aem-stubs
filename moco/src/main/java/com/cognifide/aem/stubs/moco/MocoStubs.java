@@ -23,6 +23,8 @@ import static com.github.dreamhead.moco.Runner.runner;
 @Designate(ocd = MocoStubs.Config.class)
 public class MocoStubs implements Stubs<HttpServer> {
 
+  public static final String ID = "moco";
+
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
   @Reference
@@ -33,6 +35,11 @@ public class MocoStubs implements Stubs<HttpServer> {
   private Runner runner;
 
   private Config config;
+
+  @Override
+  public String getId() {
+    return ID;
+  }
 
   @Override
   public HttpServer getServer() {
@@ -47,7 +54,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Override
   public void reset() {
     clear();
-    scriptManager.runAll();
+    scriptManager.runAll(this);
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.cognifide.aem.stubs.core.script;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.core.util.StreamUtils;
+import com.google.common.collect.Lists;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
@@ -39,19 +40,19 @@ public class StubScriptManager implements ResourceChangeListener {
   @Reference
   private ResolverAccessor resolverAccessor;
 
-  private Stubs stubs;
-
   private Config config;
 
-  @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-  protected void bindStubs(Stubs stubs) {
-    this.stubs = stubs;
+  private final List<Stubs<?>> runnables = Lists.newCopyOnWriteArrayList();
+
+  @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
+  protected void bindStubs(Stubs<?> stubs) {
+    runnables.add(stubs);
     stubs.reset();
   }
 
   @SuppressWarnings("PMD.NullAssignment")
-  protected void unbindStubs(Stubs stubs) {
-    this.stubs = null;
+  protected void unbindStubs(Stubs<?> stubs) {
+    runnables.remove(stubs);
   }
 
   @Activate
@@ -78,12 +79,14 @@ public class StubScriptManager implements ResourceChangeListener {
    * - are not matching exclusion path patterns.
    */
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
-  public void runAll() {
-    LOG.info("Executing all AEM Stub scripts under path '{}'", config.resource_paths());
+  public void runAll(Stubs<?> runnable) {
+    final String rootPath = String.format("%s/%s", getRootPath(), runnable.getId());
+
+    LOG.info("Executing all AEM Stub scripts under path '{}'", rootPath);
     resolverAccessor.consume(resolver -> {
       try {
-        StreamUtils.from(resolver.findResources(String.format(QUERY, config.resource_paths()), Query.JCR_SQL2))
-          .filter(r -> filter(r.getPath()))
+        StreamUtils.from(resolver.findResources(String.format(QUERY, rootPath), Query.JCR_SQL2))
+          .filter(r -> isRunnable(r.getPath()))
           .map(Resource::getPath)
           .forEach(this::run);
       } catch (Exception e) {
@@ -92,26 +95,22 @@ public class StubScriptManager implements ResourceChangeListener {
     });
   }
 
-  private boolean filter(String path) {
-    return isNotExcludedPath(path) && isGroovyScript(path);
+  public boolean isRunnable(String path) {
+    return isExtensionCorrect(path) && isNotExcludedPath(path);
   }
 
   private boolean isNotExcludedPath(String path) {
     return Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(path, p));
   }
 
-  private boolean isGroovyScript(String path) {
+  private boolean isExtensionCorrect(String path) {
     return path.endsWith(config.extension());
   }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
-    if (stubs == null) {
-      return;
-    }
-
     final List<ResourceChange> scriptChanges = changes.stream()
-      .filter(c -> filter(c.getPath()))
+      .filter(c -> isRunnable(c.getPath()))
       .collect(Collectors.toList());
 
     if (!scriptChanges.isEmpty()) {
@@ -124,13 +123,29 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private Object execute(ResourceResolver resolver, String path) {
-    final StubScript script = new StubScript(path, this, resolver);
+    final Stubs<?> stubs = findRunnable(path);
+    if (stubs == null) {
+      LOG.warn("Executing Stub Script '{}' not possible - runnable not found.", path);
+      return null;
+    }
+
+    final StubScript script = new StubScript(path, this, stubs, resolver);
     LOG.info("Executing Stub Script '{}'", script.getPath());
     script.getBinding().setVariable("stubs", stubs);
     stubs.prepare(script);
     final Object result = script.run();
     LOG.info("Executed Stub Script '{}'", script.getPath());
     return result;
+  }
+
+  public Stubs<?> findRunnable(String path) {
+    for (Stubs<?> runnable : runnables) {
+      final String pathPattern = String.format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension());
+      if (FilenameUtils.wildcardMatch(path, pathPattern)) {
+        return runnable;
+      }
+    }
+    return null;
   }
 
   public String getRootPath() {

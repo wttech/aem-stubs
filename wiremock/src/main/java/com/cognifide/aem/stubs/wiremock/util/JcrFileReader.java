@@ -22,10 +22,6 @@ public class JcrFileReader {
     this.rootPath = rootPath;
   }
 
-  public JcrFileReader(ResolverAccessor resolverAccessor) {
-    this(resolverAccessor, null);
-  }
-
   public <T> Optional<T> useStream(String fileName, Function<InputStream, T> processor) {
     return resolverAccessor.resolve(resolver ->
       Optional.of(resolver)

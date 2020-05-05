@@ -1,5 +1,6 @@
 package com.cognifide.aem.stubs.core.script;
 
+import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,8 +26,8 @@ public class RepositoryFacade {
     this.absoluteRoot = absoluteRoot;
   }
 
-  public static RepositoryFacade forScript(String path, StubScriptManager manager, ResourceResolver resolver) {
-    return new RepositoryFacade(resolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath());
+  public static RepositoryFacade forScript(String path, StubScriptManager manager, Stubs<?> runnable, ResourceResolver resolver) {
+    return new RepositoryFacade(resolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath() + "/" + runnable.getId());
   }
 
   public Optional<InputStream> useStream(String path) {
