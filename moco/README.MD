@@ -1,6 +1,6 @@
 # AEM Stubs - Moco
 
-Allows providing stubs (or mocks) by implementing [Groovy](http://groovy-lang.org/syntax.html) script basing on [Moco framework](https://github.com/dreamhead/moco).
+Allows providing stubs (or mocks) by implementing [Groovy](http://groovy-lang.org/syntax.html) script basing on [Moco](https://github.com/dreamhead/moco) framework.
 
 Sample **stub script**:
 

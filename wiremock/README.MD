@@ -1,6 +1,6 @@
 # AEM Stubs - WireMock
 
-Allows providing stubs (or mocks) by implementing [Groovy](http://groovy-lang.org/syntax.html) script basing on [WireMock](http://wiremock.org).
+Allows providing stubs (or mocks) by implementing [Groovy](http://groovy-lang.org/syntax.html) script basing on [WireMock](http://wiremock.org) framework.
 
 Sample **stub script**:
 
