@@ -55,6 +55,7 @@ Be aware of common / WireMock agnostic [OSGi configuration](../#osgi-configurati
 Then check see Wiremock specific OSGi configuration below:
 
 * [WireMock Stubs](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.wiremock.WiremockStubs)
+
     ![OSGi config - WireMock Stubs](docs/osgi-config-wiremock-stubs.png)
 
 ### Stub script API
