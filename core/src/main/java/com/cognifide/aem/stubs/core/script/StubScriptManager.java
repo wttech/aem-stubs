@@ -38,11 +38,11 @@ public class StubScriptManager implements ResourceChangeListener {
 
   private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
 
-  private static final String RELOAD_ALL = "all";
+  private static final String ON_CHANGE_RESET_ALL = "reset_all";
 
-  private static final String RELOAD_CHANGED = "changed";
+  private static final String ON_CHANGE_RUN_CHANGED = "run_changed";
 
-  private static final String RELOAD_NONE = "none";
+  private static final String ON_CHANGE_NOTHING = "nothing";
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -131,17 +131,13 @@ public class StubScriptManager implements ResourceChangeListener {
       .collect(Collectors.toList());
 
     if (!scriptChanges.isEmpty()) {
-      if (RELOAD_CHANGED.equalsIgnoreCase(config.reload_mode())) {
-        resolverAccessor.consume(resolver -> {
-          scriptChanges.forEach(change -> {
-            execute(resolver, change.getPath());
-          });
-        });
-      } else if (RELOAD_CHANGED.equalsIgnoreCase(config.reload_mode())) {
+      if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.reload_mode())) {
+          scriptChanges.forEach(c -> run(c.getPath()));
+      } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.reload_mode())) {
         scriptChanges.stream()
           .map(c -> findRunnable(c.getPath()))
           .distinct()
-          .forEach(this::runAll);
+          .forEach(Stubs::reset);
       }
     }
   }
@@ -193,13 +189,13 @@ public class StubScriptManager implements ResourceChangeListener {
     String[] excluded_paths() default {"**/internals/*"};
 
     @AttributeDefinition(
-      name = "Reload mode",
+      name = "On change",
       options = {
-        @Option(label = "All", value = RELOAD_ALL),
-        @Option(label = "Only changed", value = RELOAD_CHANGED),
-        @Option(label = "None", value = RELOAD_NONE)
+        @Option(label = "Restart server and run all scripts", value = ON_CHANGE_RESET_ALL),
+        @Option(label = "Run changed script only", value = ON_CHANGE_RUN_CHANGED),
+        @Option(label = "Do nothing", value = ON_CHANGE_NOTHING)
       }
     )
-    String reload_mode() default RELOAD_ALL;
+    String reload_mode() default ON_CHANGE_RESET_ALL;
   }
 }
