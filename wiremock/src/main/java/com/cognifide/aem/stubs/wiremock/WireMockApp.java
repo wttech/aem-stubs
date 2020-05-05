@@ -5,7 +5,6 @@ import java.util.Map;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.core.Options;
-import com.github.tomakehurst.wiremock.core.WireMockApp;
 import com.github.tomakehurst.wiremock.extension.PostServeAction;
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
 import com.github.tomakehurst.wiremock.http.ProxyResponseRenderer;
@@ -15,13 +14,13 @@ import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 import com.github.tomakehurst.wiremock.verification.DisabledRequestJournal;
 import com.google.common.collect.ImmutableList;
 
-public class WiremockApp {
+public class WireMockApp {
 
-  private final WireMockApp app;
+  private final com.github.tomakehurst.wiremock.core.WireMockApp app;
 
-  public WiremockApp(ResolverAccessor resolverAccessor, String rootPath) {
+  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath) {
     WiremockConfig wiremockConfig = new WiremockConfig(resolverAccessor, rootPath);
-    app = new WireMockApp(wiremockConfig, new NotImplementedContainer());
+    app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockConfig, new NotImplementedContainer());
   }
 
   public void stubFor(MappingBuilder mappingBuilder) {

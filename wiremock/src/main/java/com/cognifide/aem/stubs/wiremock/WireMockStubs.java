@@ -28,11 +28,11 @@ import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
   immediate = true
 )
 @Designate(ocd = WiremockStubs.Config.class)
-public class WiremockStubs implements Stubs<WiremockApp> {
+public class WiremockStubs implements Stubs<WireMockApp> {
 
   private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
 
-  private WiremockApp app;
+  private WireMockApp app;
 
   private Config config;
 
@@ -48,7 +48,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
   private String servletPath;
 
   @Override
-  public WiremockApp getServer() {
+  public WireMockApp getServer() {
     return app;
   }
 
@@ -89,7 +89,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WiremockApp(resolverAccessor, stubScriptManager.getRootPath());
+    this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath());
     this.servletPath = getServletPath(config.path());
 
     try {
