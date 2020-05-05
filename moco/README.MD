@@ -20,8 +20,17 @@ stubs.server
 
 stubs.server
         .get(by(uri("/current-date")))
-        .response(template('Today date is "${date}"', "date", dynamicVar({ new Date() })))
+        .response(template('Today date is "${date}"', "date", suppliedVar({ new Date() })))
 ```
+
+## Table of contents
+
+  * [Installation](#installation)
+  * [Documentation](#documentation)
+     * [OSGi configuration](#osgi-configuration)
+     * [Stub script API](#stub-script-api)
+  * [Useful links](#useful-links)
+  * [Known issues](#known-issues)
 
 ## Installation
 
@@ -32,23 +41,31 @@ stubs.server
 
 To create stubs for web services or more basically mock any data, it is needed to only create a **stub script** under pre-configured path, e.g */var/stubs/hello.groovy*.
 
+### OSGi configuration
+
+Be aware of common / Moco agnostic [OSGi configuration](../#osgi-configuration) at first.
+Then check see Moco specific OSGi configuration below:
+
+* [Moco Stubs](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.moco.MocoStubs)
+    ![OSGi config - Moco Stubs](docs/osgi-config-moco-stubs.png)
+
 ### Stub script API
+
+At first, see [common](../#stub-script-api) script API.
 
 Pre-defined variables:
 
-* [stubs](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/moco/src/main/java/com/cognifide/aem/stubs/moco/MocoStubs.java) - Moco Stubs service - use it to control Moco HTTP Server,
-* [stubs.server](https://github.com/dreamhead/moco/blob/master/moco-core/src/main/java/com/github/dreamhead/moco/HttpServer.java) - Moco HTTP Server - use it to define stubs,
-* [resourceResolver](https://sling.apache.org/apidocs/sling11/org/apache/sling/api/resource/ResourceResolver.html) - for accessing AEM repository,
-* [logger](https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java) - SLF4j logger.
+* [stubs.server](https://github.com/dreamhead/moco/blob/master/moco-core/src/main/java/com/github/dreamhead/moco/HttpServer.java) - use it to define Moco stubs.
 
-Default imports:
+Default imports (not needed to be specified explicitly in scripts):
 
-* _com.github.dreamhead.moco.\*_ - Moco framework API
-* _com.cognifide.aem.stubs.moco.Moco.\*_ - AEM related extensions for Moco framework API
+* [_com.github.dreamhead.moco.Moco.\*_](https://github.com/dreamhead/moco/blob/master/moco-core/src/main/java/com/github/dreamhead/moco/Moco.java) - base Moco API,
+* [_com.cognifide.aem.stubs.moco.MocoUtils.\*_](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/moco/src/main/java/com/cognifide/aem/stubs/moco/MocoUtils.java) - AEM Stubs related extensions for Moco API.
 
 ## Useful links
 
 * https://github.com/dreamhead/moco/blob/master/moco-doc/apis.md
+
 
 ## Known issues
 

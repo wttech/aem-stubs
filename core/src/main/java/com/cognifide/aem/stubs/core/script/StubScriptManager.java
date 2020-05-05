@@ -144,13 +144,13 @@ public class StubScriptManager implements ResourceChangeListener {
   @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
   public @interface Config {
 
-    @AttributeDefinition(name = "Scripts Root Path")
+    @AttributeDefinition(name = "Root Path")
     String resource_paths() default "/var/stubs";
 
-    @AttributeDefinition(name = "Scripts Extension")
+    @AttributeDefinition(name = "Extension")
     String extension() default ".groovy";
 
-    @AttributeDefinition(name = "Scripts Excluded Paths")
+    @AttributeDefinition(name = "Excluded Paths")
     String[] excluded_paths() default {"**/internals/*"};
   }
 }

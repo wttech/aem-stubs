@@ -6,25 +6,37 @@
 
 Tool for providing sample data for AEM applications in a simple and flexible way.
 
-By implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [Wiremock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
+By implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [WireMock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and [start stubbing](#getting-started)!
+
+## Table of contents
+
+  * [Frameworks](#frameworks)
+  * [Downloads](#downloads)
+  * [Compatibility](#compatibility)
+  * [Building](#building)
+  * [Documentation](#documentation)
+     * [OSGi configuration](#osgi-configuration)
+     * [Stub script API](#stub-script-api)
+  * [Other tools](#other-tools)
+  * [License](#license)
 
 ## Frameworks
 
 At first, it is needed to decide which framework is more preferred to use.
 Both frameworks have their own pros and cons, see comparison:
 
-| Topic \ Framework | Wiremock                   | Moco                                                   | Comments                                                                                                                                                                                                                                                                                                                                                                                                                    |  |  |
+| Topic \ Framework | WireMock                   | Moco                                                   | Comments                                                                                                                                                                                                                                                                                                                                                                                                                    |  |  |
 |-------------------|----------------------------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--|--|
 | Installation      | All-in-one AEM package     | All-in-one AEM package                                 | Both distributions could be easily deployed via single package installation in CRX Package Manager.                                                                                                                                                                                                                                                                                                                         |  |  |
-| HTTP server       | AEM built-in (Jetty)       | Separate running also on AEM at dedicated port (Netty) | As of Moco is not using AEM HTTP Server but running its own (faster, asynchronous), it is required to ensure that port<br>used by Moco is free and not blocked by firewall on some deployment servers.<br>As of Wiremock is running on same server as AEM, all mocked paths need to be prefixed (by default with `stubs/`).<br>When using Moco prefixes are not needed as of it is a dedicated HTTP server with mocks only. |  |  |
-| Popularity        | Big - 3.9k stars on GitHub | Big - 3.1k stars on GitHub                             | Wiremock is much more popular and has probably better documentation and more materials available on the web.                                                                                                                                                                                                                                                                                                                |  |  |
-| API               | Rich, old-fashioned        | Rich, modern                                           | Moco API seems to be written with extendability in mind. Has many interfaces, builders etc available. Wiremock API has less such extension points and generally does not look so elegant.                                                                                                                                                                                                                                   |  |  |
+| HTTP server       | AEM built-in (Jetty)       | Separate running also on AEM at dedicated port (Netty) | As of Moco is not using AEM HTTP Server but running its own (faster, asynchronous), it is required to ensure that port<br>used by Moco is free and not blocked by firewall on some deployment servers.<br>As of WireMock is running on same server as AEM, all mocked paths need to be prefixed (by default with `stubs/`).<br>When using Moco prefixes are not needed as of it is a dedicated HTTP server with mocks only. |  |  |
+| Popularity        | Big - 3.9k stars on GitHub | Big - 3.1k stars on GitHub                             | WireMock is a little bit more popular and has probably better documentation and more materials available on the web.                                                                                                                                                                                                                                                                                                                |  |  |
+| API               | Rich, old-fashioned        | Rich, modern                                           | Moco API seems to be written with extendability in mind. Has many interfaces, builders etc available. WireMock API has less such extension points and generally does not look so elegant.                                                                                                                                                                                                                                   |  |  |
 
 After choosing framework, it is recommended to explore dedicated AEM Stubs **framework related documentation**:
 
-* [AEM Stubs - Wiremock](wiremock)
+* [AEM Stubs - WireMock](wiremock)
 * [AEM Stubs - Moco](moco)
 
 ## Downloads
@@ -54,6 +66,30 @@ To build CRX package and deploy it on AEM instance, simply run command:
 ```bash
 sh gradlew
 ```
+
+## Documentation
+
+### OSGi configuration
+
+There are framework specific OSGi configurations ([WireMock](moco#osgi-configuration), [Moco](moco#osgi-configuration)) and common listed below:
+
+* [Stub Script Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.script.StubScriptManager)
+    ![OSGi config - Stub Script Manager](docs/osgi-config-stubs-script-manager.png)
+    
+### Stub script API
+
+Common pre-defined variables:
+
+* [stubs](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/core/src/main/java/com/cognifide/aem/stubs/core/Stubs.java) - use it to control actual Stubs server (WireMock or Moco),
+* [resourceResolver](https://sling.apache.org/apidocs/sling11/org/apache/sling/api/resource/ResourceResolver.html) - for accessing AEM repository,
+* [repository](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/core/src/main/java/com/cognifide/aem/stubs/core/script/RepositoryFacade.java) - for accessing AEM repository (reading file contents),
+* [logger](https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java) - SLF4j logger.
+
+See also framework-specific API: [Wiremock](wiremock#stub-script-api), [Moco](wiremock#stub-script-api).
+
+## Other tools
+
+There are no other dedicated tools for stubbing data available for AEM and it was main purpose to create AEM Stubs tool.
 
 ## License
 

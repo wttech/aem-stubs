@@ -124,7 +124,7 @@ public class WiremockStubs implements Stubs<WiremockApp> {
     return new WiremockServlet(config.path(), app.buildStubRequestHandler());
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs Wiremock Server")
+  @ObjectClassDefinition(name = "AEM Stubs WireMock Server")
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")

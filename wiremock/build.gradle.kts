@@ -8,7 +8,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-description = "AEM Stubs - Wiremock"
+description = "AEM Stubs - WireMock"
 
 dependencies {
     compileOnly(project(":core"))
