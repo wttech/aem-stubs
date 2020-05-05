@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.query.Query;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component(
@@ -123,29 +124,30 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private Object execute(ResourceResolver resolver, String path) {
-    final Stubs<?> stubs = findRunnable(path);
-    if (stubs == null) {
+    return findRunnable(path).map(stubs -> {
+      final StubScript script = new StubScript(path, this, stubs, resolver);
+      LOG.info("Executing Stub Script '{}'", script.getPath());
+      script.getBinding().setVariable("stubs", stubs);
+      stubs.prepare(script);
+      final Object result = script.run();
+      LOG.info("Executed Stub Script '{}'", script.getPath());
+      return result;
+    }).orElseGet(() -> {
       LOG.warn("Executing Stub Script '{}' not possible - runnable not found.", path);
       return null;
-    }
+    });
 
-    final StubScript script = new StubScript(path, this, stubs, resolver);
-    LOG.info("Executing Stub Script '{}'", script.getPath());
-    script.getBinding().setVariable("stubs", stubs);
-    stubs.prepare(script);
-    final Object result = script.run();
-    LOG.info("Executed Stub Script '{}'", script.getPath());
-    return result;
   }
 
-  public Stubs<?> findRunnable(String path) {
-    for (Stubs<?> runnable : runnables) {
-      final String pathPattern = String.format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension());
-      if (FilenameUtils.wildcardMatch(path, pathPattern)) {
-        return runnable;
-      }
-    }
-    return null;
+  public Optional<Stubs<?>> findRunnable(String path) {
+    return runnables.stream()
+      .filter(runnable -> matchToRunnableId(runnable, path))
+      .findFirst();
+  }
+
+  private boolean matchToRunnableId(Stubs<?> runnable, String path){
+    final String pathPattern = String.format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension());
+    return  (FilenameUtils.wildcardMatch(path, pathPattern));
   }
 
   public String getRootPath() {

@@ -3,6 +3,7 @@ import com.cognifide.gradle.aem.bundle.tasks.bundle
 plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
+    id("nebula.integtest-standalone")
     pmd
 }
 
@@ -11,6 +12,10 @@ description = "AEM Stubs - Moco"
 
 dependencies {
     compileOnly(project(":core"))
+
+    testImplementation("io.rest-assured:rest-assured:3.3.0")
+    testImplementation("io.rest-assured:json-schema-validator:3.3.0")
+
 }
 
 aem {
