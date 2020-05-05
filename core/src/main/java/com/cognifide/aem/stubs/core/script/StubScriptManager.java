@@ -123,7 +123,7 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private Object execute(ResourceResolver resolver, String path) {
-    final Stubs stubs = findRunnable(path);
+    final Stubs<?> stubs = findRunnable(path);
     if (stubs == null) {
       LOG.warn("Executing Stub Script '{}' not possible - runnable not found.", path);
       return null;
@@ -138,8 +138,8 @@ public class StubScriptManager implements ResourceChangeListener {
     return result;
   }
 
-  public Stubs findRunnable(String path) {
-    for (Stubs runnable : runnables) {
+  public Stubs<?> findRunnable(String path) {
+    for (Stubs<?> runnable : runnables) {
       final String pathPattern = String.format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension());
       if (FilenameUtils.wildcardMatch(path, pathPattern)) {
         return runnable;
