@@ -1,6 +1,5 @@
 rootProject.name = "stubs"
 
-include("system")
 include("core")
 
 include("moco")
