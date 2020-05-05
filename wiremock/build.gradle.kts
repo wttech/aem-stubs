@@ -100,7 +100,7 @@ aem {
 
 tasks {
     pmdMain {
-        enabled = false // TODO remove this line
+        enabled = true
     }
     pmdIntegTest {
         enabled = false

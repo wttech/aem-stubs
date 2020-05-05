@@ -38,42 +38,44 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
   private final JcrFileReader jcrFileReader;
 
   public PebbleTransformer(JcrFileReader jcrFileReader) {
+    super();
     this.jcrFileReader = jcrFileReader;
     this.engine = new PebbleEngine.Builder()
       .loader(new StringLoader())
       .build();
-    ;
   }
 
   @Override
-  public ResponseDefinition transform(Request request, ResponseDefinition responseDefinition,
+  public ResponseDefinition transform(Request request, ResponseDefinition definition,
     FileSource files, Parameters parameters) {
-    ResponseDefinitionBuilder newResponseDefBuilder = ResponseDefinitionBuilder
-      .like(responseDefinition);
+    ResponseDefinitionBuilder definitionBuilder = ResponseDefinitionBuilder
+      .like(definition);
     final ImmutableMap<String, Object> model = ImmutableMap.<String, Object>builder()
       .put("parameters", calculateParameters(parameters))
       .put("request", RequestTemplateModel.from(request)).build();
 
     //proxy
-    if (responseDefinition.isProxyResponse()) {
-      PebbleTemplate baseUrlTemplate = engine.getTemplate(responseDefinition.getProxyBaseUrl());
-      newResponseDefBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
-      return newResponseDefBuilder.build();
+    if (definition.isProxyResponse()) {
+      PebbleTemplate baseUrlTemplate = engine.getTemplate(definition.getProxyBaseUrl());
+      definitionBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
+      return definitionBuilder.build();
     }
 
     //body
-    PebbleTemplate bodyTemplate = engine.getTemplate(getBodyTemplateString(responseDefinition));
+    PebbleTemplate bodyTemplate = engine.getTemplate(getBodyTemplateString(definition));
     final String newBodyOrigin = evaluate(bodyTemplate, model);
-    String newBody = newBodyOrigin;
+    String newBody;
 
-    if (responseDefinition.specifiesBodyFile()) {
+    if (definition.specifiesBodyFile()) {
       String template = jcrFileReader.readText(newBodyOrigin)
         .orElseThrow(() -> new WiremockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
       PebbleTemplate fileTemplate = engine.getTemplate(template);
       newBody = evaluate(fileTemplate, model);
+    } else {
+      newBody = newBodyOrigin;
     }
 
-    return newResponseDefBuilder.withBody(newBody).build();
+    return definitionBuilder.withBody(newBody).build();
   }
 
   private Map<String, Object> calculateParameters(Parameters parameters) {

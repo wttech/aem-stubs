@@ -35,13 +35,14 @@ import com.github.tomakehurst.wiremock.verification.notmatched.PlainTextStubNotM
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
 class WiremockConfig implements Options {
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
-  private Map<String, Extension> extensions = newLinkedHashMap();
+  private final Map<String, Extension> extensions = newLinkedHashMap();
 
 
-  WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
+  /* default */ WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
 

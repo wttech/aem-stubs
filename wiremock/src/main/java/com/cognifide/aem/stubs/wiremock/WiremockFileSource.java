@@ -23,12 +23,13 @@ class WiremockFileSource implements FileSource {
 
   private final String rootPath;
 
-  WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
+  public WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
     this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
   }
 
   @Override
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public BinaryFile getBinaryFileNamed(String name) {
     try {
       return new BinaryFile(toUri(name)) {
@@ -44,6 +45,7 @@ class WiremockFileSource implements FileSource {
   }
 
   @Override
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public TextFile getTextFileNamed(String name) {
     try {
       return new TextFile(toUri(name)) {

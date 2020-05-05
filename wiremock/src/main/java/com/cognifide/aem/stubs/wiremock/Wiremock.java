@@ -17,10 +17,12 @@ import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.matching.ValueMatcher;
 
-@SuppressWarnings("PMD.ClassNamingConventions")
-public class Wiremock {
+@SuppressWarnings({"PMD.ClassNamingConventions", "PMD.TooManyMethods", "PMD.ExcessivePublicCount"})
+final public class Wiremock {
 
-
+  private Wiremock(){
+    //intentionally empty
+  }
   public static StringValuePattern equalTo(String value) {
     return WireMock.equalTo(value);
   }
@@ -41,6 +43,7 @@ public class Wiremock {
     return WireMock.equalToJson(value);
   }
 
+  @SuppressWarnings("PMD.LongVariable")
   public static StringValuePattern equalToJson(String value, boolean ignoreArrayOrder, boolean ignoreExtraElements) {
     return WireMock.equalToJson(value, ignoreArrayOrder, ignoreExtraElements);
   }
@@ -164,13 +167,11 @@ public class Wiremock {
   public static MappingBuilder request(String method, UrlPattern urlPattern) {
     return WireMock.request(method, urlPattern);
   }
-
-  public static MappingBuilder requestMatching(String customRequestMatcherName) {
-    return WireMock.requestMatching(customRequestMatcherName);
+  public static MappingBuilder requestMatching(String matcherName) {
+    return WireMock.requestMatching(matcherName);
   }
-
-  public static MappingBuilder requestMatching(String customRequestMatcherName, Parameters parameters) {
-    return WireMock.requestMatching(customRequestMatcherName, parameters);
+  public static MappingBuilder requestMatching(String matcherName, Parameters parameters) {
+    return WireMock.requestMatching(matcherName, parameters);
   }
 
   public static MappingBuilder requestMatching(ValueMatcher<Request> requestMatcher) {
@@ -181,10 +182,12 @@ public class Wiremock {
     return WireMock.aResponse();
   }
 
+  @SuppressWarnings("PMD.ShortMethodName")
   public static ResponseDefinitionBuilder ok() {
     return WireMock.ok();
   }
 
+  @SuppressWarnings("PMD.ShortMethodName")
   public static ResponseDefinitionBuilder ok(String body) {
     return WireMock.ok(body);
   }
