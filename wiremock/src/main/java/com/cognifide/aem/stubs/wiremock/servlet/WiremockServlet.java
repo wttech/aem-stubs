@@ -96,7 +96,7 @@ public class WiremockServlet extends HttpServlet {
       try {
         content.close();
       } catch (IOException e) {
-        LOG.error("Cannot write Wiremock AEM Stubs response", e);
+        LOG.error("Cannot write WireMock AEM Stubs response", e);
         // well, we tried
       }
     }

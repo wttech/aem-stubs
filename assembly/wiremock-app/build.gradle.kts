@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
-description = "AEM Stubs - Wiremock App"
+description = "AEM Stubs - WireMock App"
 
 tasks {
     packageCompose {
