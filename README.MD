@@ -47,8 +47,12 @@ Published artifacts are available in Nexus repository at URL: <https://nexus.cog
 
 Distribution types:
 
-* all - with Groovy OSGi bundle included,
-* app - without Groovy OSGi bundle included.
+* all - both frameworks with Groovy OSGi bundle included,
+* app - both frameworks without Groovy OSGi bundle included.
+* wiremock-all - WireMock framework only with Groovy OSGi bundle included,
+* wiremock-app - WireMock framework only without Groovy OSGi bundle included.
+* moco-all - Moco framework only with Groovy OSGi bundle included,
+* moco-app - Moco framework only without Groovy OSGi bundle included.
 
 ## Compatibility
 
