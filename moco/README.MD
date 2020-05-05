@@ -39,7 +39,7 @@ stubs.server
 
 ## Documentation
 
-To create stubs for web services or more basically mock any data, it is needed to only create a **stub script** under pre-configured path, e.g */var/stubs/hello.groovy*.
+To create stubs for web services or more basically mock any data, it is needed to only create a **stub script** under pre-configured path, e.g */var/stubs/moco/hello.groovy*.
 
 ```
 stubs.server

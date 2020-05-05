@@ -36,8 +36,8 @@ stubs.server.with {
 
 ## Documentation
 
-All stubs need to be defined via one or many stub scripts located in AEM repository under path */var/stubs* (by default).
-For example, consider contents of file */var/stubs/samples/hello.groovy*:
+All stubs need to be defined via one or many stub scripts located in AEM repository under path */var/stubs/wiremock* (by default).
+For example, consider contents of file */var/stubs/wiremock/samples/hello.groovy*:
 
 ```
 stubs.server.with {
