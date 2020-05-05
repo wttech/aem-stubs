@@ -131,9 +131,9 @@ public class StubScriptManager implements ResourceChangeListener {
       .collect(Collectors.toList());
 
     if (!scriptChanges.isEmpty()) {
-      if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.reload_mode())) {
+      if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.on_change())) {
           scriptChanges.forEach(c -> run(c.getPath()));
-      } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.reload_mode())) {
+      } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.on_change())) {
         scriptChanges.stream()
           .map(c -> findRunnable(c.getPath()))
           .distinct()
@@ -196,6 +196,6 @@ public class StubScriptManager implements ResourceChangeListener {
         @Option(label = "Do nothing", value = ON_CHANGE_NOTHING)
       }
     )
-    String reload_mode() default ON_CHANGE_RESET_ALL;
+    String on_change() default ON_CHANGE_RESET_ALL;
   }
 }
