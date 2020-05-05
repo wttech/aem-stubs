@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.cognifide.aem.stubs.wiremock.WiremockException;
+import com.cognifide.aem.stubs.wiremock.WireMockException;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.common.FileSource;
@@ -68,7 +68,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
     if (definition.specifiesBodyFile()) {
       String template = jcrFileReader.readText(newBodyOrigin)
-        .orElseThrow(() -> new WiremockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
+        .orElseThrow(() -> new WireMockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
       PebbleTemplate fileTemplate = engine.getTemplate(template);
       newBody = evaluate(fileTemplate, model);
     } else {

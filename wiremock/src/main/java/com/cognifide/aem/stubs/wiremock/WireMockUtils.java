@@ -18,9 +18,9 @@ import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.matching.ValueMatcher;
 
 @SuppressWarnings({"PMD.ClassNamingConventions", "PMD.TooManyMethods", "PMD.ExcessivePublicCount"})
-final public class Wiremock {
+final public class WireMockUtils {
 
-  private Wiremock(){
+  private WireMockUtils(){
     //intentionally empty
   }
   public static StringValuePattern equalTo(String value) {

@@ -2,13 +2,13 @@ package com.cognifide.aem.stubs.wiremock;
 
 import com.cognifide.aem.stubs.core.StubsException;
 
-public class WiremockException extends StubsException {
+public class WireMockException extends StubsException {
 
-  public WiremockException(String message) {
+  public WireMockException(String message) {
     super(message);
   }
 
-  public WiremockException(String message, Throwable throwable) {
+  public WireMockException(String message, Throwable throwable) {
     super(message, throwable);
   }
 }

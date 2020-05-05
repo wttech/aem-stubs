@@ -25,9 +25,9 @@ import com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.google.common.io.ByteStreams;
 
-public class WiremockServlet extends HttpServlet {
+public class WireMockServlet extends HttpServlet {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WiremockServlet.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WireMockServlet.class);
 
   private final RequestHandler requestHandler;
 
@@ -35,7 +35,7 @@ public class WiremockServlet extends HttpServlet {
 
   private final String path;
 
-  public WiremockServlet(String path, RequestHandler requestHandler) {
+  public WireMockServlet(String path, RequestHandler requestHandler) {
     super();
     this.requestHandler = requestHandler;
     this.requestConfigurer = new DefaultMultipartRequestConfigurer();

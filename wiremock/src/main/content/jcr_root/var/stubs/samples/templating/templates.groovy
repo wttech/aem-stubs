@@ -1,4 +1,4 @@
-import static com.cognifide.aem.stubs.wiremock.Wiremock.*
+import static com.cognifide.aem.stubs.wiremock.WireMockUtils.*
 
 stubs.server.with {
     // template body

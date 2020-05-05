@@ -36,13 +36,13 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
-class WiremockConfig implements Options {
+class WireMockConfig implements Options {
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
   private final Map<String, Extension> extensions = newLinkedHashMap();
 
 
-  /* default */ WiremockConfig(ResolverAccessor resolverAccessor, String rootPath) {
+  /* default */ WireMockConfig(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
 
@@ -88,7 +88,7 @@ class WiremockConfig implements Options {
 
   @Override
   public FileSource filesRoot() {
-    return new WiremockFileSource(resolverAccessor, rootPath);
+    return new WireMockFileSource(resolverAccessor, rootPath);
   }
 
   @Override

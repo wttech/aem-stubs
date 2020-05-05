@@ -21,16 +21,16 @@ import org.slf4j.LoggerFactory;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScriptManager;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.cognifide.aem.stubs.wiremock.servlet.WiremockServlet;
+import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 
 @Component(
-  service = {Stubs.class, WiremockStubs.class},
+  service = {Stubs.class, WireMockStubs.class},
   immediate = true
 )
-@Designate(ocd = WiremockStubs.Config.class)
-public class WiremockStubs implements Stubs<WireMockApp> {
+@Designate(ocd = WireMockStubs.Config.class)
+public class WireMockStubs implements Stubs<WireMockApp> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WiremockStubs.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WireMockStubs.class);
 
   private WireMockApp app;
 
@@ -66,7 +66,7 @@ public class WiremockStubs implements Stubs<WireMockApp> {
   @Override
   public void prepare(StubScript script) {
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer()
-      .addStaticStars(Wiremock.class.getName())
+      .addStaticStars(WireMockUtils.class.getName())
       .addStarImports(Request.class.getPackage().getName())
     );
   }
@@ -120,8 +120,8 @@ public class WiremockStubs implements Stubs<WireMockApp> {
     return String.format("%s/*", path);
   }
 
-  private WiremockServlet createServlet() {
-    return new WiremockServlet(config.path(), app.buildStubRequestHandler());
+  private WireMockServlet createServlet() {
+    return new WireMockServlet(config.path(), app.buildStubRequestHandler());
   }
 
   @ObjectClassDefinition(name = "AEM Stubs WireMock Server")

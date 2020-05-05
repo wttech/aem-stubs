@@ -15,15 +15,15 @@ import com.github.tomakehurst.wiremock.common.BinaryFile;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.TextFile;
 
-class WiremockFileSource implements FileSource {
+class WireMockFileSource implements FileSource {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WiremockFileSource.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WireMockFileSource.class);
 
   private final JcrFileReader jcrFileReader;
 
   private final String rootPath;
 
-  public WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
+  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
     this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
   }
