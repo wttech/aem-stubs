@@ -91,10 +91,6 @@ aem {
                 embedPackage("com.flipkart.zjsonpatch:zjsonpatch:0.4.9", "com.flipkart.zjsonpatch")
             }
         }
-
-        packageCompose {
-            installBundleProject(":core")
-        }
     }
 }
 

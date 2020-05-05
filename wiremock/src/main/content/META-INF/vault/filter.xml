@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/var/stubs/samples"/>
+    <filter root="/var/stubs/wiremock/samples"/>
 </workspaceFilter>
