@@ -10,6 +10,8 @@ By implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [Wir
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and start stubbing!
 
+![Screenshot](docs/screenshot.jpg)
+
 ## Table of contents
 
   * [Frameworks](#frameworks)
