@@ -1,5 +1,6 @@
 package com.cognifide.aem.stubs.core.script;
 
+import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -14,9 +15,11 @@ import java.io.*;
 @SuppressWarnings("PMD.DataClass")
 public class StubScript {
 
+  private final String path;
+
   private final StubScriptManager manager;
 
-  private final String path;
+  private final Stubs<?> runnable;
 
   private final Binding binding = new Binding();
 
@@ -28,11 +31,12 @@ public class StubScript {
 
   private final Logger logger;
 
-  public StubScript(String path, StubScriptManager manager, ResourceResolver resolver) {
+  public StubScript(String path, StubScriptManager manager, Stubs<?> runnable, ResourceResolver resolver) {
     this.path = path;
     this.manager = manager;
+    this.runnable = runnable;
     this.logger = createLogger(path);
-    this.repository = RepositoryFacade.forScript(path, manager, resolver);
+    this.repository = RepositoryFacade.forScript(path, manager, runnable, resolver);
 
     binding.setVariable("script", this);
     binding.setVariable("logger", logger);

@@ -96,7 +96,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath());
+    this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath() + "/" + getId());
     this.servletPath = getServletPath(config.path());
 
     try {
