@@ -9,22 +9,22 @@ import com.github.tomakehurst.wiremock.http.Response;
 
 final class FaultResponse {
 
-  private final boolean supported;
+  private final boolean notSupported;
   private final String msg;
   private final int statusCode;
 
-  private FaultResponse(boolean supported, String msg, int statusCode) {
-    this.supported = supported;
+  private FaultResponse(boolean notSupported, String msg, int statusCode) {
+    this.notSupported = notSupported;
     this.msg = msg;
     this.statusCode = statusCode;
   }
 
   public boolean isNotSupported() {
-    return !supported;
+    return notSupported;
   }
 
-  public void sendError(HttpServletResponse response) throws IOException {
-    response.sendError(statusCode, msg);
+  public void sendError(HttpServletResponse servletResponse) throws IOException {
+    servletResponse.sendError(statusCode, msg);
   }
 
   public static FaultResponse fromResponse(Response response) {
@@ -48,18 +48,18 @@ final class FaultResponse {
         .notSupportedResponse("Delay not supported by AEM Stubs");
     }
 
-    return FaultResponse.supportedResponse();
+    return FaultResponse.supported();
   }
 
-  private static FaultResponse supportedResponse() {
+  private static FaultResponse supported() {
     return new FaultResponse(false, null, -1);
   }
 
   private static FaultResponse notSupportedResponse(String msg) {
-    return new FaultResponse(false, msg, 400);
+    return new FaultResponse(true, msg, 400);
   }
 
   private static FaultResponse notSupportedResponse(String msg, int statusCode) {
-    return new FaultResponse(false, msg, statusCode);
+    return new FaultResponse(true, msg, statusCode);
   }
 }

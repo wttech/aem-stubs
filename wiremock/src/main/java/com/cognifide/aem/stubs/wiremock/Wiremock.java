@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.matching.ValueMatcher;
 final public class Wiremock {
 
   private Wiremock(){
-    //pmd
+    //intentionally empty
   }
   public static StringValuePattern equalTo(String value) {
     return WireMock.equalTo(value);

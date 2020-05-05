@@ -23,7 +23,7 @@ class WiremockFileSource implements FileSource {
 
   private final String rootPath;
 
-  /* default */ WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
+  public WiremockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
     this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
   }
