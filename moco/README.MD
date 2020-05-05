@@ -41,6 +41,15 @@ stubs.server
 
 To create stubs for web services or more basically mock any data, it is needed to only create a **stub script** under pre-configured path, e.g */var/stubs/hello.groovy*.
 
+```
+stubs.server
+        .get(by(uri("/hello-world")))
+        .response("Hello! I am sample stub.")
+```
+
+Above stub will be accessible at URL <http://localhost:5555/hello-world>. 
+Note that port 5555 is configurable via OSGi configuration.
+
 ### OSGi configuration
 
 Be aware of common / Moco agnostic [OSGi configuration](../#osgi-configuration) at first.
