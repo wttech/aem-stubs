@@ -1,5 +1,8 @@
 package com.cognifide.aem.stubs.core.script;
 
+import static java.lang.String.format;
+import static org.apache.commons.io.FilenameUtils.wildcardMatch;
+
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.core.util.StreamUtils;
@@ -81,12 +84,12 @@ public class StubScriptManager implements ResourceChangeListener {
    */
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll(Stubs<?> runnable) {
-    final String rootPath = String.format("%s/%s", getRootPath(), runnable.getId());
+    final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     LOG.info("Executing all AEM Stub scripts under path '{}'", rootPath);
     resolverAccessor.consume(resolver -> {
       try {
-        StreamUtils.from(resolver.findResources(String.format(QUERY, rootPath), Query.JCR_SQL2))
+        StreamUtils.from(resolver.findResources(format(QUERY, rootPath), Query.JCR_SQL2))
           .filter(r -> isRunnable(r.getPath()))
           .map(Resource::getPath)
           .forEach(this::run);
@@ -101,7 +104,7 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private boolean isNotExcludedPath(String path) {
-    return Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(path, p));
+    return Arrays.stream(config.excluded_paths()).noneMatch(p -> wildcardMatch(path, p));
   }
 
   private boolean isExtensionCorrect(String path) {
@@ -141,13 +144,8 @@ public class StubScriptManager implements ResourceChangeListener {
 
   public Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
-      .filter(runnable -> matchToRunnableId(runnable, path))
+      .filter(runnable -> wildcardMatch(path, format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension())))
       .findFirst();
-  }
-
-  private boolean matchToRunnableId(Stubs<?> runnable, String path){
-    final String pathPattern = String.format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension());
-    return  (FilenameUtils.wildcardMatch(path, pathPattern));
   }
 
   public String getRootPath() {
