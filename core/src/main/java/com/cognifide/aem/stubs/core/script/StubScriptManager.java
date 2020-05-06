@@ -1,5 +1,8 @@
 package com.cognifide.aem.stubs.core.script;
 
+import static java.lang.String.format;
+import static org.apache.commons.io.FilenameUtils.wildcardMatch;
+
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.core.util.StreamUtils;
@@ -20,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.query.Query;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component(
@@ -97,12 +101,12 @@ public class StubScriptManager implements ResourceChangeListener {
    */
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll(Stubs<?> runnable) {
-    final String rootPath = String.format("%s/%s", getRootPath(), runnable.getId());
+    final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     LOG.info("Executing all AEM Stub scripts under path '{}'", rootPath);
     resolverAccessor.consume(resolver -> {
       try {
-        StreamUtils.from(resolver.findResources(String.format(QUERY, rootPath), Query.JCR_SQL2))
+        StreamUtils.from(resolver.findResources(format(QUERY, rootPath), Query.JCR_SQL2))
           .filter(r -> isRunnable(r.getPath()))
           .map(Resource::getPath)
           .forEach(this::run);
@@ -117,7 +121,7 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private boolean isNotExcludedPath(String path) {
-    return Arrays.stream(config.excluded_paths()).noneMatch(p -> FilenameUtils.wildcardMatch(path, p));
+    return Arrays.stream(config.excluded_paths()).noneMatch(p -> wildcardMatch(path, p));
   }
 
   private boolean isExtensionCorrect(String path) {
@@ -143,29 +147,25 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private Object execute(ResourceResolver resolver, String path) {
-    final Stubs<?> stubs = findRunnable(path);
-    if (stubs == null) {
+    return findRunnable(path).map(stubs -> {
+      final StubScript script = new StubScript(path, this, stubs, resolver);
+      LOG.info("Executing Stub Script '{}'", script.getPath());
+      script.getBinding().setVariable("stubs", stubs);
+      stubs.prepare(script);
+      final Object result = script.run();
+      LOG.info("Executed Stub Script '{}'", script.getPath());
+      return result;
+    }).orElseGet(() -> {
       LOG.warn("Executing Stub Script '{}' not possible - runnable not found.", path);
       return null;
-    }
+    });
 
-    final StubScript script = new StubScript(path, this, stubs, resolver);
-    LOG.info("Executing Stub Script '{}'", script.getPath());
-    script.getBinding().setVariable("stubs", stubs);
-    stubs.prepare(script);
-    final Object result = script.run();
-    LOG.info("Executed Stub Script '{}'", script.getPath());
-    return result;
   }
 
-  public Stubs<?> findRunnable(String path) {
-    for (Stubs<?> runnable : runnables) {
-      final String pathPattern = String.format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension());
-      if (FilenameUtils.wildcardMatch(path, pathPattern)) {
-        return runnable;
-      }
-    }
-    return null;
+  public Optional<Stubs<?>> findRunnable(String path) {
+    return runnables.stream()
+      .filter(runnable -> wildcardMatch(path, format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension())))
+      .findFirst();
   }
 
   public String getRootPath() {
