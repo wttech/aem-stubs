@@ -30,7 +30,6 @@ import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 @Designate(ocd = WireMockStubs.Config.class)
 public class WireMockStubs implements Stubs<WireMockApp> {
 
-  @SuppressWarnings("PMD.ShortVariable")
   public static final String ID = "wiremock";
 
   private static final Logger LOG = LoggerFactory.getLogger(WireMockStubs.class);
