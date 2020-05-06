@@ -34,6 +34,8 @@ aem {
 tasks {
     register("publishToInternal") {
         dependsOn(
+                ":assembly:all:publishMavenPublicationToInternalRepository",
+                ":assembly:app:publishMavenPublicationToInternalRepository",
                 ":assembly:wiremock-all:publishMavenPublicationToInternalRepository",
                 ":assembly:wiremock-app:publishMavenPublicationToInternalRepository",
                 ":assembly:moco-all:publishMavenPublicationToInternalRepository",
