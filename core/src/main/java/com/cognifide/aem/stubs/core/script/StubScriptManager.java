@@ -13,6 +13,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.service.metatype.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,12 @@ public class StubScriptManager implements ResourceChangeListener {
   private static final Logger LOG = LoggerFactory.getLogger(StubScriptManager.class);
 
   private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
+
+  private static final String ON_CHANGE_RESET_ALL = "reset_all";
+
+  private static final String ON_CHANGE_RUN_CHANGED = "run_changed";
+
+  private static final String ON_CHANGE_NOTHING = "nothing";
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -74,8 +81,18 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   /**
+   * Runs all stub scripts handled by all runnables available.
+   */
+  public void runAll() {
+    for (Stubs<?> runnable : runnables) {
+      runAll(runnable);
+    }
+  }
+
+  /**
    * Runs all stub scripts which:
    * - are located under configured root path,
+   * - are having correct file extension
    * - are not matching exclusion path patterns.
    */
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
@@ -114,11 +131,14 @@ public class StubScriptManager implements ResourceChangeListener {
       .collect(Collectors.toList());
 
     if (!scriptChanges.isEmpty()) {
-      resolverAccessor.consume(resolver -> {
-        scriptChanges.forEach(change -> {
-          execute(resolver, change.getPath());
-        });
-      });
+      if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.on_change())) {
+          scriptChanges.forEach(c -> run(c.getPath()));
+      } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.on_change())) {
+        scriptChanges.stream()
+          .map(c -> findRunnable(c.getPath()))
+          .distinct()
+          .forEach(Stubs::reset);
+      }
     }
   }
 
@@ -167,5 +187,15 @@ public class StubScriptManager implements ResourceChangeListener {
 
     @AttributeDefinition(name = "Excluded Paths")
     String[] excluded_paths() default {"**/internals/*"};
+
+    @AttributeDefinition(
+      name = "On change",
+      options = {
+        @Option(label = "Restart server and run all scripts", value = ON_CHANGE_RESET_ALL),
+        @Option(label = "Run changed script only", value = ON_CHANGE_RUN_CHANGED),
+        @Option(label = "Do nothing", value = ON_CHANGE_NOTHING)
+      }
+    )
+    String on_change() default ON_CHANGE_RESET_ALL;
   }
 }

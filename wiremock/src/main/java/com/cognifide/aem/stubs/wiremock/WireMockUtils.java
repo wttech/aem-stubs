@@ -43,7 +43,6 @@ final public class WireMockUtils {
     return WireMock.equalToJson(value);
   }
 
-  @SuppressWarnings("PMD.LongVariable")
   public static StringValuePattern equalToJson(String value, boolean ignoreArrayOrder, boolean ignoreExtraElements) {
     return WireMock.equalToJson(value, ignoreArrayOrder, ignoreExtraElements);
   }

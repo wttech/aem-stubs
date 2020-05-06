@@ -6,6 +6,8 @@
     <description>Every Java Rule in PMD</description>
     <rule ref="category/java/bestpractices.xml" />
     <rule ref="category/java/codestyle.xml">
+        <exclude name="ShortVariable"/>
+        <exclude name="LongVariable"/>
         <exclude name="OnlyOneReturn"/>
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
@@ -14,6 +16,11 @@
     </rule>
     <rule ref="category/java/design.xml">
         <exclude name="LawOfDemeter"/>
+    </rule>
+    <rule ref="category/java/design.xml/LoosePackageCoupling">
+        <properties>
+            <property name="packages" value="com.cognifide.aem.stubs" />
+        </properties>
     </rule>
     <rule ref="category/java/documentation.xml">
         <exclude name="CommentRequired"/>
