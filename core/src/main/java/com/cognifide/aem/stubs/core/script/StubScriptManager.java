@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component(
   service = {StubScriptManager.class, ResourceChangeListener.class},
@@ -140,6 +141,7 @@ public class StubScriptManager implements ResourceChangeListener {
       } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.on_change())) {
         scriptChanges.stream()
           .map(c -> findRunnable(c.getPath()))
+          .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
           .distinct()
           .forEach(Stubs::reset);
       }
