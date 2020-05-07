@@ -6,7 +6,9 @@ import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.core.util.StreamUtils;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
@@ -21,10 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.query.Query;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -117,16 +116,12 @@ public class StubScriptManager implements ResourceChangeListener {
               result.total++;
               execute(resolver, path);
             } catch (Exception e) {
-              LOG.debug("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
-              result.failed.add(path);
+              LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
+              result.failed++;
             }
           });
         LOG.info("Running AEM Stubs scripts ended - success ratio ({}/{}={})", result.getSucceed(), result.getTotal(),
           result.getSucceedPercent());
-        if (!result.getFailed().isEmpty()) {
-          LOG.warn("Some AEM Stubs scripts failed ({})! Consider fixing scripts at paths:\n{}", result.getFailed().size(),
-            result.getFailedAsString());
-        }
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
@@ -167,7 +162,7 @@ public class StubScriptManager implements ResourceChangeListener {
   private Object execute(ResourceResolver resolver, String path) {
     Stubs<?> runnable = findRunnable(path).orElse(null);
     if (runnable == null) {
-      LOG.warn("Executing Stub Script '{}' not possible - runnable not found.", path);
+      LOG.error("Executing Stub Script '{}' not possible - runnable not found.", path);
       return null;
     }
 
@@ -195,30 +190,27 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private static class RunResult {
+
     private static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance(Locale.US);
 
     private int total = 0;
 
-    private final List<String> failed = Lists.newLinkedList();
+    private int failed = 0;
 
     public int getTotal() {
       return total;
     }
 
-    public List<String> getFailed() {
+    public int getFailed() {
       return failed;
     }
 
-    public String getFailedAsString() {
-      return failed.stream().collect(Collectors.joining("\n"));
-    }
-
     public int getSucceed() {
-      return total - failed.size();
+      return total - failed;
     }
 
     public String getSucceedPercent() {
-      return PERCENT_FORMAT.format((double) (total - failed.size()) / ((double) total));
+      return PERCENT_FORMAT.format((double) (total - failed) / ((double) total));
     }
   }
 
