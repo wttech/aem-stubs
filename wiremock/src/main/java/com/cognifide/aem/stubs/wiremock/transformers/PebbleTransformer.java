@@ -42,6 +42,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     super();
     this.jcrFileReader = jcrFileReader;
     this.engine = new PebbleEngine.Builder()
+      .cacheActive(false)
       .loader(new StringLoader())
       .build();
   }
