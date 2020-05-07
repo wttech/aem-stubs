@@ -172,11 +172,11 @@ public class StubScriptManager implements ResourceChangeListener {
     }
 
     final StubScript script = new StubScript(path, this, runnable, resolver);
-    LOG.info("Executing Stub Script '{}'", script.getPath());
+    LOG.debug("Executing Stub Script '{}'", script.getPath());
     script.getBinding().setVariable("stubs", runnable);
     runnable.prepare(script);
     final Object result = script.run();
-    LOG.info("Executed Stub Script '{}'", script.getPath());
+    LOG.debug("Executed Stub Script '{}'", script.getPath());
     return result;
   }
 
