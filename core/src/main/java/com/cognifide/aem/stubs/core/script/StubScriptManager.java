@@ -148,24 +148,24 @@ public class StubScriptManager implements ResourceChangeListener {
   }
 
   private Object execute(ResourceResolver resolver, String path) {
-    return findRunnable(path).map(stubs -> {
-      final StubScript script = new StubScript(path, this, stubs, resolver);
-      LOG.info("Executing Stub Script '{}'", script.getPath());
-      script.getBinding().setVariable("stubs", stubs);
-      stubs.prepare(script);
-      final Object result = script.run();
-      LOG.info("Executed Stub Script '{}'", script.getPath());
-      return result;
-    }).orElseGet(() -> {
+    Stubs<?> runnable = findRunnable(path).orElse(null);
+    if (runnable == null) {
       LOG.warn("Executing Stub Script '{}' not possible - runnable not found.", path);
       return null;
-    });
+    }
 
+    final StubScript script = new StubScript(path, this, runnable, resolver);
+    LOG.info("Executing Stub Script '{}'", script.getPath());
+    script.getBinding().setVariable("stubs", runnable);
+    runnable.prepare(script);
+    final Object result = script.run();
+    LOG.info("Executed Stub Script '{}'", script.getPath());
+    return result;
   }
 
   public Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
-      .filter(runnable -> wildcardMatch(path, format("%s/%s/*%s", getRootPath(), runnable.getId(), getExtension())))
+      .filter(runnable -> wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getExtension())))
       .findFirst();
   }
 
