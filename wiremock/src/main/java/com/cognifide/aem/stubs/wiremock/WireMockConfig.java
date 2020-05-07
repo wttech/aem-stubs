@@ -42,7 +42,7 @@ class WireMockConfig implements Options {
   private final Map<String, Extension> extensions = newLinkedHashMap();
 
 
-  /* default */ WireMockConfig(ResolverAccessor resolverAccessor, String rootPath) {
+  public WireMockConfig(ResolverAccessor resolverAccessor, String rootPath) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
 
