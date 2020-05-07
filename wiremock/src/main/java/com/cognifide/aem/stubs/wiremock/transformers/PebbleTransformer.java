@@ -38,8 +38,11 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
   private final JcrFileReader jcrFileReader;
 
-  public PebbleTransformer(JcrFileReader jcrFileReader) {
+  private final boolean global;
+
+  public PebbleTransformer(JcrFileReader jcrFileReader, boolean global) {
     super();
+    this.global = global;
     this.jcrFileReader = jcrFileReader;
     this.engine = new PebbleEngine.Builder()
       .cacheActive(false)
@@ -118,6 +121,11 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     } catch (IOException e) {
       return throwUnchecked(e, String.class);
     }
+  }
+
+  @Override
+  public boolean applyGlobally() {
+    return global;
   }
 
   @Override
