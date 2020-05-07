@@ -12,7 +12,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.*;
-import org.apache.commons.io.FilenameUtils;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;

@@ -5,6 +5,8 @@ import com.cognifide.aem.stubs.core.StubsException;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
@@ -31,12 +33,15 @@ public class StubScript {
 
   private final Logger logger;
 
+  private final ResourceResolver resourceResolver;
+
   public StubScript(String path, StubScriptManager manager, Stubs<?> runnable, ResourceResolver resolver) {
     this.path = path;
     this.manager = manager;
     this.runnable = runnable;
+    this.resourceResolver = resolver;
     this.logger = createLogger(path);
-    this.repository = RepositoryFacade.forScript(path, manager, runnable, resolver);
+    this.repository = new RepositoryFacade(this);
 
     binding.setVariable("script", this);
     binding.setVariable("logger", logger);
@@ -56,8 +61,28 @@ public class StubScript {
     return path;
   }
 
+  public String getRootPath() {
+    return manager.getRootPath() + "/" + runnable.getId();
+  }
+
+  public String getDirPath() {
+    return StringUtils.substringBeforeLast(path, "/");
+  }
+
+  public String getBaseName() {
+    return FilenameUtils.getBaseName(path);
+  }
+
+  public String getResourcePath(String extension) {
+    return String.format("%s/%s.%s", getDirPath(), getBaseName(), extension);
+  }
+
   public StubScriptManager getManager() {
     return manager;
+  }
+
+  public ResourceResolver getResourceResolver() {
+    return resourceResolver;
   }
 
   public Stubs<?> getRunnable() {

@@ -1,10 +1,8 @@
 package com.cognifide.aem.stubs.core.script;
 
-import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.ResourceResolver;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -14,34 +12,24 @@ import java.util.Optional;
 
 public class RepositoryFacade {
 
-  private final ResourceResolver resolver;
+  private final StubScript script;
 
-  private final String absoluteRoot;
-
-  private final String relativeRoot;
-
-  public RepositoryFacade(ResourceResolver resolver, String relativeRoot, String absoluteRoot) {
-    this.resolver = resolver;
-    this.relativeRoot = relativeRoot;
-    this.absoluteRoot = absoluteRoot;
-  }
-
-  public static RepositoryFacade forScript(String path, StubScriptManager manager, Stubs<?> runnable, ResourceResolver resolver) {
-    return new RepositoryFacade(resolver, StringUtils.substringBeforeLast(path, "/"), manager.getRootPath() + "/" + runnable.getId());
+  public RepositoryFacade(StubScript script) {
+    this.script = script;
   }
 
   public Optional<InputStream> useStream(String path) {
     return Optional.ofNullable(path)
       .map(p -> {
         if (p.startsWith("./")) {
-          return String.format("%s/%s/jcr:content", relativeRoot, StringUtils.removeStart(p, "./"));
+          return String.format("%s/%s/jcr:content", script.getDirPath(), StringUtils.removeStart(p, "./"));
         } else if (!StringUtils.startsWith(p, "/")) {
-          return String.format("%s/%s/jcr:content", absoluteRoot, p);
+          return String.format("%s/%s/jcr:content", script.getRootPath(), p);
         } else {
           return String.format("%s/jcr:content", p);
         }
       })
-      .map(resolver::getResource)
+      .map(p -> script.getResourceResolver().getResource(p))
       .map(r -> r.adaptTo(InputStream.class))
       .map(BufferedInputStream::new);
   }
@@ -59,5 +47,17 @@ public class RepositoryFacade {
         throw new StubsException(String.format("Cannot read repository file '%s' as text!", path), e);
       }
     }).orElseThrow(() -> new StubsException(String.format("Cannot read repository file '%s' as text!", path)));
+  }
+
+  public String getJson() {
+    return readText(script.getResourcePath("json"));
+  }
+
+  public String getXml() {
+    return readText(script.getResourcePath("xml"));
+  }
+
+  public String getTxt() {
+    return readText(script.getResourcePath("txt"));
   }
 }

@@ -55,4 +55,8 @@ tasks {
         outputs.upToDateWhen { false }
         testLogging.showStandardStreams = true
     }
+
+    pmdIntegTest {
+        enabled = false
+    }
 }
