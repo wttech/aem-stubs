@@ -20,8 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.query.Query;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,7 +80,7 @@ public class StubScriptManager implements ResourceChangeListener {
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void run(String path) {
     try {
-      resolverAccessor.resolve(resolver -> execute(resolver, path));
+      resolverAccessor.consume(resolver -> execute(resolver, path));
     } catch (Exception e) {
       LOG.error("Cannot run AEM Stub script '{}'! Cause: {}", path, e.getMessage(), e);
     }
@@ -103,13 +105,28 @@ public class StubScriptManager implements ResourceChangeListener {
   public void runAll(Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
-    LOG.info("Executing all AEM Stub scripts under path '{}'", rootPath);
+    LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
     resolverAccessor.consume(resolver -> {
       try {
+        final RunResult result = new RunResult();
         StreamUtils.from(resolver.findResources(format(QUERY, rootPath), Query.JCR_SQL2))
           .filter(r -> isRunnable(r.getPath()))
           .map(Resource::getPath)
-          .forEach(this::run);
+          .forEach(path -> {
+            try {
+              result.total++;
+              execute(resolver, path);
+            } catch (Exception e) {
+              LOG.debug("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
+              result.failed.add(path);
+            }
+          });
+        LOG.info("Running AEM Stubs scripts ended - success ratio ({}/{}={})", result.getSucceed(), result.getTotal(),
+          result.getSucceedPercent());
+        if (!result.getFailed().isEmpty()) {
+          LOG.warn("Some AEM Stubs scripts failed ({})! Consider fixing scripts at paths:\n{}", result.getFailed().size(),
+            result.getFailedAsString());
+        }
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
@@ -136,7 +153,7 @@ public class StubScriptManager implements ResourceChangeListener {
 
     if (!scriptChanges.isEmpty()) {
       if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.on_change())) {
-          scriptChanges.forEach(c -> run(c.getPath()));
+        scriptChanges.forEach(c -> run(c.getPath()));
       } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.on_change())) {
         scriptChanges.stream()
           .map(c -> findRunnable(c.getPath()))
@@ -175,6 +192,34 @@ public class StubScriptManager implements ResourceChangeListener {
 
   public String getExtension() {
     return config.extension();
+  }
+
+  private static class RunResult {
+    private static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance(Locale.US);
+
+    private int total = 0;
+
+    private final List<String> failed = Lists.newLinkedList();
+
+    public int getTotal() {
+      return total;
+    }
+
+    public List<String> getFailed() {
+      return failed;
+    }
+
+    public String getFailedAsString() {
+      return failed.stream().collect(Collectors.joining("\n"));
+    }
+
+    public int getSucceed() {
+      return total - failed.size();
+    }
+
+    public String getSucceedPercent() {
+      return PERCENT_FORMAT.format((double) (total - failed.size()) / ((double) total));
+    }
   }
 
   @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
