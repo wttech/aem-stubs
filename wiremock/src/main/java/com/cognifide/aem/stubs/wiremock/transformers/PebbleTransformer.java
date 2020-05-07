@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.cognifide.aem.stubs.wiremock.WireMockException;
@@ -37,10 +38,14 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
   private final JcrFileReader jcrFileReader;
 
-  public PebbleTransformer(JcrFileReader jcrFileReader) {
+  private final boolean global;
+
+  public PebbleTransformer(JcrFileReader jcrFileReader, boolean global) {
     super();
+    this.global = global;
     this.jcrFileReader = jcrFileReader;
     this.engine = new PebbleEngine.Builder()
+      .cacheActive(false)
       .loader(new StringLoader())
       .build();
   }
@@ -62,20 +67,28 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     }
 
     //body
-    PebbleTemplate bodyTemplate = engine.getTemplate(getBodyTemplateString(definition));
-    final String newBodyOrigin = evaluate(bodyTemplate, model);
-    String newBody;
+    return Optional.ofNullable(getBodyTemplateString(definition))
+      .map(transformBody(definition, definitionBuilder, model))
+      .orElse(definition);
+  }
 
-    if (definition.specifiesBodyFile()) {
-      String template = jcrFileReader.readText(newBodyOrigin)
-        .orElseThrow(() -> new WireMockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
-      PebbleTemplate fileTemplate = engine.getTemplate(template);
-      newBody = evaluate(fileTemplate, model);
-    } else {
-      newBody = newBodyOrigin;
-    }
+  private Function<String, ResponseDefinition> transformBody(ResponseDefinition definition,
+    ResponseDefinitionBuilder definitionBuilder, ImmutableMap<String, Object> model) {
+    return body -> {
+      PebbleTemplate bodyTemplate = engine.getTemplate(body);
+      final String newBodyOrigin = evaluate(bodyTemplate, model);
+      String newBody;
 
-    return definitionBuilder.withBody(newBody).build();
+      if (definition.specifiesBodyFile()) {
+        String template = jcrFileReader.readText(newBodyOrigin)
+          .orElseThrow(() -> new WireMockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
+        PebbleTemplate fileTemplate = engine.getTemplate(template);
+        newBody = evaluate(fileTemplate, model);
+      } else {
+        newBody = newBodyOrigin;
+      }
+      return definitionBuilder.withBody(newBody).build();
+    };
   }
 
   private Map<String, Object> calculateParameters(Parameters parameters) {
@@ -112,7 +125,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
   @Override
   public boolean applyGlobally() {
-    return false;
+    return global;
   }
 
   @Override

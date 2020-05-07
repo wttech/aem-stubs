@@ -2,8 +2,6 @@ package com.cognifide.aem.stubs.wiremock;
 
 import javax.servlet.ServletException;
 
-import com.cognifide.aem.stubs.core.script.StubScript;
-import com.github.tomakehurst.wiremock.http.Request;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -19,9 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.script.StubScript;
 import com.cognifide.aem.stubs.core.script.StubScriptManager;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
+import com.github.tomakehurst.wiremock.http.Request;
 
 @Component(
   service = {Stubs.class, WireMockStubs.class},
@@ -96,7 +96,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath() + "/" + getId());
+    this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath() + "/" + getId(),
+      config.globalTransformer());
     this.servletPath = getServletPath(config.path());
 
     try {
@@ -136,5 +137,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     @AttributeDefinition(name = "Servlet Prefix")
     String path() default "/stubs";
+
+    @AttributeDefinition(name = "Global Template Transformer", description = "Enables Pebble template engine / templating for response body content and file paths when loading body files. Effectively enables dynamic file loading instead of preloading and simplifies defining stubs.")
+    boolean globalTransformer() default true;
   }
 }

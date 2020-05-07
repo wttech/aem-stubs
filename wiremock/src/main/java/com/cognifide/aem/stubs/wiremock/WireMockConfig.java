@@ -39,20 +39,21 @@ import com.google.common.collect.Maps;
 class WireMockConfig implements Options {
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
+  private final boolean globalTransformer;
   private final Map<String, Extension> extensions = newLinkedHashMap();
 
 
-  /* default */ WireMockConfig(ResolverAccessor resolverAccessor, String rootPath) {
+  public WireMockConfig(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
-
+    this.globalTransformer = globalTransformer;
     addExtensions();
   }
 
   private void addExtensions() {
     JcrFileReader jcrFileReader= new JcrFileReader(resolverAccessor, rootPath);
     extensions.putAll(ExtensionLoader.asMap(
-      Collections.singletonList(new PebbleTransformer(jcrFileReader)))
+      Collections.singletonList(new PebbleTransformer(jcrFileReader, globalTransformer)))
     );
   }
 
