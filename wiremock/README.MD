@@ -64,11 +64,11 @@ At first, see [common](../#stub-script-api) script API.
 
 Pre-defined variables:
 
-* [stubs.server](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/wiremock/src/main/java/com/cognifide/aem/stubs/wiremock/WireMockApp.java) - use it to define WireMock stubs.
+* [stubs.server](wiremock/src/main/java/com/cognifide/aem/stubs/wiremock/WireMockApp.java) - use it to define WireMock stubs.
 
 Default imports (not needed to be specified explicitly in scripts):
 
-* [_com.cognifide.aem.stubs.wiremock.WireMockUtils.\*_](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/wiremock/src/main/java/com/cognifide/aem/stubs/wiremock/WireMockUtils.java) - proxied WireMock API.
+* [_com.cognifide.aem.stubs.wiremock.WireMockUtils.\*_](wiremock/src/main/java/com/cognifide/aem/stubs/wiremock/WireMockUtils.java) - proxied WireMock API.
 * [_com.github.tomakehurst.wiremock.http.Request.\*_](https://github.com/tomakehurst/wiremock/blob/master/src/main/java/com/github/tomakehurst/wiremock/http/Request.java) - WireMock request methods & constants.
 
 ### Supported features

@@ -70,7 +70,7 @@ Pre-defined variables:
 Default imports (not needed to be specified explicitly in scripts):
 
 * [_com.github.dreamhead.moco.Moco.\*_](https://github.com/dreamhead/moco/blob/master/moco-core/src/main/java/com/github/dreamhead/moco/Moco.java) - base Moco API,
-* [_com.cognifide.aem.stubs.moco.MocoUtils.\*_](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/moco/src/main/java/com/cognifide/aem/stubs/moco/MocoUtils.java) - AEM Stubs related extensions for Moco API.
+* [_com.cognifide.aem.stubs.moco.MocoUtils.\*_](moco/src/main/java/com/cognifide/aem/stubs/moco/MocoUtils.java) - AEM Stubs related extensions for Moco API.
 
 ## Useful links
 

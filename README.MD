@@ -90,9 +90,9 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 
 #### Pre-defined variables:
 
-* [stubs](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/core/src/main/java/com/cognifide/aem/stubs/core/Stubs.java) - use it to control actual Stubs server (WireMock or Moco),
+* [stubs](core/src/main/java/com/cognifide/aem/stubs/core/Stubs.java) - use it to control actual Stubs server (WireMock or Moco),
 * [resourceResolver](https://sling.apache.org/apidocs/sling11/org/apache/sling/api/resource/ResourceResolver.html) - for accessing AEM repository,
-* [repository](https://bitbucket.cognifide.com/users/krystian.panek/repos/aem-stubs/browse/core/src/main/java/com/cognifide/aem/stubs/core/script/Repository.java) - for easier using repository e.g reading file contents,
+* [repository](core/src/main/java/com/cognifide/aem/stubs/core/script/Repository.java) - for easier using repository e.g reading file contents,
 * [logger](https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java) - SLF4j logger connected to script being run.
 
 #### Useful snippets:
