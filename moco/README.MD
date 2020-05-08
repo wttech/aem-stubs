@@ -60,9 +60,9 @@ Be aware of common / Moco agnostic [OSGi configuration](../README.MD#osgi-config
 
 Then check see Moco specific OSGi configuration below:
 
-* [Moco Stubs](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.moco.MocoStubs)
+[Moco Stubs](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.moco.MocoStubs)
 
-    ![OSGi config - Moco Stubs](docs/osgi-config-moco-stubs.png)
+<img src="docs/osgi-config-moco-stubs.png" width="50%">    
 
 ### Stub script API
 

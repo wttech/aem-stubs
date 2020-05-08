@@ -97,7 +97,7 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 
 [Stub Script Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.script.StubScriptManager)
 
-<img src="docs/osgi-config-stubs-script-manager.png" width="489">
+<img src="docs/osgi-config-stubs-script-manager.png" width="50%">
   
 ### Stub script API
 
