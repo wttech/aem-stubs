@@ -113,6 +113,11 @@ See also framework-specific stub script API: [Wiremock](wiremock#stub-script-api
 
 There are no other dedicated tools for stubbing data available for AEM and it was main purpose to create AEM Stubs tool.
 
+## Authors
+
+* [Krystian Panek](mailto:krystian.panek@cognifide.com) - Project Owner, Main Developer,
+* [Piotr Marcinkowski](mailto:piotr.marcinkowski@cognifide.com) - Main Developer.
+
 ## License
 
 **AEM Stubs** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
