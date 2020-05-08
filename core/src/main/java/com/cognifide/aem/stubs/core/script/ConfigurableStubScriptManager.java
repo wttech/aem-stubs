@@ -2,16 +2,16 @@ package com.cognifide.aem.stubs.core.script;
 
 import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
+import static org.apache.sling.query.SlingQuery.$;
 
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.cognifide.aem.stubs.core.util.StreamUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
+import org.apache.sling.query.api.SearchStrategy;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -20,7 +20,6 @@ import org.osgi.service.metatype.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.query.Query;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
   private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubScriptManager.class);
 
-  private static final String QUERY = "SELECT script.* FROM [nt:file] AS script WHERE ISDESCENDANTNODE(script, [%s])";
+  private static final String NODE_TYPE = "nt:file";
 
   private static final String ON_CHANGE_RESET_ALL = "reset_all";
 
@@ -96,14 +95,14 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
     resolverAccessor.consume(resolver -> {
       try {
-
-        StreamUtils.from(resolver.findResources(format(QUERY, rootPath), Query.JCR_SQL2))
+        $(resolver.getResource(rootPath))
+          .searchStrategy(SearchStrategy.BFS)
+          .find(NODE_TYPE)
           .filter(r -> isRunnable(r.getPath()))
-          .map(Resource::getPath)
-          .forEach(path -> {
+          .forEach(resource -> {
             try {
               result.total++;
-              run(path, runnable, resolver);
+              run(resource.getPath(), runnable, resolver);
             } catch (Exception e) {
               LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
               result.failed++;
