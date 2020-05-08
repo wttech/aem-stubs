@@ -43,6 +43,8 @@ After choosing framework, it is recommended to explore dedicated AEM Stubs **fra
 * [AEM Stubs - WireMock](wiremock)
 * [AEM Stubs - Moco](moco)
 
+However, keep in mind using both frameworks on AEM is also supported. It may be useful when some features are missing in one framework, but they are available in another one.
+
 ## Downloads
 
 Published artifacts are available in Nexus repository at URL: <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/>.
