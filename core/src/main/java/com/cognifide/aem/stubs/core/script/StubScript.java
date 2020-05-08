@@ -44,9 +44,10 @@ public class StubScript {
     this.repository = new Repository(this);
 
     binding.setVariable("script", this);
+    binding.setVariable("stubs", runnable);
+    binding.setVariable("resourceResolver", resolver);
     binding.setVariable("logger", logger);
     binding.setVariable("repository", repository);
-    binding.setVariable("resourceResolver", resolver);
   }
 
   public Binding getBinding() {

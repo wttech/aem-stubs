@@ -73,7 +73,6 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   private void runAllEach(String path, Stubs<?> runnable, ResourceResolver resolver) {
     final StubScript script = new StubScript(path, this, runnable, resolver);
     LOG.debug("Running AEM Stubs script started '{}'", script.getPath());
-    script.getBinding().setVariable("stubs", runnable);
     runnable.prepare(script);
     script.run();
     LOG.debug("Running AEM Stubs script finished '{}'", script.getPath());
