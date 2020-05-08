@@ -89,12 +89,14 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Override
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll(Stubs<?> runnable) {
+    final RunAllResult result = new RunAllResult();
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
+
     resolverAccessor.consume(resolver -> {
       try {
-        final RunResult result = new RunResult();
+
         StreamUtils.from(resolver.findResources(format(QUERY, rootPath), Query.JCR_SQL2))
           .filter(r -> isRunnable(r.getPath()))
           .map(Resource::getPath)
@@ -107,12 +109,12 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
               result.failed++;
             }
           });
-        LOG.info("Running AEM Stubs scripts ended - success ratio ({}/{}={}), duration: {}", result.succeed(), result.total,
-          result.succeedPercent(), result.duration());
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
+
+    LOG.info("Running AEM Stubs scripts result: {}", result);
   }
 
   @Override
@@ -182,7 +184,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     this.config = config;
   }
 
-  private static class RunResult {
+  private static class RunAllResult {
 
     private static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance(Locale.US);
 
@@ -202,7 +204,11 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
     public String duration() {
       return DurationFormatUtils.formatDurationHMS(System.currentTimeMillis() - startedAt);
+    }
 
+    @Override
+    public String toString() {
+      return String.format("Success ratio: %s/%s=%s | Duration: %s", succeed(), total, succeedPercent(), duration());
     }
   }
 
