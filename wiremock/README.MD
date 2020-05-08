@@ -31,8 +31,8 @@ stubs.server.with {
 
 ## Installation
 
-* all package (all-in-one) - <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/wiremock-all/>
-* app package (without Groovy OSGi bundle) - <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/wiremock-app/>
+* all package (all-in-one) - TBD
+* app package (without Groovy OSGi bundle) - TBD
 
 ## Documentation
 

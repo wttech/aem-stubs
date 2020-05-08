@@ -9,20 +9,6 @@ repositories {
     maven("https://dl.bintray.com/acs/releases")
 }
 
-plugins.withId("maven-publish") {
-    configure<PublishingExtension> {
-        repositories {
-            maven("https://nexus.cognifide.com/content/repositories/cognifide-internal") {
-                name = "internal"
-                credentials {
-                    username = project.findProperty("releaseUsername")?.toString()
-                    password = project.findProperty("releasePassword")?.toString()
-                }
-            }
-        }
-    }
-}
-
 plugins.withId("com.cognifide.aem.common") {
     configure<AemExtension> {
         `package` {

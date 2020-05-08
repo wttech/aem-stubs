@@ -2,6 +2,7 @@ plugins {
     id("com.neva.fork")
     id("com.cognifide.aem.instance.local")
     id("net.researchgate.release")
+    id("com.github.breadmoirai.github-release")
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
@@ -37,17 +38,11 @@ aem {
 }
 
 tasks {
-    register("publishToInternal") {
-        dependsOn(
-                ":assembly:all:publishMavenPublicationToInternalRepository",
-                ":assembly:app:publishMavenPublicationToInternalRepository",
-                ":assembly:wiremock-all:publishMavenPublicationToInternalRepository",
-                ":assembly:wiremock-app:publishMavenPublicationToInternalRepository",
-                ":assembly:moco-all:publishMavenPublicationToInternalRepository",
-                ":assembly:moco-app:publishMavenPublicationToInternalRepository"
-        )
+    named("githubRelease") {
+        mustRunAfter(release)
     }
-    afterReleaseBuild {
-        dependsOn("publishToInternal")
+
+    register("fullRelease") {
+        dependsOn("release", "githubRelease")
     }
 }

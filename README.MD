@@ -95,6 +95,9 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 
 #### Useful snippets:
 
+Snippets below might be useful only when script manager's 'On change' mode is set to 'Run changed script only'.
+Then consider putting following snippets in the top of stub script.
+
 Clearing all stubs defined then restarting WireMock Server:
 
 ```groovy
