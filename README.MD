@@ -47,7 +47,7 @@ However, keep in mind using both frameworks on AEM is also supported. It may be 
 
 ## Downloads
 
-Published artifacts are available in Nexus repository at URL: <https://nexus.cognifide.com/content/repositories/cognifide-internal/com/cognifide/aem/stubs/>.
+Published artifacts are available in GitHub [releases](https://github.com/Cognifide/aem-stubs/releases) section.
 
 Distribution types:
 
