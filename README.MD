@@ -15,7 +15,7 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
 ## Table of contents
 
   * [Frameworks](#frameworks)
-  * [Downloads](#downloads)
+  * [Installation](#installation)
   * [Compatibility](#compatibility)
   * [Building](#building)
   * [Documentation](#documentation)
@@ -45,9 +45,9 @@ After choosing framework, it is recommended to explore dedicated AEM Stubs **fra
 
 However, keep in mind using both frameworks on AEM is also supported. It may be useful when some features are missing in one framework, but they are available in another one.
 
-## Downloads
+## Installation
 
-Published artifacts are available in GitHub [releases](https://github.com/Cognifide/aem-stubs/releases) section.
+Simply install ready to use AEM package downloaded from GitHub [releases](https://github.com/Cognifide/aem-stubs/releases) section.
 
 Distribution types:
 
