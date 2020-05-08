@@ -73,11 +73,21 @@ AEM Stubs tool is implemented in a AEM version agnostic way, to make it more uni
 
 Project build is based on [Gradle](https://docs.gradle.org/current/userguide/userguide.html) and using [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
 
+To setup AEM instance, provide details required by running command:
+
+```bash
+sh gradlew props
+```
+
+Fill opened GUI dialog, then click execute button.
+
 To build CRX package and deploy it on AEM instance, simply run command:
 
 ```bash
 sh gradlew
 ```
+
+That's it.
 
 ## Documentation
 
