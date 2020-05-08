@@ -56,7 +56,7 @@ Note that port 5555 is configurable via OSGi configuration.
 
 ### OSGi configuration
 
-Be aware of common / Moco agnostic [OSGi configuration](../#osgi-configuration) at first.
+Be aware of common / Moco agnostic [OSGi configuration](../README.MD#osgi-configuration) at first.
 
 Then check see Moco specific OSGi configuration below:
 

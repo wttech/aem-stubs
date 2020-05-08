@@ -55,7 +55,7 @@ Note that prefix `/stubs` is configurable via OSGi configuration.
 
 ### OSGi Configuration
 
-Be aware of common / WireMock agnostic [OSGi configuration](../#osgi-configuration) at first.
+Be aware of common / WireMock agnostic [OSGi configuration](../README.MD#osgi-configuration) at first.
 
 Then check see Wiremock specific OSGi configuration below:
 
