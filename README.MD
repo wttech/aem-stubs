@@ -26,6 +26,7 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
         * [Pre-defined variables:](#pre-defined-variables)
         * [Useful snippets:](#useful-snippets)
   * [Other tools](#other-tools)
+  * [Contributing](#contributing)
   * [License](#license)
 
 ## Frameworks
@@ -135,6 +136,14 @@ There are no other dedicated tools for stubbing data available for AEM and it wa
 
 * [Krystian Panek](mailto:krystian.panek@cognifide.com) - Project Owner, Main Developer,
 * [Piotr Marcinkowski](mailto:piotr.marcinkowski@cognifide.com) - Main Developer.
+
+## Contributing
+
+Issues reported or pull requests created will be very appreciated. 
+
+1. Fork plugin source code using a dedicated GitHub button.
+2. Do code changes on a feature branch created from *develop* branch.
+3. Create a pull request with a base of *develop* branch.
 
 ## License
 
