@@ -57,6 +57,7 @@ Note that port 5555 is configurable via OSGi configuration.
 ### OSGi configuration
 
 Be aware of common / Moco agnostic [OSGi configuration](../#osgi-configuration) at first.
+
 Then check see Moco specific OSGi configuration below:
 
 * [Moco Stubs](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.moco.MocoStubs)

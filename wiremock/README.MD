@@ -56,6 +56,7 @@ Note that prefix `/stubs` is configurable via OSGi configuration.
 ### OSGi Configuration
 
 Be aware of common / WireMock agnostic [OSGi configuration](../#osgi-configuration) at first.
+
 Then check see Wiremock specific OSGi configuration below:
 
 * [WireMock Stubs](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.wiremock.WiremockStubs)
