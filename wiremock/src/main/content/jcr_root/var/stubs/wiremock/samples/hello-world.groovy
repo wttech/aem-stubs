@@ -10,9 +10,6 @@ stubs.server.with {
                     .withBodyFile("samples/message.json")
                     .withHeader("Content-Type", "application/json")))
 
-    stubFor(get(urlEqualTo("/read-itself"))
-            .willReturn(ok(repository.readText("./hello-world.groovy"))))
-
     stubFor(get("/json")
             .willReturn(okJson("{ \"message\": \"Hello\" }")))
 
