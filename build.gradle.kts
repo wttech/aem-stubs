@@ -19,11 +19,16 @@ aem {
         }
         provisioner {
             step("enable-crxde") {
-                description = "Enables CRX DE"
-                condition { once() && instance.env != "prod" }
                 sync {
                     osgi.configure("org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet", mapOf(
                             "alias" to "/crx/server"
+                    ))
+                }
+            }
+            step("enable-stubs-samples") {
+                sync {
+                    osgi.configure("com.cognifide.aem.stubs.core.script.ConfigurableStubScriptManager", mapOf(
+                            "excluded.paths" to listOf("**/internals/*")
                     ))
                 }
             }

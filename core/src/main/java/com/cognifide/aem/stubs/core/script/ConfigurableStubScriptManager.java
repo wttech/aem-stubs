@@ -224,7 +224,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     String extension() default ".groovy";
 
     @AttributeDefinition(name = "Excluded Paths")
-    String[] excluded_paths() default {"**/internals/*"};
+    String[] excluded_paths() default {"**/samples/*"};
 
     @AttributeDefinition(
       name = "On change",
