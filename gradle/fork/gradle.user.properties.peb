@@ -1,7 +1,3 @@
-# === Project specific configuration ===
-releaseUsername={{ releaseUser }}
-releasePassword={{ releasePassword }}
-
 # === GAP configuration ===
 
 notifier.enabled={{notifierEnabled}}

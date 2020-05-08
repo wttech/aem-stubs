@@ -145,19 +145,6 @@ configure<ForkExtension> {
                 }
         ))
 
-        define("Release", mapOf(
-                "releaseUser" to {
-                    label = "User"
-                    description = "Authorized to upload released artifacts to Nexus"
-                    optional()
-                },
-                "releasePassword" to {
-                    label = "Password"
-                    description = "For above user"
-                    optional()
-                }
-        ))
-
         define("Other", mapOf(
                 "notifierEnabled" to {
                     label = "Notifications"
