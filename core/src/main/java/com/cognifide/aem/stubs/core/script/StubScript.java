@@ -29,7 +29,7 @@ public class StubScript {
 
   private final GroovyShell shell = new GroovyShell(binding, compilerConfig);
 
-  private final RepositoryFacade repository;
+  private final Repository repository;
 
   private final Logger logger;
 
@@ -41,7 +41,7 @@ public class StubScript {
     this.runnable = runnable;
     this.resourceResolver = resolver;
     this.logger = createLogger(path);
-    this.repository = new RepositoryFacade(this);
+    this.repository = new Repository(this);
 
     binding.setVariable("script", this);
     binding.setVariable("logger", logger);
@@ -89,7 +89,7 @@ public class StubScript {
     return runnable;
   }
 
-  public RepositoryFacade getRepository() {
+  public Repository getRepository() {
     return repository;
   }
 

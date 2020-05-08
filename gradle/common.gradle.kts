@@ -47,6 +47,7 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.apache.geronimo.specs:geronimo-atinject_1.0_spec:1.0")
         "compileOnly"("org.apache.sling:org.apache.sling.api:2.16.4")
         "compileOnly"("org.apache.sling:org.apache.sling.jcr.api:2.4.0")
+        "compileOnly"("org.apache.sling:org.apache.sling.query:3.0.0")
         "compileOnly"("com.google.guava:guava:15.0")
 
         "compileOnly"("org.codehaus.groovy:groovy-all:2.4.15")
