@@ -10,11 +10,14 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class RepositoryFacade {
+/**
+ * Script related AEM repository utilities.
+ */
+public class Repository {
 
   private final StubScript script;
 
-  public RepositoryFacade(StubScript script) {
+  public Repository(StubScript script) {
     this.script = script;
   }
 
