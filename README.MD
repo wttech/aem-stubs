@@ -1,5 +1,7 @@
 [![Cognifide logo](docs/cognifide-logo.png)](http://cognifide.com)
 
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/Cognifide/aem-stubs)
+![GitHub All Releases](https://img.shields.io/github/downloads/Cognifide/aem-stubs/total)
 [![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
 
 # AEM Stubs
