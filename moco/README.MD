@@ -34,8 +34,12 @@ stubs.server
 
 ## Installation
 
-* all package (all-in-one) - TBD
-* app package (without Groovy OSGi bundle) - TBD
+Download appropriate distribution from [releases](https://github.com/Cognifide/aem-stubs/releases) section:
+
+* moco-all - Moco framework only with Groovy OSGi bundle included,
+* moco-app - Moco framework only without Groovy OSGi bundle included.
+* all - Moco and WireMock frameworks with Groovy OSGi bundle included,
+* app - Moco and WireMock frameworks without Groovy OSGi bundle included.
 
 ## Documentation
 
