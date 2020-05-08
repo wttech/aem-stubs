@@ -37,6 +37,43 @@ aem {
     }
 }
 
+githubRelease {
+    owner("Cognifide")
+    repo("gradle-aem-plugin")
+    token((findProperty("github.token") ?: "").toString())
+    tagName(project.version.toString())
+    releaseName(project.version.toString())
+    draft((findProperty("github.draft") ?: "false").toString().toBoolean())
+    prerelease((findProperty("github.prerelease") ?: "false").toString().toBoolean())
+    overwrite((findProperty("github.override") ?: "true").toString().toBoolean())
+
+    gradle.projectsEvaluated {
+        releaseAssets(listOf(
+                ":assembly:all:packageCompose",
+                ":assembly:app:packageCompose",
+                ":assembly:wiremock-all:packageCompose",
+                ":assembly:wiremock-app:packageCompose",
+                ":assembly:moco-all:packageCompose",
+                ":assembly:moco-app:packageCompose"
+        ).map { rootProject.tasks.getByPath(it) })
+    }
+
+    body { """
+    |# What's new
+    |
+    |TBD
+    |
+    |# Upgrade notes
+    |
+    |Nothing to do.
+    |
+    |# Contributions
+    |
+    |None.
+    """.trimMargin()
+    }
+}
+
 tasks {
     named("githubRelease") {
         mustRunAfter(release)
