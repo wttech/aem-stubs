@@ -8,6 +8,7 @@ import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -62,14 +63,14 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
       LOG.error("Cannot run AEM Stubs script '{}' - runnable not found!", path);
     } else {
       try {
-        resolverAccessor.consume(resolver -> run(path, runnable, resolver));
+        resolverAccessor.consume(resolver -> runAllEach(path, runnable, resolver));
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs script '{}'! Cause: {}", path, e.getMessage(), e);
       }
     }
   }
 
-  private void run(String path, Stubs<?> runnable, ResourceResolver resolver) {
+  private void runAllEach(String path, Stubs<?> runnable, ResourceResolver resolver) {
     final StubScript script = new StubScript(path, this, runnable, resolver);
     LOG.debug("Running AEM Stubs script started '{}'", script.getPath());
     script.getBinding().setVariable("stubs", runnable);
@@ -99,21 +100,23 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
           .searchStrategy(SearchStrategy.BFS)
           .find(NODE_TYPE)
           .filter(r -> isRunnable(r.getPath()))
-          .forEach(resource -> {
-            try {
-              result.total++;
-              run(resource.getPath(), runnable, resolver);
-            } catch (Exception e) {
-              LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
-              result.failed++;
-            }
-          });
+          .forEach(resource -> runAllEach(resource, result, runnable, resolver));
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
 
     LOG.info("Running AEM Stubs scripts result: {}", result);
+  }
+
+  private void runAllEach(Resource resource, RunAllResult result, Stubs<?> runnable, ResourceResolver resolver) {
+    try {
+      result.total++;
+      runAllEach(resource.getPath(), runnable, resolver);
+    } catch (Exception e) {
+      LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
+      result.failed++;
+    }
   }
 
   @Override
