@@ -4,16 +4,26 @@ import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 import static org.apache.sling.query.SlingQuery.$;
 
-import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.google.common.collect.Lists;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.apache.sling.query.api.SearchStrategy;
-import org.osgi.service.component.annotations.*;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -21,10 +31,9 @@ import org.osgi.service.metatype.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.google.common.collect.Lists;
 
 @Component(
   service = {StubScriptManager.class, ResourceChangeListener.class},
@@ -108,7 +117,8 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     LOG.info("Running AEM Stubs scripts result: {}", result);
   }
 
-  private void runAllEach(Resource resource, RunAllResult result, Stubs<?> runnable, ResourceResolver resolver) {
+  private void runAllEach(Resource resource, RunAllResult result, Stubs<?> runnable,
+    ResourceResolver resolver) {
     try {
       result.total++;
       runAllEach(resource.getPath(), runnable, resolver);
@@ -121,8 +131,18 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Override
   public Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
-      .filter(runnable -> wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getExtension())))
+      .filter(runnable -> isStubScript(path, runnable) || isMappingFile(path, runnable))
       .findFirst();
+  }
+
+  private boolean isStubScript(String path, Stubs<?> runnable) {
+    return wildcardMatch(path,
+      format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getExtension()));
+  }
+
+  private boolean isMappingFile(String path, Stubs<?> runnable) {
+    return wildcardMatch(path,
+      format("%s/%s/mappings/*%s", getRootPath(), runnable.getId(), "json"));
   }
 
   @Override
@@ -135,7 +155,11 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   }
 
   private boolean isExtensionCorrect(String path) {
-    return path.endsWith(config.extension());
+    return path.endsWith(config.scriptExtension());
+  }
+
+  private boolean isMappingFile(String path) {
+    return runnables.stream().anyMatch(r -> path.contains(String.format("%s/mappings", r.getId())));
   }
 
   @Override
@@ -145,27 +169,48 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
   @Override
   public String getExtension() {
-    return config.extension();
+    return config.scriptExtension();
   }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
-    final List<String> scriptPaths = changes.stream()
-      .map(ResourceChange::getPath)
-      .filter(this::isRunnable)
-      .collect(Collectors.toList());
+    final List<String> mappingPaths = getMappingPaths(changes);
+
+    if (!mappingPaths.isEmpty()) {
+      resetAll(mappingPaths);
+      return;
+    }
+
+    final List<String> scriptPaths = getScriptPaths(changes);
 
     if (!scriptPaths.isEmpty()) {
       if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.on_change())) {
         scriptPaths.forEach(this::run);
       } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.on_change())) {
-        scriptPaths.stream()
-          .map(this::findRunnable)
-          .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-          .distinct()
-          .forEach(Stubs::reset);
+        resetAll(scriptPaths);
       }
     }
+  }
+
+  private void resetAll(List<String> paths) {
+    paths.stream().map(this::findRunnable)
+      .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+      .distinct()
+      .forEach(Stubs::reset);
+  }
+
+  private List<String> getScriptPaths(List<ResourceChange> changes) {
+    return changes.stream()
+      .map(ResourceChange::getPath)
+      .filter(this::isRunnable)
+      .collect(Collectors.toList());
+  }
+
+  private List<String> getMappingPaths(List<ResourceChange> changes) {
+    return changes.stream()
+      .map(ResourceChange::getPath)
+      .filter(this::isMappingFile)
+      .collect(Collectors.toList());
   }
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
@@ -209,7 +254,9 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
     @Override
     public String toString() {
-      return String.format("Success ratio: %s/%s=%s | Duration: %s", succeed(), total, succeedPercent(), duration());
+      return String
+        .format("Success ratio: %s/%s=%s | Duration: %s", succeed(), total, succeedPercent(),
+          duration());
     }
   }
 
@@ -219,8 +266,11 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     @AttributeDefinition(name = "Root Path")
     String resource_paths() default "/var/stubs";
 
-    @AttributeDefinition(name = "Extension")
-    String extension() default ".groovy";
+    @AttributeDefinition(name = "Script Extension")
+    String scriptExtension() default ".groovy";
+
+    @AttributeDefinition(name = "Mappings Extension")
+    String mappingsExtension() default ".json";
 
     @AttributeDefinition(name = "Excluded Paths")
     String[] excluded_paths() default {"**/samples/*"};

@@ -7,7 +7,7 @@ stubs.server.with {
 
     stubFor(get(urlEqualTo("/body-file"))
             .willReturn(aResponse()
-                    .withBodyFile("samples/message.json")
+                    .withBodyFile("scripts/samples/message.json")
                     .withHeader("Content-Type", "application/json")))
 
     stubFor(get("/json")
