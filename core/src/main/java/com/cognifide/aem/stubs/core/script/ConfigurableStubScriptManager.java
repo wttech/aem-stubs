@@ -239,7 +239,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     @AttributeDefinition(name = "Script Extension")
     String scriptExtension() default ".stub.groovy";
 
-    @AttributeDefinition(name = "Mappings Extension")
+    @AttributeDefinition(name = "Mapping Extension")
     String mappingsExtension() default ".stub.json";
 
     @AttributeDefinition(name = "Excluded Paths")
