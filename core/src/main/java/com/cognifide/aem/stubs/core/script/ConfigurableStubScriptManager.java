@@ -126,18 +126,18 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Override
   public Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
-      .filter(runnable -> isStubScript(path, runnable) || isMappingFile(path, runnable))
+      .filter(runnable -> isScript(path, runnable) || isMapping(path, runnable))
       .findFirst();
   }
 
-  private boolean isStubScript(String path, Stubs<?> runnable) {
+  private boolean isScript(String path, Stubs<?> runnable) {
     return wildcardMatch(path,
       format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getExtension()));
   }
 
-  private boolean isMappingFile(String path, Stubs<?> runnable) {
+  private boolean isMapping(String path, Stubs<?> runnable) {
     return wildcardMatch(path,
-      format("%s/%s/mappings/*%s", getRootPath(), runnable.getId(), "json"));
+      format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.mappingsExtension()));
   }
 
   @Override
@@ -153,8 +153,8 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     return path.endsWith(config.scriptExtension());
   }
 
-  private boolean isMappingFile(String path) {
-    return runnables.stream().anyMatch(r -> path.contains(String.format("%s/mappings", r.getId())));
+  private boolean isMapping(String path) {
+    return runnables.stream().anyMatch(r -> isMapping(path, r));
   }
 
   @Override
@@ -204,7 +204,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   private List<String> getMappingPaths(List<ResourceChange> changes) {
     return changes.stream()
       .map(ResourceChange::getPath)
-      .filter(this::isMappingFile)
+      .filter(this::isMapping)
       .collect(Collectors.toList());
   }
 
@@ -235,7 +235,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     String scriptExtension() default ".groovy";
 
     @AttributeDefinition(name = "Mappings Extension")
-    String mappingsExtension() default ".json";
+    String mappingsExtension() default ".stub.json";
 
     @AttributeDefinition(name = "Excluded Paths")
     String[] excluded_paths() default {"**/samples/*"};

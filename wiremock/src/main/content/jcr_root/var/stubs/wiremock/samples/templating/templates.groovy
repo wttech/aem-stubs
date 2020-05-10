@@ -9,7 +9,7 @@ stubs.server.with {
     // template file
     stubFor(get(urlPathEqualTo("/templated-file"))
             .willReturn(aResponse()
-                    .withBodyFile("scripts/samples/templating/template.json")
+                    .withBodyFile("samples/templating/template.json")
                     .withHeader("Content-Type", "application/json")
                     .withTransformerParameter("message", "Hello Templates!")))
 

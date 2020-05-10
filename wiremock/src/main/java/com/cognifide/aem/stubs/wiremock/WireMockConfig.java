@@ -96,8 +96,7 @@ class WireMockConfig implements Options {
 
   @Override
   public MappingsLoader mappingsLoader() {
-    return new JsonFileMappingsSource(
-      new WireMockFileSource(resolverAccessor, String.format("%s/%s", rootPath, "mappings")));
+    return new JsonFileMappingsSource(filesRoot());
   }
 
   @Override

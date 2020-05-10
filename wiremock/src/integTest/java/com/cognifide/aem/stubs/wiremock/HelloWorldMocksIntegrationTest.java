@@ -70,7 +70,7 @@ public class HelloWorldMocksIntegrationTest {
 
   @Test
   public void shouldReturnJsonFromFilePointedInHeader() {
-    given().header("X-WM-Body-File", "scripts/samples/message.json")
+    given().header("X-WM-Body-File", "samples/message.json")
       .when()
       .get("http://localhost:4502/stubs/header-body-file")
       .then()

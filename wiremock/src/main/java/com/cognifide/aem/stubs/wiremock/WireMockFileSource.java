@@ -3,11 +3,11 @@ package com.cognifide.aem.stubs.wiremock;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.sling.api.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,20 +97,26 @@ class WireMockFileSource implements FileSource {
   private List<TextFile> listFiles(String folderPath) {
     return resolverAccessor.resolve(resourceResolver -> {
       return StreamUtils.from(resourceResolver.getResource(folderPath).getChildren().iterator())
+        .filter(this::isMapping)
         .flatMap(resource -> {
           if (resource.isResourceType("sling:Folder")) {
             return listFiles(resource.getPath()).stream();
           } else {
             if (resource.isResourceType("nt:file")) {
-              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath).getTextFileNamed(resource.getName()));
+              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath)
+                .getTextFileNamed(resource.getName()));
             } else {
               return Stream.empty();
             }
           }
         })
-      .collect(Collectors.toList());
-  });
-}
+        .collect(Collectors.toList());
+    });
+  }
+
+  private boolean isMapping(Resource resource) {
+    return resource.isResourceType("sling:Folder") || resource.getName().endsWith(".stub.json");
+  }
 
   @Override
   public void writeTextFile(String name, String contents) {
