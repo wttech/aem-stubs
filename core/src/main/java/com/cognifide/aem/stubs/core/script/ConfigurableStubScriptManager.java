@@ -2,28 +2,16 @@ package com.cognifide.aem.stubs.core.script;
 
 import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
-import static org.apache.sling.query.SlingQuery.$;
 
-import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.time.DurationFormatUtils;
+import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.google.common.collect.Lists;
+import org.apache.sling.api.resource.AbstractResourceVisitor;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
-import org.apache.sling.query.api.SearchStrategy;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -31,9 +19,9 @@ import org.osgi.service.metatype.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.google.common.collect.Lists;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component(
   service = {StubScriptManager.class, ResourceChangeListener.class},
@@ -72,14 +60,14 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
       LOG.error("Cannot run AEM Stubs script '{}' - runnable not found!", path);
     } else {
       try {
-        resolverAccessor.consume(resolver -> runAllEach(path, runnable, resolver));
+        resolverAccessor.consume(resolver -> run(path, runnable, resolver));
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs script '{}'! Cause: {}", path, e.getMessage(), e);
       }
     }
   }
 
-  private void runAllEach(String path, Stubs<?> runnable, ResourceResolver resolver) {
+  private void run(String path, Stubs<?> runnable, ResourceResolver resolver) {
     final StubScript script = new StubScript(path, this, runnable, resolver);
     LOG.debug("Running AEM Stubs script started '{}'", script.getPath());
     runnable.prepare(script);
@@ -97,18 +85,14 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Override
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll(Stubs<?> runnable) {
-    final RunAllResult result = new RunAllResult();
+    final StubScriptRun result = new StubScriptRun();
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
 
     resolverAccessor.consume(resolver -> {
       try {
-        $(resolver.getResource(rootPath))
-          .searchStrategy(SearchStrategy.BFS)
-          .find(NODE_TYPE)
-          .filter(r -> isRunnable(r.getPath()))
-          .forEach(resource -> runAllEach(resource, result, runnable, resolver));
+        runAllUnderPath(rootPath, runnable, resolver, result);
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
@@ -117,11 +101,22 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     LOG.info("Running AEM Stubs scripts result: {}", result);
   }
 
-  private void runAllEach(Resource resource, RunAllResult result, Stubs<?> runnable,
-    ResourceResolver resolver) {
+  private void runAllUnderPath(String rootPath, Stubs<?> runnable, ResourceResolver resolver, StubScriptRun result) {
+    final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
+      @Override
+      protected void visit(Resource resource) {
+        if (resource.isResourceType(NODE_TYPE) && isRunnable(resource.getPath())) {
+          runAllEachPath(resource.getPath(), runnable, resolver, result);
+        }
+      }
+    };
+    visitor.accept(resolver.getResource(rootPath));
+  }
+
+  private void runAllEachPath(String scriptPath, Stubs<?> runnable, ResourceResolver resolver, StubScriptRun result) {
     try {
       result.total++;
-      runAllEach(resource.getPath(), runnable, resolver);
+      run(scriptPath, runnable, resolver);
     } catch (Exception e) {
       LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
       result.failed++;
@@ -228,36 +223,6 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Modified
   protected void update(Config config) {
     this.config = config;
-  }
-
-  private static class RunAllResult {
-
-    private static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance(Locale.US);
-
-    private long startedAt = System.currentTimeMillis();
-
-    private int total = 0;
-
-    private int failed = 0;
-
-    public int succeed() {
-      return total - failed;
-    }
-
-    public String succeedPercent() {
-      return PERCENT_FORMAT.format((double) (total - failed) / ((double) total));
-    }
-
-    public String duration() {
-      return DurationFormatUtils.formatDurationHMS(System.currentTimeMillis() - startedAt);
-    }
-
-    @Override
-    public String toString() {
-      return String
-        .format("Success ratio: %s/%s=%s | Duration: %s", succeed(), total, succeedPercent(),
-          duration());
-    }
   }
 
   @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")

@@ -84,7 +84,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   private void start() {
     LOG.info("Starting AEM Stubs Moco Server");
     if (config.logging()) {
-      httpServer(config.port(), ApiUtils.log(LOG::info));
+      server = httpServer(config.port(), ApiUtils.log(LOG::info));
     } else {
       server = httpServer(config.port());
     }

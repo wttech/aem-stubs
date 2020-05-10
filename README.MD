@@ -97,7 +97,7 @@ That's it.
 
 There are framework specific OSGi configurations ([WireMock](moco#osgi-configuration), [Moco](moco#osgi-configuration)) and common listed below:
 
-[Stub Script Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.script.StubScriptManager)
+[Stub Script Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.script.ConfigurableStubScriptManager)
 
 <img src="docs/osgi-config-stubs-script-manager.png" width="50%">
   
@@ -115,13 +115,13 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 Snippets below might be useful only when script manager's 'On change' mode is set to 'Run changed script only'.
 Then consider putting following snippets in the top of stub script.
 
-Clearing all stubs defined then restarting WireMock Server:
+Restarting stubs server without running any stub scripts:
 
 ```groovy
 stubs.clear()
 ```
 
-Restarting WireMock Server then executing all stub scripts:
+Restarting stubs server and running all stub scripts:
 
 ```groovy
 stubs.reset()
