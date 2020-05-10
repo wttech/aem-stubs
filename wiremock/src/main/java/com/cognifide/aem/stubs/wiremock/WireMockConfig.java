@@ -41,14 +41,16 @@ class WireMockConfig implements Options {
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
   private final boolean globalTransformer;
+  private final String mappingExtension;
   private final Map<String, Extension> extensions = newLinkedHashMap();
 
 
   public WireMockConfig(ResolverAccessor resolverAccessor, String rootPath,
-    boolean globalTransformer) {
+    boolean globalTransformer, String mappingExtension) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
     this.globalTransformer = globalTransformer;
+    this.mappingExtension = mappingExtension;
     addExtensions();
   }
 
@@ -91,7 +93,7 @@ class WireMockConfig implements Options {
 
   @Override
   public FileSource filesRoot() {
-    return new WireMockFileSource(resolverAccessor, rootPath);
+    return new WireMockFileSource(resolverAccessor, rootPath, mappingExtension);
   }
 
   @Override

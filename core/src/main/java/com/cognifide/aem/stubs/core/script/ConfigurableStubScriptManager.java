@@ -132,7 +132,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
   private boolean isScript(String path, Stubs<?> runnable) {
     return wildcardMatch(path,
-      format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getExtension()));
+      format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getScriptExtension()));
   }
 
   private boolean isMapping(String path, Stubs<?> runnable) {
@@ -163,8 +163,13 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   }
 
   @Override
-  public String getExtension() {
+  public String getScriptExtension() {
     return config.scriptExtension();
+  }
+
+  @Override
+  public String getMappingExtension() {
+    return config.mappingsExtension();
   }
 
   @Override
@@ -232,7 +237,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     String resource_paths() default "/var/stubs";
 
     @AttributeDefinition(name = "Script Extension")
-    String scriptExtension() default ".groovy";
+    String scriptExtension() default ".stub.groovy";
 
     @AttributeDefinition(name = "Mappings Extension")
     String mappingsExtension() default ".stub.json";

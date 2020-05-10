@@ -25,11 +25,13 @@ class WireMockFileSource implements FileSource {
   private final JcrFileReader jcrFileReader;
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
+  private final String mappingExtension;
 
-  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
+  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath, String mappingExtension) {
     this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
     this.resolverAccessor = resolverAccessor;
+    this.mappingExtension = mappingExtension;
   }
 
   @Override
@@ -103,7 +105,7 @@ class WireMockFileSource implements FileSource {
             return listFiles(resource.getPath()).stream();
           } else {
             if (resource.isResourceType("nt:file")) {
-              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath)
+              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath, mappingExtension)
                 .getTextFileNamed(resource.getName()));
             } else {
               return Stream.empty();
@@ -115,7 +117,7 @@ class WireMockFileSource implements FileSource {
   }
 
   private boolean isMapping(Resource resource) {
-    return resource.isResourceType("sling:Folder") || resource.getName().endsWith(".stub.json");
+    return resource.isResourceType("sling:Folder") || resource.getName().endsWith(mappingExtension);
   }
 
   @Override
