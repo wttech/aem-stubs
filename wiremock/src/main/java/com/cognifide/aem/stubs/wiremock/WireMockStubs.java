@@ -24,7 +24,7 @@ import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 import com.github.tomakehurst.wiremock.http.Request;
 
 @Component(
-  service = {Stubs.class, WireMockStubs.class},
+  service = Stubs.class,
   immediate = true
 )
 @Designate(ocd = WireMockStubs.Config.class)

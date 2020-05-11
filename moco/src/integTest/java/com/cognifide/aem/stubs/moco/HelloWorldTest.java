@@ -1,4 +1,4 @@
-package com.cognifide.aem.moco.wiremock;
+package com.cognifide.aem.stubs.moco;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.jupiter.api.Test;
 
-public class HelloWorldMocksIntegrationTest {
+public class HelloWorldTest {
 
   @Test
   public void shouldReturnText() {
@@ -45,6 +45,16 @@ public class HelloWorldMocksIntegrationTest {
       .get("http://localhost:5555/current-date")
       .then()
       .body(containsString("Today date is"))
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldReturnByMapping() {
+    given()
+      .when()
+      .get("http://localhost:5555/foo")
+      .then()
+      .body(containsString("bar"))
       .statusCode(200);
   }
 }

@@ -8,7 +8,7 @@
 
 Tool for providing sample data for AEM applications in a simple and flexible way.
 
-By implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [WireMock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
+By providing JSON mappings file or implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [WireMock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and start stubbing!
 
@@ -21,6 +21,7 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
   * [Compatibility](#compatibility)
   * [Building](#building)
   * [Documentation](#documentation)
+     * [Basics](#basics)
      * [OSGi configuration](#osgi-configuration)
      * [Stub script API](#stub-script-api)
         * [Pre-defined variables:](#pre-defined-variables)
@@ -92,6 +93,30 @@ sh gradlew
 That's it.
 
 ## Documentation
+
+### Basics
+
+Stubs could be provided by:
+
+* JSON mapping files (_*.stub.json_) so called stub mappings e.g file named _my-feature.stub.json_,
+* Groovy Scripts (_*.stub.groovy_) so called stub scripts e.g file named _my-feature.stub.groovy_.
+
+Format of contents of these files depends on chosen [framework](#frameworks).
+ 
+For example, when decided to choose WireMock framework, then these files should be put into AEM under path _/var/stubs/wiremock/*_ 
+via CRX package with corresponding Vault workspace filter:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/apps/example"/>
+    <filter root="/var/stubs/wiremock/example"/>
+</workspaceFilter>
+```
+
+Stub mappings or scripts could be organized into folders tree. 
+Any other assets used by scripts like images, extra JSON files could be also freely put close to stub scripts or mappings.
+Indeed, dedicated extensions _*.stub.json_ and _*.stub.groovy_ are introduced to distinguish these assets from automatically loaded scripts and mappings.
 
 ### OSGi configuration
 
