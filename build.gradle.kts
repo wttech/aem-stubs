@@ -2,7 +2,7 @@ plugins {
     id("com.neva.fork")
     id("com.cognifide.aem.instance.local")
     id("net.researchgate.release")
-    id("com.github.breadmoirai.github-release")
+    id("com.github.breadmoirai.github-release") version "2.2.10"
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
