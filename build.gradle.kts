@@ -48,7 +48,7 @@ githubRelease {
     overwrite((findProperty("github.override") ?: "true").toString().toBoolean())
 
     gradle.projectsEvaluated {
-        releaseAssets(listOf(
+        releaseAssets(listOf( // TODO upload does not work; bug of github plugin
                 ":assembly:all:packageCompose",
                 ":assembly:app:packageCompose",
                 ":assembly:wiremock-all:packageCompose",
@@ -79,7 +79,27 @@ tasks {
         mustRunAfter(release)
     }
 
+    register("copyRelease") {
+        mustRunAfter(release)
+
+        val files = project.objects.fileCollection()
+        inputs.files(files)
+            listOf(
+                    ":assembly:all:packageCompose",
+                    ":assembly:app:packageCompose",
+                    ":assembly:wiremock-all:packageCompose",
+                    ":assembly:wiremock-app:packageCompose",
+                    ":assembly:moco-all:packageCompose",
+                    ":assembly:moco-app:packageCompose"
+            ).forEach { files.from(rootProject.tasks.getByPath(it)) }
+
+        doLast {
+            val dir = file("build/release").apply { deleteRecursively(); mkdirs() }
+            files.forEach { it.copyTo(dir.resolve(it.name)) }
+        }
+    }
+
     register("fullRelease") {
-        dependsOn("release", "githubRelease")
+        dependsOn("release", "copyRelease"/*, "githubRelease"*/)
     }
 }
