@@ -1,13 +1,30 @@
 {
-  "request": {
-    "method": "GET",
-    "url": "/mappings"
-  },
-  "response": {
-    "status": 200,
-    "body": "Hello mappings!!!",
-    "headers": {
-      "Content-Type": "text/plain"
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/mappings/1"
+      },
+      "response": {
+        "status": 200,
+        "body": "Hello mappings one",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/mappings/2"
+      },
+      "response": {
+        "status": 200,
+        "body": "Hello mappings two",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      }
     }
-  }
+  ]
 }

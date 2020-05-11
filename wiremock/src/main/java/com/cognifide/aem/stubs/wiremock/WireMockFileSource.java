@@ -25,13 +25,11 @@ class WireMockFileSource implements FileSource {
   private final JcrFileReader jcrFileReader;
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
-  private final String mappingExtension;
 
-  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath, String mappingExtension) {
+  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
     this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
     this.resolverAccessor = resolverAccessor;
-    this.mappingExtension = mappingExtension;
   }
 
   @Override
@@ -99,13 +97,12 @@ class WireMockFileSource implements FileSource {
   private List<TextFile> listFiles(String folderPath) {
     return resolverAccessor.resolve(resourceResolver -> {
       return StreamUtils.from(resourceResolver.getResource(folderPath).getChildren().iterator())
-        .filter(this::isMapping)
         .flatMap(resource -> {
           if (resource.isResourceType("sling:Folder")) {
             return listFiles(resource.getPath()).stream();
           } else {
             if (resource.isResourceType("nt:file")) {
-              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath, mappingExtension)
+              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath)
                 .getTextFileNamed(resource.getName()));
             } else {
               return Stream.empty();
@@ -116,9 +113,6 @@ class WireMockFileSource implements FileSource {
     });
   }
 
-  private boolean isMapping(Resource resource) {
-    return resource.isResourceType("sling:Folder") || resource.getName().endsWith(mappingExtension);
-  }
 
   @Override
   public void writeTextFile(String name, String contents) {

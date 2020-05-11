@@ -125,12 +125,22 @@ public class HelloWorldMocksIntegrationTest {
   }
 
   @Test
-  public void shouldReturnMappingBody() {
+  public void shouldReturnMappingOneBody() {
     given()
       .when()
-      .get("http://localhost:4502/stubs/mappings")
+      .get("http://localhost:4502/stubs/mappings/1")
       .then()
-      .body(equalTo("Hello mappings!!!"))
+      .body(equalTo("Hello mappings one"))
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldReturnMappingTwoBody() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/mappings/2")
+      .then()
+      .body(equalTo("Hello mappings two"))
       .statusCode(200);
   }
 
