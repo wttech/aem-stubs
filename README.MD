@@ -21,6 +21,7 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
   * [Compatibility](#compatibility)
   * [Building](#building)
   * [Documentation](#documentation)
+     * [Basics](#basics)
      * [OSGi configuration](#osgi-configuration)
      * [Stub script API](#stub-script-api)
         * [Pre-defined variables:](#pre-defined-variables)
