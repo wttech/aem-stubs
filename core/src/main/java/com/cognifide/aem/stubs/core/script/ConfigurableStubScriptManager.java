@@ -126,8 +126,18 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Override
   public Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
-      .filter(runnable -> wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getExtension())))
+      .filter(runnable -> isScript(path, runnable) || isMapping(path, runnable))
       .findFirst();
+  }
+
+  private boolean isScript(String path, Stubs<?> runnable) {
+    return wildcardMatch(path,
+      format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getScriptExtension()));
+  }
+
+  private boolean isMapping(String path, Stubs<?> runnable) {
+    return wildcardMatch(path,
+      format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.mappingsExtension()));
   }
 
   @Override
@@ -140,7 +150,11 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   }
 
   private boolean isExtensionCorrect(String path) {
-    return path.endsWith(config.extension());
+    return path.endsWith(config.scriptExtension());
+  }
+
+  private boolean isMapping(String path) {
+    return runnables.stream().anyMatch(r -> isMapping(path, r));
   }
 
   @Override
@@ -149,28 +163,54 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   }
 
   @Override
-  public String getExtension() {
-    return config.extension();
+  public String getScriptExtension() {
+    return config.scriptExtension();
+  }
+
+  @Override
+  public String getMappingExtension() {
+    return config.mappingsExtension();
   }
 
   @Override
   public void onChange(List<ResourceChange> changes) {
-    final List<String> scriptPaths = changes.stream()
-      .map(ResourceChange::getPath)
-      .filter(this::isRunnable)
-      .collect(Collectors.toList());
+    final List<String> mappingPaths = getMappingPaths(changes);
+
+    if (!mappingPaths.isEmpty()) {
+      resetAll(mappingPaths);
+      return;
+    }
+
+    final List<String> scriptPaths = getScriptPaths(changes);
 
     if (!scriptPaths.isEmpty()) {
       if (ON_CHANGE_RUN_CHANGED.equalsIgnoreCase(config.on_change())) {
         scriptPaths.forEach(this::run);
       } else if (ON_CHANGE_RESET_ALL.equalsIgnoreCase(config.on_change())) {
-        scriptPaths.stream()
-          .map(this::findRunnable)
-          .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-          .distinct()
-          .forEach(Stubs::reset);
+        resetAll(scriptPaths);
       }
     }
+  }
+
+  private void resetAll(List<String> paths) {
+    paths.stream().map(this::findRunnable)
+      .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+      .distinct()
+      .forEach(Stubs::reset);
+  }
+
+  private List<String> getScriptPaths(List<ResourceChange> changes) {
+    return changes.stream()
+      .map(ResourceChange::getPath)
+      .filter(this::isRunnable)
+      .collect(Collectors.toList());
+  }
+
+  private List<String> getMappingPaths(List<ResourceChange> changes) {
+    return changes.stream()
+      .map(ResourceChange::getPath)
+      .filter(this::isMapping)
+      .collect(Collectors.toList());
   }
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
@@ -196,8 +236,11 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     @AttributeDefinition(name = "Root Path")
     String resource_paths() default "/var/stubs";
 
-    @AttributeDefinition(name = "Extension")
-    String extension() default ".groovy";
+    @AttributeDefinition(name = "Script Extension")
+    String scriptExtension() default ".stub.groovy";
+
+    @AttributeDefinition(name = "Mapping Extension")
+    String mappingsExtension() default ".stub.json";
 
     @AttributeDefinition(name = "Excluded Paths")
     String[] excluded_paths() default {"**/samples/*"};

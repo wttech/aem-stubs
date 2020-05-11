@@ -3,14 +3,17 @@ package com.cognifide.aem.stubs.wiremock;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
+import org.apache.sling.api.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.core.util.StreamUtils;
+import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.common.BinaryFile;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.TextFile;
@@ -20,12 +23,15 @@ class WireMockFileSource implements FileSource {
   private static final Logger LOG = LoggerFactory.getLogger(WireMockFileSource.class);
 
   private final JcrFileReader jcrFileReader;
-
+  private final ResolverAccessor resolverAccessor;
   private final String rootPath;
+  private final String mappingExtension;
 
-  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath) {
+  public WireMockFileSource(ResolverAccessor resolverAccessor, String rootPath, String mappingExtension) {
     this.jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
     this.rootPath = rootPath;
+    this.resolverAccessor = resolverAccessor;
+    this.mappingExtension = mappingExtension;
   }
 
   @Override
@@ -87,7 +93,31 @@ class WireMockFileSource implements FileSource {
 
   @Override
   public List<TextFile> listFilesRecursively() {
-    return Collections.emptyList();
+    return listFiles(rootPath);
+  }
+
+  private List<TextFile> listFiles(String folderPath) {
+    return resolverAccessor.resolve(resourceResolver -> {
+      return StreamUtils.from(resourceResolver.getResource(folderPath).getChildren().iterator())
+        .filter(this::isMapping)
+        .flatMap(resource -> {
+          if (resource.isResourceType("sling:Folder")) {
+            return listFiles(resource.getPath()).stream();
+          } else {
+            if (resource.isResourceType("nt:file")) {
+              return Stream.of(new WireMockFileSource(this.resolverAccessor, folderPath, mappingExtension)
+                .getTextFileNamed(resource.getName()));
+            } else {
+              return Stream.empty();
+            }
+          }
+        })
+        .collect(Collectors.toList());
+    });
+  }
+
+  private boolean isMapping(Resource resource) {
+    return resource.isResourceType("sling:Folder") || resource.getName().endsWith(mappingExtension);
   }
 
   @Override
