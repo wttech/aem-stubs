@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.jupiter.api.Test;
 
-public class HelloWorldMocksIntegrationTest {
+public class HelloWorldTest {
 
   @Test
   public void shouldReturnJson() {
@@ -121,6 +121,16 @@ public class HelloWorldMocksIntegrationTest {
       .get("http://localhost:4502/stubs/with-header")
       .then()
       .header("Some-Header", "value")
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldReturnMappingBody() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/mappings")
+      .then()
+      .body(equalTo("Hello mappings!!!"))
       .statusCode(200);
   }
 

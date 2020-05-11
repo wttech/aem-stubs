@@ -18,18 +18,21 @@ public class WireMockApp {
 
   private final com.github.tomakehurst.wiremock.core.WireMockApp app;
 
-  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
-    WireMockConfig wiremockConfig = new WireMockConfig(resolverAccessor, rootPath, globalTransformer);
-    app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockConfig, new NotImplementedContainer());
+  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer,
+    String mappingExtension) {
+    WireMockConfig wiremockConfig = new WireMockConfig(resolverAccessor, rootPath,
+      globalTransformer, mappingExtension);
+    app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockConfig,
+      new NotImplementedContainer());
   }
 
   public void stubFor(MappingBuilder mappingBuilder) {
     app.addStubMapping(mappingBuilder.build());
   }
 
-  public StubRequestHandler buildStubRequestHandler(){
+  public StubRequestHandler buildStubRequestHandler() {
     Options options = app.getOptions();
-    Map<String, PostServeAction > postServeActions = options.extensionsOfType(PostServeAction.class);
+    Map<String, PostServeAction> postServeActions = options.extensionsOfType(PostServeAction.class);
     return new StubRequestHandler(
       app,
       new StubResponseRenderer(
@@ -46,7 +49,7 @@ public class WireMockApp {
       app,
       postServeActions,
       new DisabledRequestJournal()
-    ){
+    ) {
       @Override
       protected boolean logRequests() {
         return false;

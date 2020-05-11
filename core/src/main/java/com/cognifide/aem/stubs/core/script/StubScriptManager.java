@@ -27,7 +27,12 @@ public interface StubScriptManager {
   /**
    * Check script if it is a candidate for running.
    */
-  boolean isRunnable(String path);
+  boolean isScript(String path);
+
+  /**
+   * Check mapping if it is a candidate for application.
+   */
+  boolean isMapping(String path);
 
   /**
    * Find script runnable applicable for script.
@@ -42,5 +47,10 @@ public interface StubScriptManager {
   /**
    * Get considered script extension.
    */
-  String getExtension();
+  String getScriptExtension();
+
+  /**
+   * Get considered mapping extension.
+   */
+  String getMappingExtension();
 }

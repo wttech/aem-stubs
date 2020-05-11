@@ -24,7 +24,7 @@ import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 import com.github.tomakehurst.wiremock.http.Request;
 
 @Component(
-  service = {Stubs.class, WireMockStubs.class},
+  service = Stubs.class,
   immediate = true
 )
 @Designate(ocd = WireMockStubs.Config.class)
@@ -97,7 +97,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
     this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath() + "/" + getId(),
-      config.globalTransformer());
+      config.globalTransformer(), stubScriptManager.getMappingExtension());
     this.servletPath = getServletPath(config.path());
 
     try {

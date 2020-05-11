@@ -9,7 +9,7 @@ apply(from = "gradle/fork/props.gradle.kts")
 apply(from = "gradle/common.gradle.kts")
 
 description = "AEM Stubs"
-defaultTasks(":assembly:all:packageDeploy")
+defaultTasks(":assembly:all:packageDeploy", "integrationTest")
 
 aem {
     instance {
