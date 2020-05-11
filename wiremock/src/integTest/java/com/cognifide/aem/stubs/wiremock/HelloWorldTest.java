@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.jupiter.api.Test;
 
-public class HelloWorldMocksIntegrationTest {
+public class HelloWorldTest {
 
   @Test
   public void shouldReturnJson() {
