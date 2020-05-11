@@ -42,5 +42,10 @@ public interface StubScriptManager {
   /**
    * Get considered script extension.
    */
-  String getExtension();
+  String getScriptExtension();
+
+  /**
+   * Get considered mapping extension.
+   */
+  String getMappingExtension();
 }

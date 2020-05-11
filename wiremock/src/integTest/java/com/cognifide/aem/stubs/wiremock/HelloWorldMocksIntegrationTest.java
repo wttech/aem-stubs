@@ -125,6 +125,16 @@ public class HelloWorldMocksIntegrationTest {
   }
 
   @Test
+  public void shouldReturnMappingBody() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/mappings")
+      .then()
+      .body(equalTo("Hello mappings!!!"))
+      .statusCode(200);
+  }
+
+  @Test
   public void shouldReturnNotSupportedForDelays() {
     given()
       .when()

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/mappings"
+  },
+  "response": {
+    "status": 200,
+    "body": "Hello mappings!!!",
+    "headers": {
+      "Content-Type": "text/plain"
+    }
+  }
+}
