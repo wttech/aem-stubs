@@ -2,7 +2,24 @@
 
 Allows providing stubs (or mocks) by implementing [Groovy](http://groovy-lang.org/syntax.html) script basing on [Moco](https://github.com/dreamhead/moco) framework.
 
-Sample **stub script**:
+Sample **stub mapping** (_hello-world.stub.json_):
+
+```json
+[
+  {
+    "request" :
+    {
+      "uri" : "/hello-world"
+    },
+    "response" :
+    {
+      "text" : "Hello! I am sample stub."
+    }
+  }
+]
+```
+
+Sample **stub script** (_hello-world.stub.groovy_):
 
 ```groovy
 stubs.server

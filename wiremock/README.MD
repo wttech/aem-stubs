@@ -2,17 +2,39 @@
 
 Allows providing stubs (or mocks) by implementing [Groovy](http://groovy-lang.org/syntax.html) script basing on [WireMock](http://wiremock.org) framework.
 
-Sample **stub script**:
+Sample **stub mappings** (_hello-world.stub.json_):
+
+```json
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/hello-world"
+      },
+      "response": {
+        "status": 200,
+        "body": "Hello! I am sample stub.",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      }
+    }
+  ]
+}
+```
+
+Sample **stub script** (_hello-world.stub.groovy_):
 
 ```groovy
 stubs.server.with {
-    stubFor(get("/fine-with-body")
-        .willReturn(ok("body content")))
+    stubFor(get("/hello-world")
+        .willReturn(ok("Hello! I am sample stub.")))
 
-    stubFor(any(urlPathEqualTo("/everything"))
+    stubFor(get(urlPathEqualTo("/protected-resource"))
   		.withQueryParam("secret", equalTo("WireMock"))
   		.withBasicAuth("foo", "bar")
-        .willReturn(ok("body content under auth"))) 
+        .willReturn(ok("Now you now that I am a secret!"))) 
 }
 ```
 
