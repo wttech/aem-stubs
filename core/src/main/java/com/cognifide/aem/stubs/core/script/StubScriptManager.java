@@ -1,20 +1,17 @@
 package com.cognifide.aem.stubs.core.script;
 
 import com.cognifide.aem.stubs.core.Stubs;
+import org.apache.sling.api.resource.Resource;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public interface StubScriptManager {
 
   /**
-   * Run script at any path.
-   */
-  void run(String path);
-
-  /**
    * Runs all scripts handled by all runnables available.
    */
-  void runAll();
+  void runAll(Consumer<Resource> scriptRunner);
 
   /**
    * Runs all stub scripts which:
@@ -22,12 +19,17 @@ public interface StubScriptManager {
    * - are having correct file extension
    * - are not matching exclusion path patterns.
    */
-  void runAll(Stubs<?> runnable);
+  void runAll(Stubs<?> runnable, Consumer<Resource> scriptRunner);
 
   /**
    * Check script if it is a candidate for running.
    */
   boolean isScript(String path);
+
+  /**
+   * Allows to load all mappings available for
+   */
+  void mapAll(Stubs<?> runnable, Consumer<Resource> mappingLoader);
 
   /**
    * Check mapping if it is a candidate for application.

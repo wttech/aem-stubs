@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,36 +47,14 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   private final List<Stubs<?>> runnables = Lists.newCopyOnWriteArrayList();
 
   @Override
-  public void run(String path) {
-    Stubs<?> runnable = findRunnable(path).orElse(null); // TODO someday Java 9 'ifPresentOrElse()'
-    if (runnable == null) {
-      LOG.error("Cannot run AEM Stubs script '{}' - runnable not found!", path);
-    } else {
-      try {
-        resolverAccessor.consume(resolver -> run(path, runnable, resolver));
-      } catch (Exception e) {
-        LOG.error("Cannot run AEM Stubs script '{}'! Cause: {}", path, e.getMessage(), e);
-      }
-    }
-  }
-
-  private void run(String path, Stubs<?> runnable, ResourceResolver resolver) {
-    final StubScript script = new StubScript(path, this, runnable, resolver);
-    LOG.debug("Running AEM Stubs script started '{}'", script.getPath());
-    runnable.prepare(script);
-    script.run();
-    LOG.debug("Running AEM Stubs script finished '{}'", script.getPath());
-  }
-
-  @Override
-  public void runAll() {
+  public void runAll(Consumer<Resource> scriptRunner) {
     for (Stubs<?> runnable : runnables) {
-      runAll(runnable);
+      runAll(runnable, scriptRunner);
     }
   }
 
   @Override
-  public void runAll(Stubs<?> runnable) {
+  public void runAll(Stubs<?> runnable, Consumer<Resource> scriptRunner) {
     final StubScriptRun result = new StubScriptRun();
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
@@ -83,7 +62,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
 
     resolverAccessor.consume(resolver -> {
       try {
-        runAllUnderPath(rootPath, runnable, resolver, result);
+        runAllUnderPath(rootPath, resolver, scriptRunner);
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
@@ -92,26 +71,16 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     LOG.info("Running AEM Stubs scripts result: {}", result);
   }
 
-  private void runAllUnderPath(String rootPath, Stubs<?> runnable, ResourceResolver resolver, StubScriptRun result) {
+  private void runAllUnderPath(String rootPath, ResourceResolver resolver, Consumer<Resource> scriptRunner) {
     final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
       @Override
       protected void visit(Resource resource) {
         if (resource.isResourceType(JcrUtils.NT_FILE) && isScript(resource.getPath())) {
-          runAllEachPath(resource.getPath(), runnable, resolver, result);
+          scriptRunner.accept(resource);
         }
       }
     };
     visitor.accept(resolver.getResource(rootPath));
-  }
-
-  private void runAllEachPath(String scriptPath, Stubs<?> runnable, ResourceResolver resolver, StubScriptRun result) {
-    try {
-      result.total++;
-      run(scriptPath, runnable, resolver);
-    } catch (Exception e) {
-      LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
-      result.failed++;
-    }
   }
 
   @Override
@@ -132,6 +101,23 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   @Override
   public boolean isScript(String path) {
     return isScriptExtension(path) && isNotExcludedPath(path);
+  }
+
+  @Override
+  public void mapAll(Stubs<?> runnable, Consumer<Resource> mappingLoader) {
+    final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
+
+    resolverAccessor.consume(resolver -> {
+      final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
+        @Override
+        protected void visit(Resource resource) {
+          if (resource.isResourceType(JcrUtils.NT_FILE) && isMapping(resource.getPath())) {
+            mappingLoader.accept(resource);
+          }
+        }
+      };
+      visitor.accept(resolver.getResource(rootPath));
+    });
   }
 
   @Override
@@ -182,13 +168,13 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
-      .forEach(Stubs::reset);
+      .forEach(Stubs::reload);
   }
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
   protected void bindStubs(Stubs<?> stubs) {
     runnables.add(stubs);
-    stubs.reset();
+    stubs.reload();
   }
 
   @SuppressWarnings("PMD.NullAssignment")

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.cognifide.aem.stubs.wiremock.mapping.MappingSource;
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
@@ -36,21 +35,21 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
-class WireMockConfig implements Options {
+class WireMockOptions implements Options {
 
   private final ResolverAccessor resolverAccessor;
+
   private final String rootPath;
+
   private final boolean globalTransformer;
-  private final String mappingExtension;
+
   private final Map<String, Extension> extensions = newLinkedHashMap();
 
-
-  public WireMockConfig(ResolverAccessor resolverAccessor, String rootPath,
-    boolean globalTransformer, String mappingExtension) {
+  public WireMockOptions(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
     this.globalTransformer = globalTransformer;
-    this.mappingExtension = mappingExtension;
+
     addExtensions();
   }
 
@@ -98,7 +97,7 @@ class WireMockConfig implements Options {
 
   @Override
   public MappingsLoader mappingsLoader() {
-    return new MappingSource(filesRoot(), mappingExtension);
+    return stubMappings -> {}; // intentionally, loading is just done later
   }
 
   @Override

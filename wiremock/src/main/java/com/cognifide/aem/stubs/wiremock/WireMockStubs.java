@@ -2,17 +2,19 @@ package com.cognifide.aem.stubs.wiremock;
 
 import javax.servlet.ServletException;
 
+import com.cognifide.aem.stubs.core.StubsException;
+import com.cognifide.aem.stubs.core.util.JcrUtils;
+import com.cognifide.aem.stubs.wiremock.mapping.MappingCollection;
+import com.github.tomakehurst.wiremock.common.Json;
+import com.github.tomakehurst.wiremock.common.JsonException;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.apache.commons.io.IOUtils;
+import org.apache.sling.api.resource.Resource;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.*;
+import org.osgi.service.metatype.annotations.*;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.Designate;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,12 @@ import com.cognifide.aem.stubs.core.script.StubScriptManager;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 import com.github.tomakehurst.wiremock.http.Request;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Component(
   service = Stubs.class,
@@ -42,7 +50,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   private HttpService httpService;
 
   @Reference
-  private StubScriptManager stubScriptManager;
+  private StubScriptManager scriptManager;
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -60,22 +68,44 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   }
 
   @Override
-  public void clear() {
+  public void reload() {
     restart();
+
+    scriptManager.mapAll(this, this::loadMapping);
+    scriptManager.runAll(this, this::runScript);
   }
 
   @Override
-  public void reset() {
-    clear();
-    stubScriptManager.runAll(this);
+  public void loadMapping(Resource file) {
+    Optional.ofNullable(file.getChild(JcrUtils.JCR_CONTENT))
+      .flatMap(fileContent -> Optional.of(fileContent)
+        .map(r -> r.adaptTo(InputStream.class))
+        .map(BufferedInputStream::new))
+      .ifPresent(input -> {
+        app.mappingFrom((stubMappings) -> {
+          try {
+            MappingCollection stubCollection = Json.read(IOUtils.toString(input, StandardCharsets.UTF_8.displayName()), MappingCollection.class);
+            for (StubMapping mapping : stubCollection.getMappings()) {
+              mapping.setDirty(false);
+              stubMappings.addMapping(mapping);
+            }
+          } catch (JsonException | IOException e) {
+            throw new StubsException(String.format("Cannot load AEM Stubs mapping from resource at path '%s'!", file.getPath()), e);
+          }
+        });
+      });
   }
 
   @Override
-  public void prepare(StubScript script) {
+  public void runScript(Resource resource) {
+    final StubScript script = new StubScript(resource, scriptManager, this);
+
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer()
       .addStaticStars(WireMockUtils.class.getName())
       .addStarImports(Request.class.getPackage().getName())
     );
+
+    script.run();
   }
 
   @Activate
@@ -86,7 +116,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   @Modified
   protected void modify(Config config) {
     this.config = config;
-    reset();
+    reload();
   }
 
   @Deactivate
@@ -96,8 +126,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WireMockApp(resolverAccessor, stubScriptManager.getRootPath() + "/" + getId(),
-      config.globalTransformer(), stubScriptManager.getMappingExtension());
+    this.app = new WireMockApp(resolverAccessor, scriptManager.getRootPath() + "/" + getId(), config.globalTransformer());
     this.servletPath = getServletPath(config.path());
 
     try {
@@ -138,7 +167,9 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     @AttributeDefinition(name = "Servlet Prefix")
     String path() default "/stubs";
 
-    @AttributeDefinition(name = "Global Template Transformer", description = "Enables Pebble template engine / templating for response body content and file paths when loading body files. Effectively enables dynamic file loading instead of preloading and simplifies defining stubs.")
+    @AttributeDefinition(name = "Global Template Transformer", description = "Enables Pebble template engine / templating"
+      + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
+      + " instead of preloading and simplifies defining stubs.")
     boolean globalTransformer() default true;
   }
 }

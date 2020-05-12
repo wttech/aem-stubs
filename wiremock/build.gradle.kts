@@ -92,6 +92,7 @@ tasks {
     }
 
     integrationTest {
+        mustRunAfter(":assembly:all:packageDeploy")
         outputs.upToDateWhen { false }
         testLogging.showStandardStreams = true
     }

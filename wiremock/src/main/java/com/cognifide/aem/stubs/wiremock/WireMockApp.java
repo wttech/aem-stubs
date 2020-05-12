@@ -11,6 +11,7 @@ import com.github.tomakehurst.wiremock.http.ProxyResponseRenderer;
 import com.github.tomakehurst.wiremock.http.StubRequestHandler;
 import com.github.tomakehurst.wiremock.http.StubResponseRenderer;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
+import com.github.tomakehurst.wiremock.standalone.MappingsLoader;
 import com.github.tomakehurst.wiremock.verification.DisabledRequestJournal;
 import com.google.common.collect.ImmutableList;
 
@@ -18,12 +19,14 @@ public class WireMockApp {
 
   private final com.github.tomakehurst.wiremock.core.WireMockApp app;
 
-  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer,
-    String mappingExtension) {
-    WireMockConfig wiremockConfig = new WireMockConfig(resolverAccessor, rootPath,
-      globalTransformer, mappingExtension);
-    app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockConfig,
+  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
+    WireMockOptions wiremockOptions = new WireMockOptions(resolverAccessor, rootPath, globalTransformer);
+    app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockOptions,
       new NotImplementedContainer());
+  }
+
+  public void mappingFrom(MappingsLoader loader) {
+    app.loadMappingsUsing(loader);
   }
 
   public void stubFor(MappingBuilder mappingBuilder) {
