@@ -7,26 +7,50 @@ import java.util.Locale;
 
 class StubReload {
 
-    private final long startedAt = System.currentTimeMillis();
+  private final long startedAt = System.currentTimeMillis();
 
-    protected int total;
+  protected int scriptsTotal;
 
-    protected int failed;
+  protected int scriptsFailed;
 
-    public int succeed() {
-      return total - failed;
-    }
+  protected int mappingsTotal;
 
-    public String succeedPercent() {
-      return NumberFormat.getPercentInstance(Locale.US).format((double) (total - failed) / ((double) total));
-    }
+  protected int mappingsFailed;
 
-    public String duration() {
-      return DurationFormatUtils.formatDurationHMS(System.currentTimeMillis() - startedAt);
-    }
-
-    @Override
-    public String toString() {
-      return String.format("Success ratio: %s/%s=%s | Duration: %s", succeed(), total, succeedPercent(), duration());
-    }
+  public int scriptsSucceeded() {
+    return scriptsTotal - scriptsFailed;
   }
+
+  public int mappingsSucceeded() {
+    return mappingsTotal - mappingsFailed;
+  }
+
+  public String scriptsPercent() {
+    return formatPercent((double) (scriptsSucceeded()) / ((double) scriptsTotal));
+  }
+
+  public String mappingsPercent() {
+    return formatPercent((double) (mappingsSucceeded()) / ((double) mappingsTotal));
+  }
+
+  private String formatPercent(double value) {
+    return NumberFormat.getPercentInstance(Locale.US).format(value);
+  }
+
+  public String duration() {
+    return DurationFormatUtils.formatDurationHMS(System.currentTimeMillis() - startedAt);
+  }
+
+  public String summary() {
+    return String.format("Stubs reloaded: mappings %s/%s=%s, scripts %s/%s=%s | Duration: %s",
+      mappingsSucceeded(), mappingsTotal, mappingsPercent(),
+      scriptsSucceeded(), scriptsTotal, scriptsPercent(),
+      duration()
+    );
+  }
+
+  @Override
+  public String toString() {
+    return summary();
+  }
+}

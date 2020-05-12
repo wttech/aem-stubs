@@ -48,32 +48,38 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   public void reload(Stubs<?> runnable) {
     StubReload reload = new StubReload();
     runnable.initServer();
-    runAll(runnable);
-    mapAll(runnable);
+    mapAll(reload, runnable);
+    runAll(reload, runnable);
     runnable.startServer();
-    LOG.info(reload.toString());
+    LOG.info(reload.summary());
   }
 
-  private void runAll(Stubs<?> runnable) {
+  private void runAll(StubReload reload, Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
 
     resolverAccessor.consume(resolver -> {
       try {
-        runAllUnderPath(rootPath, resolver, runnable);
+        runAllUnderPath(reload, rootPath, resolver, runnable);
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
   }
 
-  private void runAllUnderPath(String rootPath, ResourceResolver resolver, Stubs<?> runnable) {
+  private void runAllUnderPath(StubReload reload, String rootPath, ResourceResolver resolver, Stubs<?> runnable) {
     final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
       @Override
       protected void visit(Resource resource) {
         if (resource.isResourceType(JcrUtils.NT_FILE) && isScript(resource.getPath())) {
-          runnable.runScript(resource);
+          try {
+            reload.scriptsTotal++;
+            runnable.runScript(resource);
+          } catch (Exception e) {
+            reload.scriptsFailed++;
+            LOG.error("Cannot execute AEM Stubs script at path '{}'!", resource.getPath(), e);
+          }
         }
       }
     };
@@ -98,7 +104,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     return isScriptExtension(path) && isNotExcludedPath(path);
   }
 
-  private void mapAll(Stubs<?> runnable) {
+  private void mapAll(StubReload reload, Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     resolverAccessor.consume(resolver -> {
@@ -106,7 +112,13 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
         @Override
         protected void visit(Resource resource) {
           if (resource.isResourceType(JcrUtils.NT_FILE) && isMapping(resource.getPath())) {
-            runnable.loadMapping(resource);
+            try {
+              reload.mappingsTotal++;
+              runnable.loadMapping(resource);
+            } catch (Exception e) {
+              reload.mappingsFailed++;
+              LOG.error("Cannot load AEM Stubs mapping at path '{}'!", resource.getPath(), e);
+            }
           }
         }
       };
