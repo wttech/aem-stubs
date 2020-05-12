@@ -3,6 +3,11 @@ package com.cognifide.aem.stubs.core;
 public interface StubManager {
 
   /**
+   * Reload all runnables.
+   */
+  void reload();
+
+  /**
    * Reload stubs runnable.
    * Restart server and apply all mappings then run all scripts.
    */

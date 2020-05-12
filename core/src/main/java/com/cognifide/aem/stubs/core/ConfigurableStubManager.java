@@ -45,6 +45,11 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   private final List<Stubs<?>> runnables = Lists.newCopyOnWriteArrayList();
 
   @Override
+  public void reload() {
+    runnables.forEach(this::reload);
+  }
+
+  @Override
   public void reload(Stubs<?> runnable) {
     StubReload reload = new StubReload();
     runnable.initServer();
@@ -183,6 +188,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   @Modified
   protected void update(Config config) {
     this.config = config;
+    reload();
   }
 
   @ObjectClassDefinition(name = "AEM Stubs Manager")
