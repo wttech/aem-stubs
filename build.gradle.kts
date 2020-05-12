@@ -2,7 +2,7 @@ plugins {
     id("com.neva.fork")
     id("com.cognifide.aem.instance.local")
     id("net.researchgate.release")
-    id("com.github.breadmoirai.github-release") version "2.2.10"
+    id("com.github.breadmoirai.github-release")
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
@@ -39,7 +39,7 @@ aem {
 
 githubRelease {
     owner("Cognifide")
-    repo("gradle-aem-plugin")
+    repo("aem-stubs")
     token((findProperty("github.token") ?: "").toString())
     tagName(project.version.toString())
     releaseName(project.version.toString())
@@ -48,7 +48,7 @@ githubRelease {
     overwrite((findProperty("github.override") ?: "true").toString().toBoolean())
 
     gradle.projectsEvaluated {
-        releaseAssets(listOf( // TODO upload does not work; bug of github plugin
+        releaseAssets(listOf(
                 ":assembly:all:packageCompose",
                 ":assembly:app:packageCompose",
                 ":assembly:wiremock-all:packageCompose",
@@ -79,27 +79,7 @@ tasks {
         mustRunAfter(release)
     }
 
-    register("copyRelease") {
-        mustRunAfter(release)
-
-        val files = project.objects.fileCollection()
-        inputs.files(files)
-            listOf(
-                    ":assembly:all:packageCompose",
-                    ":assembly:app:packageCompose",
-                    ":assembly:wiremock-all:packageCompose",
-                    ":assembly:wiremock-app:packageCompose",
-                    ":assembly:moco-all:packageCompose",
-                    ":assembly:moco-app:packageCompose"
-            ).forEach { files.from(rootProject.tasks.getByPath(it)) }
-
-        doLast {
-            val dir = file("build/release").apply { deleteRecursively(); mkdirs() }
-            files.forEach { it.copyTo(dir.resolve(it.name)) }
-        }
-    }
-
     register("fullRelease") {
-        dependsOn("release", "copyRelease"/*, "githubRelease"*/)
+        dependsOn("release", "githubRelease")
     }
 }
