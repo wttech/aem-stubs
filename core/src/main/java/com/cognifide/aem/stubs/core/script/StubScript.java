@@ -1,25 +1,26 @@
 package com.cognifide.aem.stubs.core.script;
 
+import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
+import com.cognifide.aem.stubs.core.util.JcrUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Optional;
 
-@SuppressWarnings("PMD.DataClass")
 public class StubScript {
 
-  private final String path;
-
-  private final StubScriptManager manager;
+  private final StubManager manager;
 
   private final Stubs<?> runnable;
 
@@ -33,19 +34,21 @@ public class StubScript {
 
   private final Logger logger;
 
+  private final Resource resource;
+
   private final ResourceResolver resourceResolver;
 
-  public StubScript(String path, StubScriptManager manager, Stubs<?> runnable, ResourceResolver resolver) {
-    this.path = path;
+  public StubScript(Resource resource, StubManager manager, Stubs<?> runnable) {
+    this.resource = resource;
+    this.resourceResolver = resource.getResourceResolver();
     this.manager = manager;
     this.runnable = runnable;
-    this.resourceResolver = resolver;
-    this.logger = createLogger(path);
+    this.logger = createLogger(resource.getPath());
     this.repository = new Repository(this);
 
     binding.setVariable("script", this);
     binding.setVariable("stubs", runnable);
-    binding.setVariable("resourceResolver", resolver);
+    binding.setVariable("resourceResolver", resourceResolver);
     binding.setVariable("logger", logger);
     binding.setVariable("repository", repository);
   }
@@ -59,7 +62,7 @@ public class StubScript {
   }
 
   public String getPath() {
-    return path;
+    return resource.getPath();
   }
 
   public String getRootPath() {
@@ -67,18 +70,18 @@ public class StubScript {
   }
 
   public String getDirPath() {
-    return StringUtils.substringBeforeLast(path, "/");
+    return StringUtils.substringBeforeLast(getPath(), "/");
   }
 
   public String getBaseName() {
-    return FilenameUtils.getBaseName(path);
+    return FilenameUtils.getBaseName(getPath());
   }
 
   public String getResourcePath(String extension) {
     return String.format("%s/%s.%s", getDirPath(), getBaseName(), extension);
   }
 
-  public StubScriptManager getManager() {
+  public StubManager getManager() {
     return manager;
   }
 
@@ -104,9 +107,10 @@ public class StubScript {
   }
 
   private Reader readSourceCode() {
-    return repository.useStream(path)
+    return Optional.ofNullable(resource.getChild(JcrUtils.JCR_CONTENT))
+      .map(r -> r.adaptTo(InputStream.class))
       .map(InputStreamReader::new)
-      .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", path)));
+      .orElseThrow(() -> new StubsException(String.format("Cannot read stub script '%s'!", getPath())));
   }
 
   private Logger createLogger(String path) {

@@ -1,9 +1,8 @@
-package com.cognifide.aem.stubs.core.script;
+package com.cognifide.aem.stubs.core;
 
 import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 
-import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component(
-  service = {StubScriptManager.class, ResourceChangeListener.class},
+  service = {StubManager.class, ResourceChangeListener.class},
   immediate = true,
   property = {
     ResourceChangeListener.CHANGES + "=" + "REMOVED",
@@ -32,11 +31,11 @@ import java.util.stream.Stream;
     ResourceChangeListener.CHANGES + "=" + "CHANGED"
   }
 )
-@Designate(ocd = ConfigurableStubScriptManager.Config.class)
+@Designate(ocd = ConfigurableStubManager.Config.class)
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
-public class ConfigurableStubScriptManager implements StubScriptManager, ResourceChangeListener {
+public class ConfigurableStubManager implements StubManager, ResourceChangeListener {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubScriptManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubManager.class);
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -46,96 +45,90 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   private final List<Stubs<?>> runnables = Lists.newCopyOnWriteArrayList();
 
   @Override
-  public void run(String path) {
-    Stubs<?> runnable = findRunnable(path).orElse(null); // TODO someday Java 9 'ifPresentOrElse()'
-    if (runnable == null) {
-      LOG.error("Cannot run AEM Stubs script '{}' - runnable not found!", path);
-    } else {
-      try {
-        resolverAccessor.consume(resolver -> run(path, runnable, resolver));
-      } catch (Exception e) {
-        LOG.error("Cannot run AEM Stubs script '{}'! Cause: {}", path, e.getMessage(), e);
-      }
-    }
+  public void reload(Stubs<?> runnable) {
+    StubReload reload = new StubReload();
+    runnable.initServer();
+    mapAll(reload, runnable);
+    runAll(reload, runnable);
+    runnable.startServer();
+    LOG.info(reload.summary());
   }
 
-  private void run(String path, Stubs<?> runnable, ResourceResolver resolver) {
-    final StubScript script = new StubScript(path, this, runnable, resolver);
-    LOG.debug("Running AEM Stubs script started '{}'", script.getPath());
-    runnable.prepare(script);
-    script.run();
-    LOG.debug("Running AEM Stubs script finished '{}'", script.getPath());
-  }
-
-  @Override
-  public void runAll() {
-    for (Stubs<?> runnable : runnables) {
-      runAll(runnable);
-    }
-  }
-
-  @Override
-  public void runAll(Stubs<?> runnable) {
-    final StubScriptRun result = new StubScriptRun();
+  private void runAll(StubReload reload, Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
-    LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
+    LOG.info("Running AEM Stubs scripts with extension '{}' under path '{}'", config.scriptExtension(), rootPath);
 
     resolverAccessor.consume(resolver -> {
       try {
-        runAllUnderPath(rootPath, runnable, resolver, result);
+        runAllUnderPath(reload, rootPath, resolver, runnable);
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
-
-    LOG.info("Running AEM Stubs scripts result: {}", result);
   }
 
-  private void runAllUnderPath(String rootPath, Stubs<?> runnable, ResourceResolver resolver, StubScriptRun result) {
+  private void runAllUnderPath(StubReload reload, String rootPath, ResourceResolver resolver, Stubs<?> runnable) {
     final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
       @Override
       protected void visit(Resource resource) {
         if (resource.isResourceType(JcrUtils.NT_FILE) && isScript(resource.getPath())) {
-          runAllEachPath(resource.getPath(), runnable, resolver, result);
+          try {
+            reload.scriptsTotal++;
+            runnable.runScript(resource);
+          } catch (Exception e) {
+            reload.scriptsFailed++;
+            LOG.error("Cannot execute AEM Stubs script at path '{}'!", resource.getPath(), e);
+          }
         }
       }
     };
     visitor.accept(resolver.getResource(rootPath));
   }
 
-  private void runAllEachPath(String scriptPath, Stubs<?> runnable, ResourceResolver resolver, StubScriptRun result) {
-    try {
-      result.total++;
-      run(scriptPath, runnable, resolver);
-    } catch (Exception e) {
-      LOG.error("Cannot run AEM Stubs script! Cause: {}", e.getMessage(), e);
-      result.failed++;
-    }
-  }
-
-  @Override
-  public Optional<Stubs<?>> findRunnable(String path) {
+  private Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
       .filter(runnable -> isScript(path, runnable) || isMapping(path, runnable))
       .findFirst();
   }
 
   private boolean isScript(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getScriptExtension()));
+    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.scriptExtension()));
   }
 
   private boolean isMapping(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getMappingExtension()));
+    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.mappingExtension()));
   }
 
-  @Override
-  public boolean isScript(String path) {
+  private boolean isScript(String path) {
     return isScriptExtension(path) && isNotExcludedPath(path);
   }
 
-  @Override
-  public boolean isMapping(String path) {
+  private void mapAll(StubReload reload, Stubs<?> runnable) {
+    final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
+
+    LOG.info("Loading AEM Stubs mappings with extension '{}' under path '{}'", config.mappingExtension(), rootPath);
+
+    resolverAccessor.consume(resolver -> {
+      final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
+        @Override
+        protected void visit(Resource resource) {
+          if (resource.isResourceType(JcrUtils.NT_FILE) && isMapping(resource.getPath())) {
+            try {
+              reload.mappingsTotal++;
+              runnable.loadMapping(resource);
+            } catch (Exception e) {
+              reload.mappingsFailed++;
+              LOG.error("Cannot load AEM Stubs mapping at path '{}'!", resource.getPath(), e);
+            }
+          }
+        }
+      };
+      visitor.accept(resolver.getResource(rootPath));
+    });
+  }
+
+  private boolean isMapping(String path) {
     return isMappingExtension(path) && isNotExcludedPath(path);
   }
 
@@ -157,16 +150,6 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   }
 
   @Override
-  public String getScriptExtension() {
-    return config.scriptExtension();
-  }
-
-  @Override
-  public String getMappingExtension() {
-    return config.mappingExtension();
-  }
-
-  @Override
   public void onChange(List<ResourceChange> changes) {
     if (!config.resetOnChange()) {
       return;
@@ -182,13 +165,13 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
-      .forEach(Stubs::reset);
+      .forEach(this::reload);
   }
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
   protected void bindStubs(Stubs<?> stubs) {
     runnables.add(stubs);
-    stubs.reset();
+    reload(stubs);
   }
 
   @SuppressWarnings("PMD.NullAssignment")
@@ -202,7 +185,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     this.config = config;
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
+  @ObjectClassDefinition(name = "AEM Stubs Manager")
   public @interface Config {
 
     @AttributeDefinition(name = "Root Path")
