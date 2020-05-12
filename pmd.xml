@@ -17,6 +17,11 @@
     <rule ref="category/java/design.xml">
         <exclude name="LawOfDemeter"/>
     </rule>
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <properties>
+            <property name="maxmethods" value="30" />
+        </properties>
+    </rule>
     <rule ref="category/java/design.xml/LoosePackageCoupling">
         <properties>
             <property name="packages" value="com.cognifide.aem.stubs" />

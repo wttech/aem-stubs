@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 
 import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
 import org.apache.sling.api.resource.AbstractResourceVisitor;
@@ -19,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,11 +33,10 @@ import java.util.stream.Stream;
   }
 )
 @Designate(ocd = ConfigurableStubScriptManager.Config.class)
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
 public class ConfigurableStubScriptManager implements StubScriptManager, ResourceChangeListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubScriptManager.class);
-
-  private static final String NODE_TYPE = "nt:file";
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -47,7 +46,6 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   private final List<Stubs<?>> runnables = Lists.newCopyOnWriteArrayList();
 
   @Override
-  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void run(String path) {
     Stubs<?> runnable = findRunnable(path).orElse(null); // TODO someday Java 9 'ifPresentOrElse()'
     if (runnable == null) {
@@ -77,7 +75,6 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
   }
 
   @Override
-  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void runAll(Stubs<?> runnable) {
     final StubScriptRun result = new StubScriptRun();
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
@@ -99,7 +96,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
       @Override
       protected void visit(Resource resource) {
-        if (resource.isResourceType(NODE_TYPE) && isScript(resource.getPath())) {
+        if (resource.isResourceType(JcrUtils.NT_FILE) && isScript(resource.getPath())) {
           runAllEachPath(resource.getPath(), runnable, resolver, result);
         }
       }
