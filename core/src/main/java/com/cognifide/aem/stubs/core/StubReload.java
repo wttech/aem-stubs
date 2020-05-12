@@ -1,11 +1,11 @@
-package com.cognifide.aem.stubs.core.script;
+package com.cognifide.aem.stubs.core;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class StubScriptRun {
+class StubReload {
 
     private final long startedAt = System.currentTimeMillis();
 

@@ -50,7 +50,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   private HttpService httpService;
 
   @Reference
-  private StubManager scriptManager;
+  private StubManager manager;
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -65,14 +65,6 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   @Override
   public WireMockApp getServer() {
     return app;
-  }
-
-  @Override
-  public void reload() {
-    restart();
-
-    scriptManager.mapAll(this, this::loadMapping);
-    scriptManager.runAll(this, this::runScript);
   }
 
   @Override
@@ -98,7 +90,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   @Override
   public void runScript(Resource resource) {
-    final StubScript script = new StubScript(resource, scriptManager, this);
+    final StubScript script = new StubScript(resource, manager, this);
 
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer()
       .addStaticStars(WireMockUtils.class.getName())
@@ -116,7 +108,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   @Modified
   protected void modify(Config config) {
     this.config = config;
-    reload();
+    manager.reload(this);
   }
 
   @Deactivate
@@ -126,7 +118,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WireMockApp(resolverAccessor, scriptManager.getRootPath() + "/" + getId(), config.globalTransformer());
+    this.app = new WireMockApp(resolverAccessor, manager.getRootPath() + "/" + getId(), config.globalTransformer());
     this.servletPath = getServletPath(config.path());
 
     try {
@@ -148,9 +140,15 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     }
   }
 
-  private void restart() {
+  @Override
+  public void initServer() {
     stop();
     start();
+  }
+
+  @Override
+  public void startServer() {
+    // already started on init
   }
 
   private String getServletPath(String path) {

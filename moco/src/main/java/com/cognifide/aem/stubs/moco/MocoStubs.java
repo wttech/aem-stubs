@@ -37,7 +37,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
   @Reference
-  private StubManager scriptManager;
+  private StubManager manager;
 
   private ActualHttpServer server;
 
@@ -63,7 +63,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Modified
   protected void modify(Config config) {
     this.config = config;
-    reload();
+    manager.reload(this);
   }
 
   @Deactivate
@@ -71,25 +71,25 @@ public class MocoStubs implements Stubs<HttpServer> {
     stop();
   }
 
-  private void start() {
-    LOG.info("Starting AEM Stubs Moco Server");
+  @Override
+  public void initServer() {
+    stop();
 
     if (config.logging()) {
       server = (ActualHttpServer) httpServer(config.port(), ApiUtils.log(LOG::info));
     } else {
       server = (ActualHttpServer) httpServer(config.port());
     }
+  }
 
-    scriptManager.mapAll(this, this::loadMapping);
-    scriptManager.runAll(this, this::runScript);
-
+  @Override
+  public void startServer() {
     runner = runner(server);
     runner.start();
   }
 
   @SuppressWarnings("PMD.NullAssignment")
   private void stop() {
-    LOG.info("Stopping AEM Stubs Moco Server");
     if (runner != null) {
       runner.stop();
     }
@@ -98,14 +98,8 @@ public class MocoStubs implements Stubs<HttpServer> {
   }
 
   @Override
-  public void reload() {
-    stop();
-    start();
-  }
-
-  @Override
   public void runScript(Resource resource) {
-    final StubScript script = new StubScript(resource, scriptManager, this);
+    final StubScript script = new StubScript(resource, manager, this);
 
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
       MocoUtils.class.getName(),

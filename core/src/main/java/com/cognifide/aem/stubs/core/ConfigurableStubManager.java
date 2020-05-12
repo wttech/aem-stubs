@@ -3,7 +3,6 @@ package com.cognifide.aem.stubs.core;
 import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 
-import com.cognifide.aem.stubs.core.script.StubScriptRun;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,64 +45,60 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   private final List<Stubs<?>> runnables = Lists.newCopyOnWriteArrayList();
 
   @Override
-  public void runAll(Consumer<Resource> scriptRunner) {
-    for (Stubs<?> runnable : runnables) {
-      runAll(runnable, scriptRunner);
-    }
+  public void reload(Stubs<?> runnable) {
+    StubReload reload = new StubReload();
+    runnable.initServer();
+    runAll(runnable);
+    mapAll(runnable);
+    runnable.startServer();
+    LOG.info(reload.toString());
   }
 
-  @Override
-  public void runAll(Stubs<?> runnable, Consumer<Resource> scriptRunner) {
-    final StubScriptRun result = new StubScriptRun();
+  private void runAll(Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
 
     resolverAccessor.consume(resolver -> {
       try {
-        runAllUnderPath(rootPath, resolver, scriptRunner);
+        runAllUnderPath(rootPath, resolver, runnable);
       } catch (Exception e) {
         LOG.error("Cannot run AEM Stubs scripts! Cause: {}", e.getMessage(), e);
       }
     });
-
-    LOG.info("Running AEM Stubs scripts result: {}", result);
   }
 
-  private void runAllUnderPath(String rootPath, ResourceResolver resolver, Consumer<Resource> scriptRunner) {
+  private void runAllUnderPath(String rootPath, ResourceResolver resolver, Stubs<?> runnable) {
     final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
       @Override
       protected void visit(Resource resource) {
         if (resource.isResourceType(JcrUtils.NT_FILE) && isScript(resource.getPath())) {
-          scriptRunner.accept(resource);
+          runnable.runScript(resource);
         }
       }
     };
     visitor.accept(resolver.getResource(rootPath));
   }
 
-  @Override
-  public Optional<Stubs<?>> findRunnable(String path) {
+  private Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
       .filter(runnable -> isScript(path, runnable) || isMapping(path, runnable))
       .findFirst();
   }
 
   private boolean isScript(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getScriptExtension()));
+    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.scriptExtension()));
   }
 
   private boolean isMapping(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), getMappingExtension()));
+    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.mappingExtension()));
   }
 
-  @Override
-  public boolean isScript(String path) {
+  private boolean isScript(String path) {
     return isScriptExtension(path) && isNotExcludedPath(path);
   }
 
-  @Override
-  public void mapAll(Stubs<?> runnable, Consumer<Resource> mappingLoader) {
+  private void mapAll(Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
     resolverAccessor.consume(resolver -> {
@@ -112,7 +106,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
         @Override
         protected void visit(Resource resource) {
           if (resource.isResourceType(JcrUtils.NT_FILE) && isMapping(resource.getPath())) {
-            mappingLoader.accept(resource);
+            runnable.loadMapping(resource);
           }
         }
       };
@@ -120,8 +114,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     });
   }
 
-  @Override
-  public boolean isMapping(String path) {
+  private boolean isMapping(String path) {
     return isMappingExtension(path) && isNotExcludedPath(path);
   }
 
@@ -143,16 +136,6 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   }
 
   @Override
-  public String getScriptExtension() {
-    return config.scriptExtension();
-  }
-
-  @Override
-  public String getMappingExtension() {
-    return config.mappingExtension();
-  }
-
-  @Override
   public void onChange(List<ResourceChange> changes) {
     if (!config.resetOnChange()) {
       return;
@@ -168,13 +151,13 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
-      .forEach(Stubs::reload);
+      .forEach(this::reload);
   }
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
   protected void bindStubs(Stubs<?> stubs) {
     runnables.add(stubs);
-    stubs.reload();
+    reload(stubs);
   }
 
   @SuppressWarnings("PMD.NullAssignment")

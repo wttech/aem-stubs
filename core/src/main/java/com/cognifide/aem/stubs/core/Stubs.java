@@ -18,9 +18,14 @@ public interface Stubs<T> {
   T getServer();
 
   /**
-   * Restart server then run all stub scripts.
+   * Initialize server to be ready for loading mappings and running scripts.
    */
-  void reload();
+  void initServer();
+
+  /**
+   * Start initialized server after loading mappings and running scripts.
+   */
+  void startServer();
 
   /**
    * Run stub script.
