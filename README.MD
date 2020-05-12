@@ -25,8 +25,8 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
      * [Basics](#basics)
      * [OSGi configuration](#osgi-configuration)
      * [Stub script API](#stub-script-api)
-        * [Pre-defined variables:](#pre-defined-variables)
-        * [Useful snippets:](#useful-snippets)
+        * [Pre-defined variables](#pre-defined-variables)
+        * [Framework-specific stub script API](#framework-specific-stub-script-api)
   * [Other tools](#other-tools)
   * [Contributing](#contributing)
   * [License](#license)
@@ -136,24 +136,12 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 * [repository](core/src/main/java/com/cognifide/aem/stubs/core/script/Repository.java) - for easier using repository e.g reading file contents,
 * [logger](https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java) - SLF4j logger connected to script being run.
 
-#### Useful snippets:
+#### Framework-specific stub script API
 
-Snippets below might be useful only when script manager's 'On change' mode is set to 'Run changed script only'.
-Then consider putting following snippets in the top of stub script.
+See also framework-specific stub script API: 
 
-Restarting stubs server without running any stub scripts:
-
-```groovy
-stubs.clear()
-```
-
-Restarting stubs server and running all stub scripts:
-
-```groovy
-stubs.reset()
-```
-
-See also framework-specific stub script API: [Wiremock](wiremock#stub-script-api), [Moco](wiremock#stub-script-api).
+* [Wiremock](wiremock#stub-script-api)
+* [Moco](wiremock#stub-script-api).
 
 ## Other tools
 
