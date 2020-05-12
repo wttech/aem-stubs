@@ -119,11 +119,14 @@ Stub mappings or scripts could be organized into folders tree.
 Any other assets used by scripts like images, extra JSON files could be also freely put close to stub scripts or mappings.
 Indeed, dedicated extensions _*.stub.json_ and _*.stub.groovy_ are introduced to distinguish these assets from automatically loaded scripts and mappings.
 
+Note that mappings and scripts under path _/var/stubs/wiremock/samples_ will not be considered as of they are excluded by default configuration of Stub Manager OSGi service.
+Which means to use samples, it is needed to remove path exclusion, rename a folder or copy sample files to other folder.
+
 ### OSGi configuration
 
 There are framework specific OSGi configurations ([WireMock](moco#osgi-configuration), [Moco](moco#osgi-configuration)) and common listed below:
 
-[Stub Script Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.script.ConfigurableStubScriptManager)
+[Stub Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.ConfigurableStubManager)
 
 <img src="docs/osgi-config-stub-manager.png" width="50%">
   

@@ -63,7 +63,7 @@ Download appropriate distribution from [releases](https://github.com/Cognifide/a
 ## Documentation
 
 All stubs need to be defined via one or many stub scripts located in AEM repository under path */var/stubs/wiremock* (by default).
-For example, consider contents of file */var/stubs/wiremock/samples/hello.groovy*:
+For example, consider contents of file */var/stubs/wiremock/hello.stub.groovy*:
 
 ```
 stubs.server.with {
@@ -100,7 +100,8 @@ Default imports (not needed to be specified explicitly in scripts):
 
 ### Supported features
 
-Almost all WireMock Java features are supported. Code snippets can be found directly on WireMock documentation:
+Almost all WireMock Java features are supported. Code snippets could be found directly in WireMock documentation:
+
 ```
 stubs.server.with {
         /* use WireMock snippets here */
@@ -120,43 +121,36 @@ stubs.server.with {
 }
 ```
 
-WireMock [stubbing](http://wiremock.org/docs/stubbing/) documentation
+Consider discovering related WireMock [stubbing](http://wiremock.org/docs/stubbing/) documentation.
 
 #### Request Matching
 
-WireMock supports matching of requests to stubs and verification queries using many attributes. Detailed documentation available [here](http://wiremock.org/docs/request-matching/) 
+WireMock supports matching of requests to stubs and verification queries using many attributes. Detailed documentation is available [here](http://wiremock.org/docs/request-matching/).
 
 #### Proxying
 
-WireMock can selectively proxy requests through to other hosts. Code snippets can be found [here](http://wiremock.org/docs/proxying/)
+WireMock can selectively proxy requests through to other hosts. Code snippets could be found [here](http://wiremock.org/docs/proxying/)
 
 #### Response Templating
 
 [WireMock](http://wiremock.org) supports by default [handlebars](http://handlebarsjs.com/) as templating engine.
-[Handlebars](http://handlebarsjs.com/) is not `OSGI ready` library and is not supported by AEM Stubs.
+[Handlebars](http://handlebarsjs.com/) is not an OSGi-ready library and is not supported by AEM Stubs.
 
-Current implementation supports basic functionality of [Pebble v3.1.0](https://pebbletemplates.io/) templating engine.
-It implemented by WireMock [transformer extension](http://wiremock.org/docs/extending-wiremock/) named `pebble-response-template`  
+Current implementation supports basic functionality of [Pebble](https://pebbletemplates.io/) templating engine.
 
 ```
 stubs.server.with {
     stubFor(get(urlPathEqualTo("/templated"))
             .willReturn(aResponse()
                     .withBody("{{request.path[0]}}")
-                    .withTransformers("pebble-response-template")))
 }
 ```
 
-The request model available from a template is the same as described on WireMock response templating [documentaion](http://wiremock.org/docs/response-templating/)
-
- __Note__ 
- 
-Method `.withTransformers("pebble-response-template")` need to be call on response builder to specify  [Pebble](https://pebbletemplates.io/) transformer on each stub mapping.
-There is no possibility to switch it on globally for AEM Stubs.
+The request model available from a template is the same as described on WireMock response templating [documentation](http://wiremock.org/docs/response-templating/).
 
 #### Templating parameters
 
-Parameters can be passed to WireMock extension `pebble-response-template` by calling `withTransformerParameter` method
+Parameters can be passed to WireMock extension `pebble-response-template` (loaded by default) by calling `withTransformerParameter` method:
 
 ```
 stubs.server.with {
@@ -165,12 +159,11 @@ stubs.server.with {
                     .withBodyFile("samples/template.json")
                     .withHeader("Content-Type", "application/json")
                     .withTransformerParameter("message", "Hello Templates!")
-                    .withTransformers("pebble-response-template")))
 
 }
 ```
 
-Also, dynamic values are possible
+Also, dynamic values are possible:
 
 ```
 stubs.server.with {
@@ -178,7 +171,6 @@ stubs.server.with {
             .willReturn(aResponse()
                     .withBody("{{parameters.date}}")
                     .withTransformerParameter("date", {new Date()})
-                    .withTransformers("pebble-response-template")))
 
 }
 ```
