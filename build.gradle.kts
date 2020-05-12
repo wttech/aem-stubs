@@ -9,7 +9,7 @@ apply(from = "gradle/fork/props.gradle.kts")
 apply(from = "gradle/common.gradle.kts")
 
 description = "AEM Stubs"
-defaultTasks(":assembly:all:packageDeploy")
+defaultTasks(":assembly:all:packageDeploy", "integrationTest")
 
 aem {
     instance {
@@ -39,7 +39,7 @@ aem {
 
 githubRelease {
     owner("Cognifide")
-    repo("gradle-aem-plugin")
+    repo("aem-stubs")
     token((findProperty("github.token") ?: "").toString())
     tagName(project.version.toString())
     releaseName(project.version.toString())
