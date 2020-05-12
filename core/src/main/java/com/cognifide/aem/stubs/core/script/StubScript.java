@@ -1,5 +1,6 @@
 package com.cognifide.aem.stubs.core.script;
 
+import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 public class StubScript {
 
-  private final StubScriptManager manager;
+  private final StubManager manager;
 
   private final Stubs<?> runnable;
 
@@ -37,7 +38,7 @@ public class StubScript {
 
   private final ResourceResolver resourceResolver;
 
-  public StubScript(Resource resource, StubScriptManager manager, Stubs<?> runnable) {
+  public StubScript(Resource resource, StubManager manager, Stubs<?> runnable) {
     this.resource = resource;
     this.resourceResolver = resource.getResourceResolver();
     this.manager = manager;
@@ -80,7 +81,7 @@ public class StubScript {
     return String.format("%s/%s.%s", getDirPath(), getBaseName(), extension);
   }
 
-  public StubScriptManager getManager() {
+  public StubManager getManager() {
     return manager;
   }
 

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
-import com.cognifide.aem.stubs.core.script.StubScriptManager;
+import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -50,7 +50,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   private HttpService httpService;
 
   @Reference
-  private StubScriptManager scriptManager;
+  private StubManager scriptManager;
 
   @Reference
   private ResolverAccessor resolverAccessor;

@@ -27,8 +27,9 @@ aem {
                 }
             }
             step("enable-stubs-samples") {
+                version = 2
                 sync {
-                    osgi.configure("com.cognifide.aem.stubs.core.script.ConfigurableStubScriptManager", mapOf(
+                    osgi.configure("com.cognifide.aem.stubs.core.ConfigurableStubManager", mapOf(
                             "excluded.paths" to listOf("**/internals/*")
                     ))
                 }

@@ -2,7 +2,7 @@ package com.cognifide.aem.stubs.moco;
 
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
-import com.cognifide.aem.stubs.core.script.StubScriptManager;
+import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ActualHttpServer;
@@ -37,7 +37,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
   @Reference
-  private StubScriptManager scriptManager;
+  private StubManager scriptManager;
 
   private ActualHttpServer server;
 

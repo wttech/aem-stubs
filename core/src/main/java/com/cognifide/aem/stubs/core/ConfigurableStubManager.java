@@ -1,9 +1,9 @@
-package com.cognifide.aem.stubs.core.script;
+package com.cognifide.aem.stubs.core;
 
 import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 
-import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.script.StubScriptRun;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component(
-  service = {StubScriptManager.class, ResourceChangeListener.class},
+  service = {StubManager.class, ResourceChangeListener.class},
   immediate = true,
   property = {
     ResourceChangeListener.CHANGES + "=" + "REMOVED",
@@ -33,11 +33,11 @@ import java.util.stream.Stream;
     ResourceChangeListener.CHANGES + "=" + "CHANGED"
   }
 )
-@Designate(ocd = ConfigurableStubScriptManager.Config.class)
+@Designate(ocd = ConfigurableStubManager.Config.class)
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
-public class ConfigurableStubScriptManager implements StubScriptManager, ResourceChangeListener {
+public class ConfigurableStubManager implements StubManager, ResourceChangeListener {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubScriptManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubManager.class);
 
   @Reference
   private ResolverAccessor resolverAccessor;
@@ -188,7 +188,7 @@ public class ConfigurableStubScriptManager implements StubScriptManager, Resourc
     this.config = config;
   }
 
-  @ObjectClassDefinition(name = "AEM Stubs Scripts Manager")
+  @ObjectClassDefinition(name = "AEM Stubs Manager")
   public @interface Config {
 
     @AttributeDefinition(name = "Root Path")

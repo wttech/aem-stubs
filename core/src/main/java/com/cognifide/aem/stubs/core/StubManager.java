@@ -1,4 +1,4 @@
-package com.cognifide.aem.stubs.core.script;
+package com.cognifide.aem.stubs.core;
 
 import com.cognifide.aem.stubs.core.Stubs;
 import org.apache.sling.api.resource.Resource;
@@ -6,7 +6,7 @@ import org.apache.sling.api.resource.Resource;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public interface StubScriptManager {
+public interface StubManager {
 
   /**
    * Runs all scripts handled by all runnables available.
@@ -14,7 +14,7 @@ public interface StubScriptManager {
   void runAll(Consumer<Resource> scriptRunner);
 
   /**
-   * Runs all stub scripts which:
+   * Runs all scripts which:
    * - are located under configured root path,
    * - are having correct file extension
    * - are not matching exclusion path patterns.
@@ -37,7 +37,7 @@ public interface StubScriptManager {
   boolean isMapping(String path);
 
   /**
-   * Find script runnable applicable for script.
+   * Find stubs implementation for script or mapping.
    */
   Optional<Stubs<?>> findRunnable(String path);
 
