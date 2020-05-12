@@ -1,6 +1,6 @@
 package com.cognifide.aem.stubs.core;
 
-import com.cognifide.aem.stubs.core.script.StubScript;
+import org.apache.sling.api.resource.Resource;
 
 /**
  * Defines stub engine.
@@ -18,17 +18,22 @@ public interface Stubs<T> {
   T getServer();
 
   /**
-   * Restart server only.
+   * Initialize server to be ready for loading mappings and running scripts.
    */
-  void clear();
+  void initServer();
 
   /**
-   * Restart server then run all stub scripts.
+   * Start initialized server after loading mappings and running scripts.
    */
-  void reset();
+  void startServer();
 
   /**
-   * Prepare stub script before execution.
+   * Run stub script.
    */
-  void prepare(StubScript script);
+  void runScript(Resource resource);
+
+  /**
+   * Load stub mapping.
+   */
+  void loadMapping(Resource resource);
 }
