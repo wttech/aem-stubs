@@ -91,7 +91,8 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     visitor.accept(resolver.getResource(rootPath));
   }
 
-  private Optional<Stubs<?>> findRunnable(String path) {
+  @Override
+  public Optional<Stubs<?>> findRunnable(String path) {
     return runnables.stream()
       .filter(runnable -> isScript(path, runnable) || isMapping(path, runnable))
       .findFirst();
