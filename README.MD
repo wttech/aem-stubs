@@ -6,7 +6,7 @@
 [![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
 
 <p>
-  <img src="docs/logo-with-text2.png" alt="AEM Stubs"/>
+  <img src="docs/logo-with-text3.png" alt="AEM Stubs"/>
 </p>
 
 Tool for providing sample data for AEM applications in a simple and flexible way.
