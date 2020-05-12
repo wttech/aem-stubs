@@ -42,10 +42,10 @@ class StubReload {
   }
 
   public String summary() {
-    return String.format("Stubs reloaded: mappings %s/%s=%s, scripts %s/%s=%s | Duration: %s",
+    return String.format("AEM Stubs reloaded in %s | Mappings: %s/%s=%s | Scripts: %s/%s=%s",
+      duration(),
       mappingsSucceeded(), mappingsTotal, mappingsPercent(),
-      scriptsSucceeded(), scriptsTotal, scriptsPercent(),
-      duration()
+      scriptsSucceeded(), scriptsTotal, scriptsPercent()
     );
   }
 

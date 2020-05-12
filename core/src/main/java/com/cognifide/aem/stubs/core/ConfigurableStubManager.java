@@ -57,7 +57,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   private void runAll(StubReload reload, Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
 
-    LOG.info("Running AEM Stubs scripts under path '{}'", rootPath);
+    LOG.info("Running AEM Stubs scripts with extension '{}' under path '{}'", config.scriptExtension(), rootPath);
 
     resolverAccessor.consume(resolver -> {
       try {
@@ -106,6 +106,8 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
   private void mapAll(StubReload reload, Stubs<?> runnable) {
     final String rootPath = format("%s/%s", getRootPath(), runnable.getId());
+
+    LOG.info("Loading AEM Stubs mappings with extension '{}' under path '{}'", config.mappingExtension(), rootPath);
 
     resolverAccessor.consume(resolver -> {
       final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {

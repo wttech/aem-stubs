@@ -84,6 +84,7 @@ public class MocoStubs implements Stubs<HttpServer> {
 
   @Override
   public void startServer() {
+    LOG.info("Starting AEM Stubs Moco Server");
     runner = runner(server);
     runner.start();
   }
@@ -91,6 +92,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   @SuppressWarnings("PMD.NullAssignment")
   private void stop() {
     if (runner != null) {
+      LOG.info("Stopping AEM Stubs Moco Server");
       runner.stop();
     }
     runner = null;

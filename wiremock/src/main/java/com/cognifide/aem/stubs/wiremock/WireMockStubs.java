@@ -117,20 +117,20 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   }
 
   private void start() {
-    LOG.info("Starting AEM Stubs Wiremock Server");
-    this.app = new WireMockApp(resolverAccessor, manager.getRootPath() + "/" + getId(), config.globalTransformer());
-    this.servletPath = getServletPath(config.path());
+    LOG.info("Starting AEM Stubs WireMock Servlet");
+    app = new WireMockApp(resolverAccessor, manager.getRootPath() + "/" + getId(), config.globalTransformer());
+    servletPath = getServletPath(config.path());
 
     try {
       httpService.registerServlet(servletPath, createServlet(), null, null);
     } catch (ServletException | NamespaceException e) {
-      LOG.error("Cannot register AEM Stubs Wiremock Server at path {}", servletPath, e);
+      LOG.error("Cannot register AEM Stubs WireMock Servlet at path {}", servletPath, e);
     }
   }
 
   @SuppressWarnings("PMD.NullAssignment")
   private void stop() {
-    LOG.info("Stopping AEM Stubs Wiremock Server");
+    LOG.info("Stopping AEM Stubs WireMock Servlet");
     if (servletPath != null) {
       httpService.unregister(servletPath);
       servletPath = null;
