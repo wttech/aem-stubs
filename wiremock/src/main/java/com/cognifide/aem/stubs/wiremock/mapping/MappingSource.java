@@ -20,6 +20,7 @@ public class MappingSource extends JsonFileMappingsSource {
   }
 
   @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
   public void loadMappingsInto(StubMappings stubMappings) {
     mappingsFileSource.listFilesRecursively()
       .stream()
