@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import com.cognifide.aem.stubs.wiremock.WireMockException;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.ProxyResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
@@ -62,14 +63,27 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     //proxy
     if (definition.isProxyResponse()) {
       PebbleTemplate baseUrlTemplate = engine.getTemplate(definition.getProxyBaseUrl());
-      definitionBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
-      return definitionBuilder.build();
+      ProxyResponseDefinitionBuilder proxied =
+        definitionBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
+
+      return copyAdditionalHeaders(definition, proxied).build();
     }
 
     //body
     return Optional.ofNullable(getBodyTemplateString(definition))
       .map(transformBody(definition, definitionBuilder, model))
       .orElse(definition);
+  }
+
+  private ProxyResponseDefinitionBuilder copyAdditionalHeaders(ResponseDefinition definition,
+    ProxyResponseDefinitionBuilder proxied) {
+    Optional.ofNullable(definition.getAdditionalProxyRequestHeaders())
+      .ifPresent(httpHeaders ->
+        httpHeaders.all()
+          .forEach(h -> h.values().forEach(v -> proxied.withAdditionalRequestHeader(h.key(), v)))
+      );
+
+    return proxied;
   }
 
   private Function<String, ResponseDefinition> transformBody(ResponseDefinition definition,
@@ -81,7 +95,8 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
       if (definition.specifiesBodyFile()) {
         String template = jcrFileReader.readText(newBodyOrigin)
-          .orElseThrow(() -> new WireMockException(String.format("Cannot read template '%s'!", newBodyOrigin)));
+          .orElseThrow(() -> new WireMockException(
+            String.format("Cannot read template '%s'!", newBodyOrigin)));
         PebbleTemplate fileTemplate = engine.getTemplate(template);
         newBody = evaluate(fileTemplate, model);
       } else {
