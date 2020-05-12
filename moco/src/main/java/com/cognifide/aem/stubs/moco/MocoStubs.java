@@ -3,6 +3,7 @@ package com.cognifide.aem.stubs.moco;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
 import com.cognifide.aem.stubs.core.script.StubScriptManager;
+import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ActualHttpServer;
@@ -25,8 +26,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static com.cognifide.aem.stubs.core.util.JcrUtils.*;
-import static com.cognifide.aem.stubs.core.util.JcrUtils.NT_FILE;
 import static com.github.dreamhead.moco.Moco.*;
 import static com.github.dreamhead.moco.Runner.runner;
 import static java.lang.String.format;
@@ -116,7 +115,7 @@ public class MocoStubs implements Stubs<HttpServer> {
     }
 
     eachMapping(resource -> {
-      Optional.ofNullable(resource.getChild(JCR_CONTENT))
+      Optional.ofNullable(resource.getChild(JcrUtils.JCR_CONTENT))
         .map(r -> r.adaptTo(InputStream.class))
         .map(BufferedInputStream::new)
         .ifPresent(input -> {
@@ -137,7 +136,7 @@ public class MocoStubs implements Stubs<HttpServer> {
       final AbstractResourceVisitor visitor = new AbstractResourceVisitor() {
         @Override
         protected void visit(Resource resource) {
-          if (resource.isResourceType(NT_FILE) && scriptManager.isMapping(resource.getPath())) {
+          if (resource.isResourceType(JcrUtils.NT_FILE) && scriptManager.isMapping(resource.getPath())) {
             consumer.accept(resource);
           }
         }

@@ -7,20 +7,18 @@ import java.util.Locale;
 
 public class StubScriptRun {
 
-    private static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance(Locale.US);
-
     private final long startedAt = System.currentTimeMillis();
 
-    protected int total = 0;
+    protected int total;
 
-    protected int failed = 0;
+    protected int failed;
 
     public int succeed() {
       return total - failed;
     }
 
     public String succeedPercent() {
-      return PERCENT_FORMAT.format((double) (total - failed) / ((double) total));
+      return NumberFormat.getPercentInstance(Locale.US).format((double) (total - failed) / ((double) total));
     }
 
     public String duration() {
