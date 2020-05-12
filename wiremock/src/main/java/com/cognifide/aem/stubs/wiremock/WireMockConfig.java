@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.mapping.MappingSource;
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
@@ -28,7 +29,6 @@ import com.github.tomakehurst.wiremock.http.trafficlistener.WiremockNetworkTraff
 import com.github.tomakehurst.wiremock.security.Authenticator;
 import com.github.tomakehurst.wiremock.security.NoAuthenticator;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedMappingsSaver;
-import com.github.tomakehurst.wiremock.standalone.JsonFileMappingsSource;
 import com.github.tomakehurst.wiremock.standalone.MappingsLoader;
 import com.github.tomakehurst.wiremock.verification.notmatched.NotMatchedRenderer;
 import com.github.tomakehurst.wiremock.verification.notmatched.PlainTextStubNotMatchedRenderer;
@@ -93,12 +93,12 @@ class WireMockConfig implements Options {
 
   @Override
   public FileSource filesRoot() {
-    return new WireMockFileSource(resolverAccessor, rootPath, mappingExtension);
+    return new WireMockFileSource(resolverAccessor, rootPath);
   }
 
   @Override
   public MappingsLoader mappingsLoader() {
-    return new JsonFileMappingsSource(filesRoot());
+    return new MappingSource(filesRoot(), mappingExtension);
   }
 
   @Override
