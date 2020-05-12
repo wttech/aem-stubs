@@ -26,7 +26,7 @@ plugins.withId("com.cognifide.aem.package") {
         withType<PackageCompose>().configureEach {
             vaultDefinition {
                 description.set("""
-                    &lt;p class="description"&gt;Tool for providing sample data for AEM applications in a simple and flexible way.&lt;/p&gt;
+                    &lt;p class="description"&gt;Tool for providing sample data for AEM applications in a simple and flexible way. Stubbing server on AEM, no separate needed.&lt;/p&gt;
                     &lt;p&gt;&lt;a href="https://github.com/Cognifide/aem-stubs">Documentation&lt;/a&gt;
                 """.trimIndent())
             }
