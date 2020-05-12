@@ -15,6 +15,15 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
 
 ![Screenshot](docs/screenshot.jpg)
 
+Main concepts of AEM Stubs tool are:
+
+* **simplicity** 
+    * creating stubs should be as much simple as it is possible,
+    * reusing widely-known and battle-tested stubbing technology (avoiding reinventing a wheel), 
+* **reactivity**
+    * trivial tool deployment - installable on AEM via all-in-one CRX package (setting up additional infrastructure not needed),
+    * trivial stubs deployment - reloading stubs tied to regular AEM application deployment.
+    
 ## Table of contents
 
   * [Frameworks](#frameworks)
