@@ -9,6 +9,9 @@
   <img src="docs/logo-text.png" alt="AEM Stubs"/>
 </p>
 
+![AEM Stubs Logo](docs/logo-text.svg)
+<!-- .element style="max-width: 360px" -->
+
 Tool for providing sample data for AEM applications in a simple and flexible way.
 
 By providing JSON mapping file or implementing a [Groovy](http://groovy-lang.org/syntax.html) script using [WireMock](http://wiremock.org) or [Moco](https://github.com/dreamhead/moco) framework be able to mock your 3rd party services within minutes without a need to set up separate mock servers (infrastructure).
