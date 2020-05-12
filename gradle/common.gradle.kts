@@ -1,4 +1,5 @@
 import com.cognifide.gradle.aem.AemExtension
+import com.cognifide.gradle.aem.pkg.tasks.PackageCompose
 
 group = "com.cognifide.aem.stubs"
 
@@ -15,6 +16,19 @@ plugins.withId("com.cognifide.aem.common") {
             commonDir.set(rootProject.file("src/aem/package"))
             validator {
                 base("com.adobe.acs:acs-aem-commons-oakpal-checks:4.3.4")
+            }
+        }
+    }
+}
+
+plugins.withId("com.cognifide.aem.package") {
+    tasks {
+        withType<PackageCompose>().configureEach {
+            vaultDefinition {
+                description.set("""
+                    &lt;p class="description"&gt;Tool for providing sample data for AEM applications in a simple and flexible way.&lt;/p&gt;
+                    &lt;p&gt;&lt;a href="https://github.com/Cognifide/aem-stubs">Documentation&lt;/a&gt;
+                """.trimIndent())
             }
         }
     }

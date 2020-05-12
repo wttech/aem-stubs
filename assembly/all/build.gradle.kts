@@ -12,7 +12,11 @@ tasks {
         mergePackageProject(":moco")
         mergePackageProject(":wiremock")
 
-        installBundle("org.codehaus.groovy:groovy-all:2.4.15")
+        vaultDefinition.filter("/apps/stubs/groovy")
+        installBundle("org.codehaus.groovy:groovy-all:2.4.15") {
+            dirPath.set("/apps/stubs/groovy")
+            vaultFilter.set(false)
+        }
     }
 }
 
