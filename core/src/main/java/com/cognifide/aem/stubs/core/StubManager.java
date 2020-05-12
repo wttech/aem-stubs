@@ -15,7 +15,6 @@ public interface StubManager {
    */
   void reload(Stubs<?> runnable);
 
-
   /**
    * Find runnable by path of stub script or mapping.
    */
