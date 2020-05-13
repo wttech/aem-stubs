@@ -6,6 +6,7 @@ import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.AbstractResourceVisitor;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -99,11 +100,13 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   }
 
   private boolean isScript(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.scriptExtension()));
+    return StringUtils.startsWith(path, format("%s/%s/", getRootPath(), runnable.getId()))
+      && StringUtils.endsWith(path, config.scriptExtension());
   }
 
   private boolean isMapping(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.mappingExtension()));
+    return StringUtils.startsWith(path, format("%s/%s/", getRootPath(), runnable.getId()))
+      && StringUtils.endsWith(path, config.mappingExtension());
   }
 
   private boolean isScript(String path) {
