@@ -207,7 +207,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
     @AttributeDefinition(
       name = "Reload On Change",
-      description = "Restart the server then apply all mappings and run all scripts if any of those are changed.")
+      description = "Restart the server then load all mappings and run all scripts if any of those are changed.")
     boolean resetOnChange() default true;
   }
 }
