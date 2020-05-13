@@ -26,15 +26,19 @@ class StubReload {
   }
 
   public String scriptsPercent() {
-    return formatPercent((double) (scriptsSucceeded()) / ((double) scriptsTotal));
+    return formatPercent(scriptsSucceeded(), scriptsTotal);
   }
 
   public String mappingsPercent() {
-    return formatPercent((double) (mappingsSucceeded()) / ((double) mappingsTotal));
+    return formatPercent(mappingsSucceeded(), mappingsTotal);
   }
 
-  private String formatPercent(double value) {
-    return NumberFormat.getPercentInstance(Locale.US).format(value);
+  private String formatPercent(int value, int total) {
+    double percent = 0.0;
+    if (total > 0) {
+      percent = ((double) value) / ((double) total);
+    }
+    return NumberFormat.getPercentInstance(Locale.US).format(percent);
   }
 
   public String duration() {

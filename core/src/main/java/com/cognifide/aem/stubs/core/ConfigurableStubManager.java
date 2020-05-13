@@ -6,6 +6,7 @@ import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.AbstractResourceVisitor;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -99,11 +100,13 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   }
 
   private boolean isScript(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.scriptExtension()));
+    return StringUtils.startsWith(path, format("%s/%s/", getRootPath(), runnable.getId()))
+      && StringUtils.endsWith(path, config.scriptExtension());
   }
 
   private boolean isMapping(String path, Stubs<?> runnable) {
-    return wildcardMatch(path, format("%s/%s/**/*%s", getRootPath(), runnable.getId(), config.mappingExtension()));
+    return StringUtils.startsWith(path, format("%s/%s/", getRootPath(), runnable.getId()))
+      && StringUtils.endsWith(path, config.mappingExtension());
   }
 
   private boolean isScript(String path) {
@@ -160,14 +163,9 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     if (!config.resetOnChange()) {
       return;
     }
-    final List<String> pathsChanged = changes.stream()
-      .map(ResourceChange::getPath)
-      .collect(Collectors.toList());
-    resetRunnables(pathsChanged);
-  }
 
-  private void resetRunnables(List<String> paths) {
-    paths.stream()
+    changes.stream()
+      .map(ResourceChange::getPath)
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
@@ -208,8 +206,8 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     String[] excluded_paths() default {"**/samples/*"};
 
     @AttributeDefinition(
-      name = "Reset On Change",
-      description = "Restart the server and apply all scripts and mappings if any of those are changed.")
+      name = "Reload On Change",
+      description = "Restart the server then load all mappings and run all scripts if any of those are changed.")
     boolean resetOnChange() default true;
   }
 }
