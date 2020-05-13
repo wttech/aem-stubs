@@ -166,6 +166,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
     changes.stream()
       .map(ResourceChange::getPath)
+      .map(p -> StringUtils.removeEnd(p, "/" + JcrUtils.JCR_CONTENT))
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
