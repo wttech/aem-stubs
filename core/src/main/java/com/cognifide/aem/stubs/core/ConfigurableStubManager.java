@@ -206,8 +206,8 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     String[] excluded_paths() default {"**/samples/*"};
 
     @AttributeDefinition(
-      name = "Reset On Change",
-      description = "Restart the server and apply all scripts and mappings if any of those are changed.")
+      name = "Reload On Change",
+      description = "Restart the server then apply all mappings and run all scripts if any of those are changed.")
     boolean resetOnChange() default true;
   }
 }
