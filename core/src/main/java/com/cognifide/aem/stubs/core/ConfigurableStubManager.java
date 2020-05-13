@@ -163,14 +163,9 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
     if (!config.resetOnChange()) {
       return;
     }
-    final List<String> pathsChanged = changes.stream()
-      .map(ResourceChange::getPath)
-      .collect(Collectors.toList());
-    resetRunnables(pathsChanged);
-  }
 
-  private void resetRunnables(List<String> paths) {
-    paths.stream()
+    changes.stream()
+      .map(ResourceChange::getPath)
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
