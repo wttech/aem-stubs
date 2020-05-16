@@ -17,10 +17,13 @@ import com.cognifide.aem.stubs.wiremock.WireMockException;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.ProxyResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.common.ContentTypes;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.RequestTemplateModel;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.google.common.base.Supplier;
@@ -72,6 +75,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     //body
     return Optional.ofNullable(getBodyTemplateString(definition))
       .map(transformBody(definition, definitionBuilder, model))
+      .map(ResponseDefinitionBuilder::build)
       .orElse(definition);
   }
 
@@ -86,24 +90,38 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     return proxied;
   }
 
-  private Function<String, ResponseDefinition> transformBody(ResponseDefinition definition,
+  private Function<String, ResponseDefinitionBuilder> transformBody(ResponseDefinition definition,
     ResponseDefinitionBuilder definitionBuilder, ImmutableMap<String, Object> model) {
     return body -> {
       PebbleTemplate bodyTemplate = engine.getTemplate(body);
-      final String newBodyOrigin = evaluate(bodyTemplate, model);
-      String newBody;
+      final String newBody = evaluate(bodyTemplate, model);
 
-      if (definition.specifiesBodyFile()) {
-        String template = jcrFileReader.readText(newBodyOrigin)
-          .orElseThrow(() -> new WireMockException(
-            String.format("Cannot read template '%s'!", newBodyOrigin)));
-        PebbleTemplate fileTemplate = engine.getTemplate(template);
-        newBody = evaluate(fileTemplate, model);
-      } else {
-        newBody = newBodyOrigin;
+      if (!definition.specifiesBodyFile()) {
+        return definitionBuilder.withBody(newBody);
       }
-      return definitionBuilder.withBody(newBody).build();
+
+      if (!hasTextMimeType(definition) || definition.specifiesBinaryBodyContent()) {
+        return definitionBuilder.withBodyFile(newBody);
+      } else {
+        return definitionBuilder.withBody(evaluateTextBodyFromFile(model, newBody));
+      }
     };
+  }
+
+  private boolean hasTextMimeType(ResponseDefinition definition) {
+    HttpHeader header = definition.getHeaders().getHeader(ContentTypeHeader.KEY);
+    ContentTypeHeader contentTypeHeader = header.isPresent() ?
+      new ContentTypeHeader(header.firstValue()) :
+      ContentTypeHeader.absent();
+    return ContentTypes.determineIsTextFromMimeType(contentTypeHeader.mimeTypePart());
+  }
+
+  private String evaluateTextBodyFromFile(ImmutableMap<String, Object> model, String fileName) {
+    String template = jcrFileReader.readText(fileName)
+      .orElseThrow(() -> new WireMockException(
+        String.format("Cannot read template '%s'!", fileName)));
+    PebbleTemplate fileTemplate = engine.getTemplate(template);
+    return evaluate(fileTemplate, model);
   }
 
   private Map<String, Object> calculateParameters(Parameters parameters) {
