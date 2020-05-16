@@ -1,16 +1,13 @@
 package com.cognifide.aem.stubs.wiremock.transformers;
 
-import static com.github.tomakehurst.wiremock.common.Exceptions.throwUnchecked;
 import static com.google.common.base.MoreObjects.firstNonNull;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.cognifide.aem.stubs.wiremock.WireMockException;
@@ -26,11 +23,7 @@ import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.loader.StringLoader;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
 
 import groovy.lang.Closure;
 
@@ -38,7 +31,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
   private static final String NAME = "pebble-response-template";
 
-  private final PebbleEngine engine;
+  private final Pebble pebble;
 
   private final JcrFileReader jcrFileReader;
 
@@ -48,10 +41,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     super();
     this.global = global;
     this.jcrFileReader = jcrFileReader;
-    this.engine = new PebbleEngine.Builder()
-      .cacheActive(false)
-      .loader(new StringLoader())
-      .build();
+    this.pebble = new Pebble();
   }
 
   @Override
@@ -65,9 +55,8 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
 
     //proxy
     if (definition.isProxyResponse()) {
-      PebbleTemplate baseUrlTemplate = engine.getTemplate(definition.getProxyBaseUrl());
       ProxyResponseDefinitionBuilder proxied =
-        definitionBuilder.proxiedFrom(evaluate(baseUrlTemplate, model));
+        definitionBuilder.proxiedFrom(pebble.evaluate(definition.getProxyBaseUrl(), model));
 
       return copyAdditionalHeaders(definition, proxied).build();
     }
@@ -93,8 +82,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
   private Function<String, ResponseDefinitionBuilder> transformBody(ResponseDefinition definition,
     ResponseDefinitionBuilder definitionBuilder, ImmutableMap<String, Object> model) {
     return body -> {
-      PebbleTemplate bodyTemplate = engine.getTemplate(body);
-      final String newBody = evaluate(bodyTemplate, model);
+      final String newBody = pebble.evaluate(body, model);
 
       if (!definition.specifiesBodyFile()) {
         return definitionBuilder.withBody(newBody);
@@ -120,8 +108,7 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     String template = jcrFileReader.readText(fileName)
       .orElseThrow(() -> new WireMockException(
         String.format("Cannot read template '%s'!", fileName)));
-    PebbleTemplate fileTemplate = engine.getTemplate(template);
-    return evaluate(fileTemplate, model);
+    return pebble.evaluate(template, model);
   }
 
   private Map<String, Object> calculateParameters(Parameters parameters) {
@@ -144,18 +131,6 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
       .orElse(definition.getBodyFileName());
   }
 
-
-  private String evaluate(PebbleTemplate template, Map<String, Object> context) {
-    try {
-      Writer writer = new StringWriter();
-      template.evaluate(writer, context);
-
-      return writer.toString();
-    } catch (IOException e) {
-      return throwUnchecked(e, String.class);
-    }
-  }
-
   @Override
   public boolean applyGlobally() {
     return global;
@@ -166,4 +141,3 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     return NAME;
   }
 }
-
