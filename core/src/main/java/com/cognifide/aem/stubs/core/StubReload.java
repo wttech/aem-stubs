@@ -34,9 +34,11 @@ class StubReload {
   }
 
   private String formatPercent(int value, int total) {
-    double percent = 0.0;
+    double percent;
     if (total > 0) {
       percent = ((double) value) / ((double) total);
+    } else {
+      percent = 0.0;
     }
     return NumberFormat.getPercentInstance(Locale.US).format(percent);
   }

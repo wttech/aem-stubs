@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component(
@@ -166,6 +165,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
     changes.stream()
       .map(ResourceChange::getPath)
+      .map(p -> StringUtils.removeEnd(p, "/" + JcrUtils.JCR_CONTENT))
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
