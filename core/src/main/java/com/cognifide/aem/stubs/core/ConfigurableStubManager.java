@@ -3,32 +3,24 @@ package com.cognifide.aem.stubs.core;
 import static java.lang.String.format;
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import com.cognifide.aem.stubs.core.util.JcrUtils;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.AbstractResourceVisitor;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.aem.stubs.core.util.JcrUtils;
-import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.google.common.collect.Lists;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Component(
   service = {StubManager.class, ResourceChangeListener.class},
@@ -173,6 +165,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
     changes.stream()
       .map(ResourceChange::getPath)
+      .map(p -> StringUtils.removeEnd(p, "/" + JcrUtils.JCR_CONTENT))
       .map(this::findRunnable)
       .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
       .distinct()
