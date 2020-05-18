@@ -1,9 +1,9 @@
 package com.cognifide.aem.stubs.core;
 
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 class StubReload {
 

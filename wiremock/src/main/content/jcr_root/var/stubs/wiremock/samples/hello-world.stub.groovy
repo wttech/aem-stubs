@@ -13,6 +13,11 @@ stubs.server.with {
     stubFor(get("/json")
             .willReturn(okJson("{ \"message\": \"Hello\" }")))
 
+    stubFor(get("/image")
+            .willReturn(aResponse()
+                    .withBodyFile("samples/logo.png")
+                    .withHeader("Content-Type", "image/png")))
+
     stubFor(post("/post")
             .willReturn(okJson("{ \"message\": \"Hello Post\" }")))
 
