@@ -77,6 +77,17 @@ public class HelloWorldTest {
       .body("message", equalTo("Hello World!"))
       .statusCode(200);
   }
+
+  @Test
+  public void shouldReturnImageFile() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/image")
+      .then()
+      .header("Content-Type", "image/png")
+      .statusCode(200);
+  }
+
   @Test
   public void shouldPost() {
     given()
