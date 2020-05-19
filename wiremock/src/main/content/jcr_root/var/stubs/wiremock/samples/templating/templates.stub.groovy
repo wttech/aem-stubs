@@ -9,9 +9,8 @@ stubs.server.with {
     stubFor(get(urlPathEqualTo("/faker"))
             .willReturn(aResponse()
                     .withBody("title: {{parameters.title}}")
-                    .withTransformerParameter("title", {new Date()})))
+                    .withTransformerParameter("title", {faker.book().title()})))
 
-//faker.book().title()
     // template file
     stubFor(get(urlPathEqualTo("/templated-file"))
             .willReturn(aResponse()
