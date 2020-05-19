@@ -30,7 +30,6 @@ stubs.server.with {
     stubFor(put("/status-only")
             .willReturn(status(418)))
 
-
     stubFor(get(urlEqualTo("/with-header"))
             .willReturn(aResponse()
                     .withStatus(200)

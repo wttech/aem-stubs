@@ -4,6 +4,8 @@ import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
+import com.github.javafaker.Faker;
+
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -37,6 +39,7 @@ public class StubScript {
   private final Resource resource;
 
   private final ResourceResolver resourceResolver;
+  private final Faker faker;
 
   public StubScript(Resource resource, StubManager manager, Stubs<?> runnable) {
     this.resource = resource;
@@ -45,12 +48,14 @@ public class StubScript {
     this.runnable = runnable;
     this.logger = createLogger(resource.getPath());
     this.repository = new Repository(this);
+    this.faker = new Faker();
 
     binding.setVariable("script", this);
     binding.setVariable("stubs", runnable);
     binding.setVariable("resourceResolver", resourceResolver);
     binding.setVariable("logger", logger);
     binding.setVariable("repository", repository);
+    binding.setVariable("faker", faker);
   }
 
   public Binding getBinding() {
@@ -102,6 +107,7 @@ public class StubScript {
   }
 
   public Object run() {
+
     final Script shellScript = shell.parse(readSourceCode());
     return shellScript.run();
   }

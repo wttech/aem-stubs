@@ -6,6 +6,12 @@ stubs.server.with {
             .willReturn(aResponse()
                     .withBody("{{request.path[0]}}")))
 
+    stubFor(get(urlPathEqualTo("/faker"))
+            .willReturn(aResponse()
+                    .withBody("title: {{parameters.title}}")
+                    .withTransformerParameter("title", {new Date()})))
+
+//faker.book().title()
     // template file
     stubFor(get(urlPathEqualTo("/templated-file"))
             .willReturn(aResponse()
