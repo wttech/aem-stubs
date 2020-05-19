@@ -1,6 +1,7 @@
 rootProject.name = "stubs"
 
 include("core")
+include("faker")
 
 include("moco")
 include("wiremock")

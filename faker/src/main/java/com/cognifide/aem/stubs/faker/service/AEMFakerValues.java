@@ -1,4 +1,4 @@
-package com.cognifide.aem.stubs.core.faker;
+package com.cognifide.aem.stubs.faker.service;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -7,8 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
-
-import com.github.javafaker.service.FakeValuesInterface;
 
 public class AEMFakerValues implements FakeValuesInterface {
   private final Locale locale;
@@ -39,7 +37,7 @@ public class AEMFakerValues implements FakeValuesInterface {
     return l.getLanguage();
   }
 
-  AEMFakerValues(Locale locale, String filename, String path) {
+  public AEMFakerValues(Locale locale, String filename, String path) {
     this.locale = locale;
     this.filename = filename;
     this.path = path;
@@ -55,9 +53,9 @@ public class AEMFakerValues implements FakeValuesInterface {
   }
 
   private Map loadValues() {
-    String pathWithLocaleAndFilename = "/" + locale.getLanguage() + "/" + this.filename;
-    String pathWithFilename = "/" + filename + ".yml";
-    String pathWithLocale = "/" + locale.getLanguage() + ".yml";
+    String pathWithLocaleAndFilename = locale.getLanguage() + "/" + this.filename;
+    String pathWithFilename = filename + ".yml";
+    String pathWithLocale =locale.getLanguage() + ".yml";
 
     List<String> paths = Arrays
       .asList(pathWithLocaleAndFilename, pathWithFilename, pathWithLocale);

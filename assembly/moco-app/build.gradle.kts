@@ -8,6 +8,7 @@ description = "AEM Stubs - Moco App"
 
 tasks {
     packageCompose {
+        mergePackageProject(":faker")
         mergePackageProject(":core")
         mergePackageProject(":moco")
     }

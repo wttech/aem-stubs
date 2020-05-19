@@ -1,6 +1,6 @@
 package com.cognifide.aem.stubs.core.faker;
 
-import com.github.javafaker.Faker;
+import com.cognifide.aem.stubs.faker.Faker;
 
 public class FakerFactory {
 

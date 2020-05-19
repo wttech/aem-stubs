@@ -10,13 +10,6 @@ plugins {
 apply(from = rootProject.file("gradle/common.gradle.kts"))
 
 description = "AEM Stubs - Core"
-
-tasks {
-    jar {
-        bundle {
-            attribute("DynamicImport-Package", "*")
-            importPackageSuffix.set("*;resolution:=optional")
-            embedPackage("com.github.javafaker:javafaker:1.0.2", "com.github.javafaker.*")
-        }
-    }
+dependencies {
+    compileOnly(project(":faker"))
 }

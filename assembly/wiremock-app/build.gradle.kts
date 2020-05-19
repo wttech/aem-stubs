@@ -8,6 +8,7 @@ description = "AEM Stubs - WireMock App"
 
 tasks {
     packageCompose {
+        mergePackageProject(":faker")
         mergePackageProject(":core")
         mergePackageProject(":wiremock")
     }

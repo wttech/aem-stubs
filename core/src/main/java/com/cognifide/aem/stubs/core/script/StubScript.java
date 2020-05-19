@@ -4,7 +4,7 @@ import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
-import com.github.javafaker.Faker;
+import com.cognifide.aem.stubs.faker.Faker;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -107,7 +107,6 @@ public class StubScript {
   }
 
   public Object run() {
-
     final Script shellScript = shell.parse(readSourceCode());
     return shellScript.run();
   }
