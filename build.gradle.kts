@@ -13,21 +13,11 @@ defaultTasks(":assembly:all:packageDeploy", "integrationTest")
 
 aem {
     instance {
-        satisfier {
-            packages {
-                "tool.search-webconsole-plugin"("com.neva.felix:search-webconsole-plugin:1.3.0")
-            }
-        }
         provisioner {
-            step("enable-crxde") {
-                sync {
-                    osgi.configure("org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet", mapOf(
-                            "alias" to "/crx/server"
-                    ))
-                }
-            }
-            step("enable-stubs-samples") {
-                version = 2
+            enableCrxDe()
+            deployPackage("com.neva.felix:search-webconsole-plugin:1.3.0")
+            step("enableStubsSamples") {
+                version.set("2")
                 sync {
                     osgi.configure("com.cognifide.aem.stubs.core.ConfigurableStubManager", mapOf(
                             "excluded.paths" to listOf("**/internals/*")
