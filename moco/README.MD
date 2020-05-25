@@ -60,7 +60,7 @@ Download appropriate distribution from [releases](https://github.com/Cognifide/a
 
 ## Documentation
 
-To create stubs for web services or more basically mock any data, it is needed to only create a **stub script** under pre-configured path, e.g */var/stubs/moco/hello.groovy*.
+To create stubs for web services or more basically mock any data, it is needed to only create a **stub script** under pre-configured path, e.g */conf/stubs/moco/hello.groovy*.
 
 ```
 stubs.server

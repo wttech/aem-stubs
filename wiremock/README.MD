@@ -62,8 +62,8 @@ Download appropriate distribution from [releases](https://github.com/Cognifide/a
 
 ## Documentation
 
-All stubs need to be defined via one or many stub scripts located in AEM repository under path */var/stubs/wiremock* (by default).
-For example, consider contents of file */var/stubs/wiremock/hello.stub.groovy*:
+All stubs need to be defined via one or many stub scripts located in AEM repository under path */conf/stubs/wiremock* (by default).
+For example, consider contents of file */conf/stubs/wiremock/hello.stub.groovy*:
 
 ```
 stubs.server.with {

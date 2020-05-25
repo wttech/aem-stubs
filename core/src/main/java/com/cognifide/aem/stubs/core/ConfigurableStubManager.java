@@ -194,7 +194,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   public @interface Config {
 
     @AttributeDefinition(name = "Root Path")
-    String resource_paths() default "/var/stubs";
+    String resource_paths() default "/conf/stubs";
 
     @AttributeDefinition(name = "Script Extension")
     String scriptExtension() default ".stub.groovy";
