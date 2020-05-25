@@ -76,9 +76,10 @@ Distribution types:
 
 ## Compatibility
 
-| AEM Stubs | AEM          |
-|-----------|--------------|
-| 1.x       | 6.4.x, 6.5.x |
+| AEM Stubs      | AEM           |
+|----------------|---------------|
+| 1.0.0 .. 1.0.1 | 6.4, 6.5      |
+| 1.0.2          | 6.3, 6.4, 6.5 |
 
 Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
 AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more error-prone when AEM version is changing. 
