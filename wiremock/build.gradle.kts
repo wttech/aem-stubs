@@ -34,7 +34,7 @@ tasks {
             )
             embedPackage("org.apache.commons:commons-lang3:3.9", "org.apache.commons.lang3.*")
             embedPackage("org.apache.commons:commons-collections4:4.4", "org.apache.commons.collections4.*")
-            embedPackage("com.github.tomakehurst:wiremock:2.21.0", "com.github.tomakehurst.wiremock.*")
+            embedPackage("com.github.tomakehurst:wiremock:2.26.3", "com.github.tomakehurst.wiremock.*")
             embedPackage("org.eclipse.jetty:jetty-servlets:9.4.20.v20190813", "org.eclipse.jetty.servlets")
             embedPackage("com.google.guava:guava:27.0.1-jre",
                     "com.google.common.base",
