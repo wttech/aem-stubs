@@ -116,14 +116,14 @@ Stubs could be provided by:
 
 Format of contents of these files depends on chosen [framework](#frameworks).
  
-For example, when decided to choose WireMock framework, then these files should be put into AEM under path _/var/stubs/wiremock/*_ 
+For example, when decided to choose WireMock framework, then these files should be put into AEM under path _/conf/stubs/wiremock/*_ 
 via CRX package with corresponding Vault workspace filter:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
     <filter root="/apps/example"/>
-    <filter root="/var/stubs/wiremock/example"/>
+    <filter root="/conf/stubs/wiremock/example"/>
 </workspaceFilter>
 ```
 
@@ -131,7 +131,7 @@ Stub mappings or scripts could be organized into folders tree.
 Any other assets used by scripts like images, extra JSON files could be also freely put close to stub scripts or mappings.
 Indeed, dedicated extensions _*.stub.json_ and _*.stub.groovy_ are introduced to distinguish these assets from automatically loaded scripts and mappings.
 
-Note that mappings and scripts under path _/var/stubs/wiremock/samples_ will not be considered as of they are excluded by default configuration of Stub Manager OSGi service.
+Note that mappings and scripts under path _/conf/stubs/wiremock/samples_ will not be considered as of they are excluded by default configuration of Stub Manager OSGi service.
 Which means to use samples, it is needed to remove path exclusion, rename a folder or copy sample files to other folder.
 
 ### OSGi configuration
