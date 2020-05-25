@@ -15,7 +15,7 @@ By providing JSON mapping file or implementing a [Groovy](http://groovy-lang.org
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and start stubbing!
 
-![Screenshot](docs/screenshot.jpg)
+![Screenshot](docs/screenshot2.jpg)
 
 Main concepts of AEM Stubs tool are:
 
@@ -140,7 +140,7 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 
 [Stub Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.ConfigurableStubManager)
 
-<img src="docs/osgi-config-stub-manager.png" width="50%">
+<img src="docs/osgi-config-stub-manager2.png" width="50%">
   
 ### Stub script API
 
