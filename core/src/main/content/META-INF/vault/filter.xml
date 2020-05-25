@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
     <filter root="/apps/stubs/core"/>
+    <filter root="/conf/rep:policy" mode="update"/>
     <filter root="/home/users/system/iIT1Dgf_7ltACJS6kJgR"/>
-
-    <filter root="/rep:policy" mode="update"/>
-    <filter root="/var/rep:policy" mode="update"/>
 </workspaceFilter>
