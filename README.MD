@@ -31,7 +31,6 @@ Main concepts of AEM Stubs tool are:
   * [Frameworks](#frameworks)
   * [Installation](#installation)
   * [Compatibility](#compatibility)
-  * [Building](#building)
   * [Documentation](#documentation)
      * [Basics](#basics)
      * [OSGi configuration](#osgi-configuration)
@@ -40,6 +39,7 @@ Main concepts of AEM Stubs tool are:
         * [Framework-specific stub script API](#framework-specific-stub-script-api)
   * [Other tools](#other-tools)
   * [Contributing](#contributing)
+  * [Building](#building)
   * [License](#license)
 
 ## Frameworks
@@ -84,26 +84,6 @@ Distribution types:
 Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
 AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more error-prone when AEM version is changing. 
 It is compatible with AEM Groovy Console - simply install one of AEM Stubs distributions without Groovy console OSGi bundle included as it is usually provided by Groovy Console AEM package. 
-
-## Building
-
-Project build is based on [Gradle](https://docs.gradle.org/current/userguide/userguide.html) and using [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
-
-To setup AEM instance, provide details required by running command:
-
-```bash
-sh gradlew props
-```
-
-Fill opened GUI dialog, then click execute button.
-
-To build CRX package and deploy it on AEM instance, simply run command:
-
-```bash
-sh gradlew
-```
-
-That's it.
 
 ## Documentation
 
@@ -174,6 +154,26 @@ Issues reported or pull requests created will be very appreciated.
 1. Fork plugin source code using a dedicated GitHub button.
 2. Do code changes on a feature branch created from *develop* branch.
 3. Create a pull request with a base of *develop* branch.
+
+## Building
+
+Project build is based on [Gradle](https://docs.gradle.org/current/userguide/userguide.html) and using [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
+
+To setup AEM instance, provide details required by running command:
+
+```bash
+sh gradlew props
+```
+
+Fill opened GUI dialog, then click execute button.
+
+To build CRX package and deploy it on AEM instance, simply run command:
+
+```bash
+sh gradlew
+```
+
+That's it.
 
 ## License
 
