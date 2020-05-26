@@ -137,7 +137,7 @@ There are framework specific OSGi configurations ([WireMock](moco#osgi-configura
 See also framework-specific stub script API: 
 
 * [Wiremock](wiremock#stub-script-api)
-* [Moco](wiremock#stub-script-api).
+* [Moco](moco#stub-script-api).
 
 ## Other tools
 
