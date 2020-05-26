@@ -44,7 +44,8 @@ Main concepts of AEM Stubs tool are:
 
 ## Frameworks
 
-At first, it is needed to decide which framework is more preferred to use.
+At first, it is needed to decide which stubbing framework is more preferred to use.
+
 Both frameworks have their own pros and cons, see comparison:
 
 | Topic \ Framework | WireMock                   | Moco                                                   | Comments                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -54,7 +55,7 @@ Both frameworks have their own pros and cons, see comparison:
 | Popularity        | Big - 3.9k stars on GitHub | Big - 3.1k stars on GitHub                             | WireMock is a little bit more popular and has probably better documentation and more materials available on the web.                                                                                                                                                                                                                                                                                                        |
 | API               | Rich, old-fashioned        | Rich, modern                                           | Moco API seems to be written with extendability in mind. Has many interfaces, builders etc available. WireMock API has less such extension points and generally does not look so elegant.                                                                                                                                                                                                                                   |
 
-After choosing framework, it is recommended to explore dedicated AEM Stubs **framework related documentation**:
+After choosing stubbing framework, it is recommended to explore dedicated AEM Stubs **framework related documentation**:
 
 * [AEM Stubs - WireMock](wiremock)
 * [AEM Stubs - Moco](moco)
@@ -78,8 +79,8 @@ Distribution types:
 
 | AEM Stubs      | AEM           |
 |----------------|---------------|
-| 1.0.0 .. 1.0.1 | 6.4, 6.5      |
-| 1.0.2          | 6.3, 6.4, 6.5 |
+| 1.0.0, 1.0.1   | 6.4, 6.5      |
+| >= 1.0.2       | 6.3, 6.4, 6.5 |
 
 Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
 AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more error-prone when AEM version is changing. 
