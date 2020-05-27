@@ -184,7 +184,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     @AttributeDefinition(
       name = "Filter Bypass",
-      description = "Disables requests filtering by installed OSGi pre-processors (like Sling Referrer Filter and SSL filter)"
+      description = "Disables requests filtering by installed OSGi HTTP Whiteboard pre-processors (like Sling Referrer Filter and SSL filter)"
     )
     boolean filterBypass() default true;
 
