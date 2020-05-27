@@ -7,15 +7,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.Preprocessor;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Component(
   immediate = true,
   service = Preprocessor.class,
-  property = {
-    Constants.SERVICE_RANKING + ":Integer=" + Integer.MAX_VALUE,
-  }
+  property = Constants.SERVICE_RANKING + ":Integer=" + Integer.MAX_VALUE
 )
 public class WireMockPreprocessor implements Preprocessor {
 
@@ -24,14 +21,11 @@ public class WireMockPreprocessor implements Preprocessor {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    if (request instanceof HttpServletRequest) {
-      if (((HttpServletRequest) request).getRequestURI().startsWith(stubs.getPath() + "/")) {
+    if (stubs.isBypassable(request)) {
         stubs.getServlet().service(request, response);
-        return;
-      }
+    } else {
+      chain.doFilter(request, response);
     }
-
-    chain.doFilter(request, response);
   }
 
   @Override

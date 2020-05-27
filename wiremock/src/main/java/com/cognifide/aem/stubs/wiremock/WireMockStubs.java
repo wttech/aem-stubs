@@ -2,6 +2,8 @@ package com.cognifide.aem.stubs.wiremock;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
@@ -164,8 +166,10 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     return new WireMockServlet(config.path(), app.buildStubRequestHandler());
   }
 
-  public String getPath() {
-    return config.path();
+  public boolean isBypassable(ServletRequest request) {
+    return config.filterBypass()
+      && request instanceof HttpServletRequest
+      && ((HttpServletRequest) request).getRequestURI().startsWith(config.path() + "/");
   }
 
   public WireMockServlet getServlet() {
@@ -178,9 +182,17 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     @AttributeDefinition(name = "Servlet Prefix")
     String path() default "/stubs";
 
-    @AttributeDefinition(name = "Global Template Transformer", description = "Enables Pebble template engine / templating"
-      + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
-      + " instead of preloading and simplifies defining stubs.")
+    @AttributeDefinition(
+      name = "Filter Bypass",
+      description = "Disables requests filtering by installed OSGi pre-processors (like Sling Referrer Filter and SSL filter)"
+    )
+    boolean filterBypass() default true;
+
+    @AttributeDefinition(
+      name = "Global Template Transformer",
+      description = "Enables Pebble template engine / templating"
+        + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
+        + " instead of preloading and simplifies defining stubs.")
     boolean globalTransformer() default true;
   }
 }
