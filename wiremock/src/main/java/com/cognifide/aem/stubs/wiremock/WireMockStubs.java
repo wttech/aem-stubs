@@ -1,5 +1,6 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
 import com.cognifide.aem.stubs.core.StubsException;
@@ -32,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Component(
-  service = Stubs.class,
+  service = {Stubs.class, WireMockStubs.class},
   immediate = true
 )
 @Designate(ocd = WireMockStubs.Config.class)
@@ -48,6 +49,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   @Reference
   private HttpService httpService;
+
+  private WireMockServlet servlet;
 
   @Reference
   private StubManager manager;
@@ -122,7 +125,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     servletPath = getServletPath(config.path());
 
     try {
-      httpService.registerServlet(servletPath, createServlet(), null, null);
+      servlet = createServlet();
+      httpService.registerServlet(servletPath, servlet, null, null);
     } catch (ServletException | NamespaceException e) {
       LOG.error("Cannot register AEM Stubs WireMock Servlet at path {}", servletPath, e);
     }
@@ -134,6 +138,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     if (servletPath != null) {
       httpService.unregister(servletPath);
       servletPath = null;
+      servlet = null;
     }
     if (app != null) {
       app = null;
@@ -157,6 +162,14 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private WireMockServlet createServlet() {
     return new WireMockServlet(config.path(), app.buildStubRequestHandler());
+  }
+
+  public String getPath() {
+    return config.path();
+  }
+
+  public WireMockServlet getServlet() {
+    return servlet;
   }
 
   @ObjectClassDefinition(name = "AEM Stubs WireMock Server")

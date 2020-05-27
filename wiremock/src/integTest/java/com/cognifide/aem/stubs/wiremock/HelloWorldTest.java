@@ -99,6 +99,17 @@ public class HelloWorldTest {
   }
 
   @Test
+  public void shouldPostWithHeader() {
+    given()
+      .when()
+      .with().header("User-Agent", "Mozilla")
+      .post("http://localhost:4502/stubs/post")
+      .then()
+      .body("message", equalTo("Hello Post"))
+      .statusCode(200);
+  }
+
+  @Test
   public void shouldPostRedirect() {
     given()
       .when()
