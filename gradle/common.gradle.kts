@@ -49,7 +49,9 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.apache.sling:org.apache.sling.jcr.api:2.4.0")
 
         "compileOnly"("org.codehaus.groovy:groovy-all:2.4.15")
+
         "compileOnly"("org.apache.felix:org.apache.felix.http.servlet-api:1.1.2")
+        "compileOnly"("org.apache.felix:org.apache.felix.http.jetty:4.0.0")
     }
 }
 
