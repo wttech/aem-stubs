@@ -1,6 +1,8 @@
 package com.cognifide.aem.stubs.wiremock;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import com.cognifide.aem.stubs.core.StubsException;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
@@ -32,7 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Component(
-  service = Stubs.class,
+  service = {Stubs.class, WireMockStubs.class},
   immediate = true
 )
 @Designate(ocd = WireMockStubs.Config.class)
@@ -48,6 +50,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   @Reference
   private HttpService httpService;
+
+  private WireMockServlet servlet;
 
   @Reference
   private StubManager manager;
@@ -122,7 +126,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     servletPath = getServletPath(config.path());
 
     try {
-      httpService.registerServlet(servletPath, createServlet(), null, null);
+      servlet = createServlet();
+      httpService.registerServlet(servletPath, servlet, null, null);
     } catch (ServletException | NamespaceException e) {
       LOG.error("Cannot register AEM Stubs WireMock Servlet at path {}", servletPath, e);
     }
@@ -134,6 +139,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     if (servletPath != null) {
       httpService.unregister(servletPath);
       servletPath = null;
+      servlet = null;
     }
     if (app != null) {
       app = null;
@@ -159,15 +165,33 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     return new WireMockServlet(config.path(), app.buildStubRequestHandler());
   }
 
+  public boolean isBypassable(ServletRequest request) {
+    return config.filterBypass()
+      && request instanceof HttpServletRequest
+      && ((HttpServletRequest) request).getRequestURI().startsWith(config.path() + "/");
+  }
+
+  public WireMockServlet getServlet() {
+    return servlet;
+  }
+
   @ObjectClassDefinition(name = "AEM Stubs WireMock Server")
   public @interface Config {
 
     @AttributeDefinition(name = "Servlet Prefix")
     String path() default "/stubs";
 
-    @AttributeDefinition(name = "Global Template Transformer", description = "Enables Pebble template engine / templating"
-      + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
-      + " instead of preloading and simplifies defining stubs.")
+    @AttributeDefinition(
+      name = "Filter Bypass",
+      description = "Disables requests filtering by installed OSGi HTTP Whiteboard pre-processors (like Sling Referrer Filter and SSL filter)"
+    )
+    boolean filterBypass() default true;
+
+    @AttributeDefinition(
+      name = "Global Template Transformer",
+      description = "Enables Pebble template engine / templating"
+        + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
+        + " instead of preloading and simplifies defining stubs.")
     boolean globalTransformer() default true;
   }
 }

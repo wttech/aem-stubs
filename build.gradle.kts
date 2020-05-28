@@ -9,19 +9,36 @@ apply(from = "gradle/fork/props.gradle.kts")
 apply(from = "gradle/common.gradle.kts")
 
 description = "AEM Stubs"
-defaultTasks(":assembly:all:packageDeploy", "integrationTest")
+defaultTasks(":develop")
+
+common {
+    tasks {
+        registerSequence("develop") {
+            dependsOn(
+                    ":instanceSetup",
+                    ":assembly:all:packageDeploy",
+                    ":wiremock:integrationTest",
+                    ":moco:integrationTest"
+            )
+        }
+    }
+}
+
 
 aem {
     instance {
         provisioner {
-            enableCrxDe()
-            deployPackage("com.neva.felix:search-webconsole-plugin:1.3.0")
-            step("enableStubsSamples") {
-                version.set("2")
-                sync {
-                    osgi.configure("com.cognifide.aem.stubs.core.ConfigurableStubManager", mapOf(
-                            "excluded.paths" to listOf("**/internals/*")
-                    ))
+            gradle.projectsEvaluated {
+                enableCrxDe()
+                deployPackage("com.neva.felix:search-webconsole-plugin:1.3.0")
+                deployPackage(project(":assembly:all").tasks.named("packageCompose"))
+                step("enableStubsSamples") {
+                    version.set("2")
+                    sync {
+                        osgi.configure("com.cognifide.aem.stubs.core.ConfigurableStubManager", mapOf(
+                                "excluded.paths" to listOf("**/internals/*")
+                        ))
+                    }
                 }
             }
         }
