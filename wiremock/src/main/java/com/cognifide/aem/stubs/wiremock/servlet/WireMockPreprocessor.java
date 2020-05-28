@@ -10,7 +10,8 @@ import javax.servlet.*;
 import java.io.IOException;
 
 /**
- * Bypass for AEM >= 6.4.x for avoiding AEM built-in filters intercepting calls to WireMock Servlet unnecessarily.
+ * Bypass for AEM >= 6.4.x for avoiding AEM built-in filters intercepting calls
+ * to WireMock Servlet unnecessarily.
  */
 @Component(
   immediate = true,
