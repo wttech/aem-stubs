@@ -81,6 +81,7 @@ Distribution types:
 Remember that using AEM Stubs on AEM Publish instances may require an additional configuration.
 
 In case of WireMock, ensure that WireMock Servlet prefix `/stubs` is not filtered by AEM Dispatcher configuration. Alternatively, by creating OSGi configuration, update that path prefix to path which is already accessible.
+
 When using Moco, ensure that Moco Stubs Server (running by default on port 5555) is not blocked by firewall. Alternatively, by creating OSGi configuration, update that port number to port which is already accessible.
 
 ## Compatibility
