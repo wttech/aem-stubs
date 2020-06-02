@@ -154,7 +154,7 @@ There are no other dedicated tools for stubbing data available for AEM and it wa
 
 ## Authors
 
-* [Krystian Panek](mailto:krystian.panek@cognifide.com) - Project Owner, Main Developer,
+* [Krystian Panek](mailto:krystian.panek@cognifide.com) - Project Founder, Main Developer,
 * [Piotr Marcinkowski](mailto:piotr.marcinkowski@cognifide.com) - Main Developer.
 
 ## Contributing
