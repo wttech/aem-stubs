@@ -177,5 +177,4 @@ stubs.server.with {
 
 ### Not supported features
 
-* JSON API - preloading stubs defined as JSON files are not supported (yet),
 * [Simulating Faults](http://wiremock.org/docs/simulating-faults/).
