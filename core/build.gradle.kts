@@ -4,6 +4,7 @@ plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
     id("com.cognifide.aem.package.sync")
+    id("org.owasp.dependencycheck")
     pmd
 }
 

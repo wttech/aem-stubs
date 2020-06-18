@@ -4,6 +4,7 @@ plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
     id("nebula.integtest-standalone")
+    id("org.owasp.dependencycheck")
     pmd
 }
 

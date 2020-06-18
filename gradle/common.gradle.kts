@@ -1,5 +1,6 @@
 import com.cognifide.gradle.aem.AemExtension
 import com.cognifide.gradle.aem.pkg.tasks.PackageCompose
+import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 
 group = "com.cognifide.aem.stubs"
 
@@ -48,7 +49,7 @@ plugins.withId("com.cognifide.aem.bundle") {
         "compileOnly"("org.apache.sling:org.apache.sling.api:2.16.4")
         "compileOnly"("org.apache.sling:org.apache.sling.jcr.api:2.4.0")
 
-        "compileOnly"("org.codehaus.groovy:groovy-all:2.4.15")
+        "compileOnly"("org.codehaus.groovy:groovy-all:3.0.4")
 
         "compileOnly"("org.apache.felix:org.apache.felix.http.servlet-api:1.1.2")
         "compileOnly"("org.apache.felix:org.apache.felix.http.jetty:4.0.0")
@@ -79,5 +80,13 @@ plugins.withId("org.gradle.pmd") {
         ruleSets = listOf()
         ruleSetFiles = files(rootProject.file("pmd.xml"))
         rulePriority = 5
+    }
+}
+
+plugins.withId("org.owasp.dependencycheck") {
+    configure<DependencyCheckExtension> {
+        failOnError = true
+        failBuildOnCVSS = 0.0F
+        suppressionFile = rootProject.file("dependency-check-suppress.xml").absolutePath
     }
 }
