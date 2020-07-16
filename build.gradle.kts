@@ -45,6 +45,7 @@ aem {
     }
 }
 
+
 githubRelease {
     owner("Cognifide")
     repo("aem-stubs")
@@ -89,5 +90,9 @@ tasks {
 
     register("fullRelease") {
         dependsOn("release", "githubRelease")
+    }
+
+    instanceProvision {
+        dependsOn(":assembly:all:packageCompose")
     }
 }
