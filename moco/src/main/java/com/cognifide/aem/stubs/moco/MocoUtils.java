@@ -25,14 +25,6 @@ public final class MocoUtils {
     return new SupplierExtractor<>(checkNotNull(textSupplier, "Template variable supplier should not be null or empty"));
   }
 
-  public static ResponseHandler jcr(String jcrPath) {
-    return new JcrContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(jcrPath)));
-  }
-
-  private static ContentResource contentResource(final Identifiable id, final ResourceConfigApplier applier,
-                                                 final ContentResourceReader reader) {
-    return new ContentResource(id, applier, reader);
-  }
 
 }
 

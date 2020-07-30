@@ -9,8 +9,10 @@ import com.github.dreamhead.moco.internal.ActualHttpServer;
 import com.github.dreamhead.moco.internal.ApiUtils;
 import com.github.dreamhead.moco.parser.HttpServerParser;
 import com.google.common.collect.ImmutableList;
+import groovy.lang.Closure;
 import org.apache.sling.api.resource.Resource;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.codehaus.groovy.runtime.MethodClosure;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -102,7 +104,9 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Override
   public void runScript(Resource resource) {
     final StubScript script = new StubScript(resource, manager, this);
-
+    final JcrResourceReaderFactory jcrResourceReaderFactory = new JcrResourceReaderFactory(resource.getResourceResolver());
+    Closure c = new MethodClosure(jcrResourceReaderFactory, "jcr");
+    script.getBinding().setVariable("jcr", c);
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
       MocoUtils.class.getName(),
       Moco.class.getName()

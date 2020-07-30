@@ -102,7 +102,9 @@ public class StubScript {
   }
 
   public Object run() {
+    //shell.getMetaClass().getMetaMethods()
     final Script shellScript = shell.parse(readSourceCode());
+
     return shellScript.run();
   }
 

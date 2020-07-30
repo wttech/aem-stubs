@@ -5,14 +5,17 @@ import com.github.dreamhead.moco.Request;
 import com.github.dreamhead.moco.model.MessageContent;
 import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
 import com.google.common.net.MediaType;
+import org.apache.sling.api.resource.ResourceResolver;
 
 import static com.github.dreamhead.moco.model.MessageContent.content;
 
 public class JcrResourceReader implements ContentResourceReader {
 
   private final String jcrPath;
+  private final ResourceResolver resourceResolver;
 
-  public JcrResourceReader(String jcrPath) {
+  public JcrResourceReader(ResourceResolver resourceResolver, String jcrPath) {
+    this.resourceResolver = resourceResolver;
     this.jcrPath = jcrPath;
   }
 
@@ -23,7 +26,7 @@ public class JcrResourceReader implements ContentResourceReader {
 
   @Override
   public MessageContent readFor(Request request) {
-    MessageContent.Builder builder = content().withContent("test");
+    MessageContent.Builder builder = content().withContent(resourceResolver.getResource(jcrPath).getName());
 
     return builder.build();
   }
