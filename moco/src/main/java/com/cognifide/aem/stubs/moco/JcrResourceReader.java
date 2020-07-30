@@ -1,21 +1,23 @@
 package com.cognifide.aem.stubs.moco;
 
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.HttpRequest;
 import com.github.dreamhead.moco.Request;
 import com.github.dreamhead.moco.model.MessageContent;
 import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
 import com.google.common.net.MediaType;
-import org.apache.sling.api.resource.ResourceResolver;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.dreamhead.moco.model.MessageContent.content;
 
 public class JcrResourceReader implements ContentResourceReader {
 
   private final String jcrPath;
-  private final ResourceResolver resourceResolver;
+  private final ResolverAccessor resolverAccessor;
 
-  public JcrResourceReader(ResourceResolver resourceResolver, String jcrPath) {
-    this.resourceResolver = resourceResolver;
+  public JcrResourceReader(ResolverAccessor resolverAccessor, String jcrPath) {
+    this.resolverAccessor = resolverAccessor;
     this.jcrPath = jcrPath;
   }
 
@@ -26,7 +28,9 @@ public class JcrResourceReader implements ContentResourceReader {
 
   @Override
   public MessageContent readFor(Request request) {
-    MessageContent.Builder builder = content().withContent(resourceResolver.getResource(jcrPath).getName());
+    AtomicReference<String> result = new AtomicReference<>("");
+    resolverAccessor.consume(resourceResolver -> result.set(resourceResolver.getResource(jcrPath).getName()));
+    MessageContent.Builder builder = content().withContent(result.get());
 
     return builder.build();
   }

@@ -1,5 +1,6 @@
 package com.cognifide.aem.stubs.moco;
 
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.ResponseHandler;
 import com.github.dreamhead.moco.resource.ContentResource;
 import com.github.dreamhead.moco.resource.Identifiable;
@@ -11,14 +12,14 @@ import static com.github.dreamhead.moco.resource.IdFactory.id;
 
 public class JcrResourceReaderFactory {
 
-  private final ResourceResolver resourceResolver;
+  private final ResolverAccessor resolverAccessor;
 
-  public JcrResourceReaderFactory(ResourceResolver resourceResolver) {
-    this.resourceResolver = resourceResolver;
+  public JcrResourceReaderFactory(ResolverAccessor resolverAccessor) {
+    this.resolverAccessor = resolverAccessor;
   }
 
   public ResponseHandler jcr(String jcrPath) {
-    return new JcrContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resourceResolver, jcrPath)));
+    return new JcrContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, jcrPath)));
   }
 
   private static ContentResource contentResource(final Identifiable id, final ResourceConfigApplier applier,

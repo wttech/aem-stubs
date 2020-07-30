@@ -4,6 +4,7 @@ import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
 import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.util.JcrUtils;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ActualHttpServer;
 import com.github.dreamhead.moco.internal.ApiUtils;
@@ -40,6 +41,9 @@ public class MocoStubs implements Stubs<HttpServer> {
 
   @Reference
   private StubManager manager;
+
+  @Reference
+  private ResolverAccessor resolverAccessor;
 
   private ActualHttpServer server;
 
@@ -104,7 +108,7 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Override
   public void runScript(Resource resource) {
     final StubScript script = new StubScript(resource, manager, this);
-    final JcrResourceReaderFactory jcrResourceReaderFactory = new JcrResourceReaderFactory(resource.getResourceResolver());
+    final JcrResourceReaderFactory jcrResourceReaderFactory = new JcrResourceReaderFactory(resolverAccessor);
     Closure c = new MethodClosure(jcrResourceReaderFactory, "jcr");
     script.getBinding().setVariable("jcr", c);
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
