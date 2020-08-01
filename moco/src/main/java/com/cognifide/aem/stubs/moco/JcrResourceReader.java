@@ -9,6 +9,8 @@ import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
 import com.google.common.net.MediaType;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.github.dreamhead.moco.model.MessageContent.content;
 
 public class JcrResourceReader implements ContentResourceReader {
+
+  private static final Logger LOG = LoggerFactory.getLogger(JcrResourceReader.class);
 
   private final ResolverAccessor resolverAccessor;
   private final ContentResource jcrPathResource;
@@ -43,7 +47,7 @@ public class JcrResourceReader implements ContentResourceReader {
           try {
             result.set(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
           } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn("Could not read input stream", e);
           }
         }
       }

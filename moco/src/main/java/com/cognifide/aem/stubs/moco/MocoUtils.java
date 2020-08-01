@@ -1,18 +1,9 @@
 package com.cognifide.aem.stubs.moco;
 
-import com.github.dreamhead.moco.MocoConfig;
 import com.github.dreamhead.moco.RequestExtractor;
-import com.github.dreamhead.moco.ResponseHandler;
-import com.github.dreamhead.moco.resource.ContentResource;
-import com.github.dreamhead.moco.resource.Identifiable;
-import com.github.dreamhead.moco.resource.ResourceConfigApplier;
-import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
-import com.github.dreamhead.moco.resource.reader.FileResourceReader;
 
 import java.util.function.Supplier;
 
-import static com.github.dreamhead.moco.resource.IdFactory.id;
-import static com.github.dreamhead.moco.resource.ResourceConfigApplierFactory.fileConfigApplier;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class MocoUtils {

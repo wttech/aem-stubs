@@ -2,6 +2,7 @@ package com.cognifide.aem.stubs.moco;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.ResponseHandler;
+import com.github.dreamhead.moco.handler.ContentHandler;
 import com.github.dreamhead.moco.resource.ContentResource;
 import com.github.dreamhead.moco.resource.Identifiable;
 import com.github.dreamhead.moco.resource.ResourceConfigApplier;
@@ -25,11 +26,11 @@ public class JcrResourceReaderFactory {
   }
 
   public ResponseHandler jcr(String jcrPath) {
-    return new JcrContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, textResource(checkNotNull(jcrPath, "Text should not be null")))));
+    return new ContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, textResource(checkNotNull(jcrPath, "Text should not be null")))));
   }
 
   public ResponseHandler jcr(ContentResource jcrResource) {
-    return new JcrContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, jcrResource)));
+    return new ContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, jcrResource)));
   }
 
 }
