@@ -4,21 +4,27 @@ import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.HttpRequest;
 import com.github.dreamhead.moco.Request;
 import com.github.dreamhead.moco.model.MessageContent;
+import com.github.dreamhead.moco.resource.ContentResource;
 import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
 import com.google.common.net.MediaType;
+import org.apache.commons.io.IOUtils;
+import org.apache.sling.api.resource.Resource;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.dreamhead.moco.model.MessageContent.content;
 
 public class JcrResourceReader implements ContentResourceReader {
 
-  private final String jcrPath;
   private final ResolverAccessor resolverAccessor;
+  private final ContentResource jcrPathResource;
 
-  public JcrResourceReader(ResolverAccessor resolverAccessor, String jcrPath) {
+  public JcrResourceReader(ResolverAccessor resolverAccessor, ContentResource jcrPathResource) {
     this.resolverAccessor = resolverAccessor;
-    this.jcrPath = jcrPath;
+    this.jcrPathResource = jcrPathResource;
   }
 
   @Override
@@ -29,7 +35,19 @@ public class JcrResourceReader implements ContentResourceReader {
   @Override
   public MessageContent readFor(Request request) {
     AtomicReference<String> result = new AtomicReference<>("");
-    resolverAccessor.consume(resourceResolver -> result.set(resourceResolver.getResource(jcrPath).getName()));
+    resolverAccessor.consume(resourceResolver -> {
+      Resource resource = resourceResolver.getResource(jcrPathResource.readFor(request).toString());
+      if (resource != null) {
+        InputStream inputStream = resource.adaptTo(InputStream.class);
+        if (inputStream != null) {
+          try {
+            result.set(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    });
     MessageContent.Builder builder = content().withContent(result.get());
 
     return builder.build();
