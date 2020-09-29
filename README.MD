@@ -92,7 +92,7 @@ When using Moco, ensure that Moco Stubs Server (running by default on port 5555)
 | >= 1.0.2       | 6.3, 6.4, 6.5 |
 
 Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
-AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more error-prone when AEM version is changing. 
+AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more fault-tolerant when AEM version is changing. 
 It is compatible with AEM Groovy Console - simply install one of AEM Stubs distributions without Groovy console OSGi bundle included as it is usually provided by Groovy Console AEM package. 
 
 ## Documentation
