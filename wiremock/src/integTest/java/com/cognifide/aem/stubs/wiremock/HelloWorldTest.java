@@ -3,6 +3,8 @@ package com.cognifide.aem.stubs.wiremock;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -205,5 +207,32 @@ public class HelloWorldTest {
       .then()
       .statusCode(404)
       .statusLine(containsString("No stub defined for this request"));
+  }
+
+  @Test
+  public void shouldProceedByExampleScenario(){
+    resetScenario();
+    String started = callScenario();
+    String step1 = callScenario();
+
+    resetScenario();
+    String afterReset = callScenario();
+
+    assertEquals(afterReset, started);
+    assertNotEquals(step1, started);
+  }
+
+  private void resetScenario() {
+    given()
+      .when()
+      .post("http://localhost:4502/stubs/__admin/scenarios/reset");
+  }
+
+  private String callScenario() {
+    return given()
+      .when()
+      .get("http://localhost:4502/stubs/scenario")
+      .body()
+      .asString();
   }
 }

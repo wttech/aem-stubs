@@ -162,7 +162,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   }
 
   private WireMockServlet createServlet() {
-    return new WireMockServlet(config.path(), app.buildStubRequestHandler());
+    return new WireMockServlet(config.path(), app);
   }
 
   public boolean isBypassable(ServletRequest request) {

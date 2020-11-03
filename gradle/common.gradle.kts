@@ -60,7 +60,6 @@ plugins.withId("java") {
     dependencies {
         "testImplementation"("org.junit.jupiter:junit-jupiter-api:5.3.2")
         "testRuntimeOnly"("org.junit.jupiter:junit-jupiter-engine:5.3.2")
-        "testImplementation"("io.wcm:io.wcm.testing.aem-mock.junit5:2.3.2")
     }
 
     tasks {

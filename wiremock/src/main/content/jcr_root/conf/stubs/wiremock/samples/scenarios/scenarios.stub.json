@@ -1,0 +1,55 @@
+{
+  "mappings": [
+    {
+      "id": "e8f16deb-133b-4e93-8840-9f60728314a5",
+      "scenarioName": "Example Scenario",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "step1",
+      "request": {
+        "method": "GET",
+        "url": "/scenario"
+      },
+      "response": {
+        "status": 200,
+        "body": "Scenario started",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      }
+    },
+    {
+      "id": "e8f16deb-133b-4e93-8840-9f60728314a6",
+      "scenarioName": "Example Scenario",
+      "requiredScenarioState": "step1",
+      "newScenarioState": "step2",
+      "request": {
+        "method": "GET",
+        "url": "/scenario"
+      },
+      "response": {
+        "status": 200,
+        "body": "Scenario step1",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      }
+    },
+    {
+      "id": "e8f16deb-133b-4e93-8840-9f60728314a7",
+      "scenarioName": "Example Scenario",
+      "requiredScenarioState": "step2",
+      "newScenarioState": "Started",
+      "request": {
+        "method": "GET",
+        "url": "/scenario"
+      },
+      "response": {
+        "status": 200,
+        "body": "Scenario step2",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      }
+    }
+  ]
+}

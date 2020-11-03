@@ -2,6 +2,7 @@ package com.cognifide.aem.stubs.wiremock;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.http.AdminRequestHandler;
 import com.github.tomakehurst.wiremock.http.StubRequestHandler;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 import com.github.tomakehurst.wiremock.standalone.MappingsLoader;
@@ -26,5 +27,9 @@ public class WireMockApp {
 
   public StubRequestHandler buildStubRequestHandler() {
     return app.buildStubRequestHandler();
+  }
+
+  public AdminRequestHandler buildAdminHandler() {
+    return app.buildAdminRequestHandler();
   }
 }
