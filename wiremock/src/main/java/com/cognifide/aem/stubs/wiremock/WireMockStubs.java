@@ -122,7 +122,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs WireMock Servlet");
-    app = new WireMockApp(resolverAccessor, manager.getRootPath() + "/" + getId(), config.globalTransformer());
+    app = new WireMockApp(new WireMockOptionsFactory(this).create());
     servletPath = getServletPath(config.path());
 
     try {
@@ -175,6 +175,19 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     return servlet;
   }
 
+  public ResolverAccessor getResolverAccessor(){
+    return resolverAccessor;
+  }
+
+  public String getRootPath(){
+    return manager.getRootPath();
+  }
+
+  public Config getConfig(){
+    return config;
+  }
+
+
   @ObjectClassDefinition(name = "AEM Stubs WireMock Server")
   public @interface Config {
 
@@ -193,5 +206,17 @@ public class WireMockStubs implements Stubs<WireMockApp> {
         + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
         + " instead of preloading and simplifies defining stubs.")
     boolean globalTransformer() default true;
+
+    @AttributeDefinition(
+      name = "Request journal",
+      description = "Enable the request journal, which records incoming requests for later verification. For long running instances can exhaust the heap."
+    )
+    boolean requestJournalEnabled() default false;
+
+    @AttributeDefinition(
+      name = "Max Request Journal Entries",
+      description = "Set maximum number of entries in request journal (if enabled). When this limit is reached oldest entries will be discarded. 0 means no limits."
+    )
+    int maxRequestJournalEntries() default 0;
   }
 }

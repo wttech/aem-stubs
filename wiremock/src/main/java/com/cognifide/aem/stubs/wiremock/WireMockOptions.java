@@ -1,15 +1,12 @@
 package com.cognifide.aem.stubs.wiremock;
 
 import static com.github.tomakehurst.wiremock.extension.ExtensionLoader.valueAssignableFrom;
-import static com.google.common.collect.Maps.newLinkedHashMap;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
-import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.HttpsSettings;
@@ -19,7 +16,6 @@ import com.github.tomakehurst.wiremock.common.ProxySettings;
 import com.github.tomakehurst.wiremock.core.MappingsSaver;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.github.tomakehurst.wiremock.extension.Extension;
-import com.github.tomakehurst.wiremock.extension.ExtensionLoader;
 import com.github.tomakehurst.wiremock.http.CaseInsensitiveKey;
 import com.github.tomakehurst.wiremock.http.HttpServerFactory;
 import com.github.tomakehurst.wiremock.http.ThreadPoolFactory;
@@ -38,26 +34,19 @@ import com.google.common.collect.Maps;
 class WireMockOptions implements Options {
 
   private final ResolverAccessor resolverAccessor;
-
   private final String rootPath;
+  private final boolean requestJournalEnabled;
+  private Integer maxRequestJournalEntries;
+  private final Map<String, Extension> extensions;
 
-  private final boolean globalTransformer;
-
-  private final Map<String, Extension> extensions = newLinkedHashMap();
-
-  public WireMockOptions(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
+  public WireMockOptions(ResolverAccessor resolverAccessor, String rootPath,
+    boolean requestJournalEnabled, int maxRequestJournalEntries,
+    Map<String, Extension> extensions) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
-    this.globalTransformer = globalTransformer;
-
-    addExtensions();
-  }
-
-  private void addExtensions() {
-    JcrFileReader jcrFileReader = new JcrFileReader(resolverAccessor, rootPath);
-    extensions.putAll(ExtensionLoader.asMap(
-      Collections.singletonList(new PebbleTransformer(jcrFileReader, globalTransformer)))
-    );
+    this.requestJournalEnabled = requestJournalEnabled;
+    this.maxRequestJournalEntries = maxRequestJournalEntries;
+    this.extensions = extensions;
   }
 
   @Override
@@ -117,11 +106,14 @@ class WireMockOptions implements Options {
 
   @Override
   public boolean requestJournalDisabled() {
-    return false;
+    return !requestJournalEnabled;
   }
 
   @Override
   public Optional<Integer> maxRequestJournalEntries() {
+    if(maxRequestJournalEntries > 0) {
+      return Optional.of(maxRequestJournalEntries);
+    }
     return Optional.absent();
   }
 

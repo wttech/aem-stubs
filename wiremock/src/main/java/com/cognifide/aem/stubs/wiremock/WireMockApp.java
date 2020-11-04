@@ -11,8 +11,7 @@ public class WireMockApp {
 
   private final com.github.tomakehurst.wiremock.core.WireMockApp app;
 
-  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
-    WireMockOptions wiremockOptions = new WireMockOptions(resolverAccessor, rootPath, globalTransformer);
+  public WireMockApp(WireMockOptions wiremockOptions) {
     app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockOptions,
       new NotImplementedContainer());
   }
