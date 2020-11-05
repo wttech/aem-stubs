@@ -31,7 +31,7 @@ public class MocksHandlerFactory {
     HttpResponder responder = new Responder(httpRequest, httpResponse);
 
     if (isAdmin(httpRequest)) {
-      return new AdminHandler(adminHandler, responder, request);
+      return new AdminHandler(adminHandler, responder, request, path);
     }
 
     return new StubsHandler(mocksHandler, responder, request);

@@ -12,31 +12,31 @@ import com.github.tomakehurst.wiremock.extension.ExtensionLoader;
 
 class WireMockOptionsFactory {
 
-  private final WireMockStubs wireMockStubs;
-  private final Map<String, Extension> extensions = newLinkedHashMap();;
+  private final WireMockStubs stubs;
+  private final Map<String, Extension> extensions = newLinkedHashMap();
 
-  public WireMockOptionsFactory(WireMockStubs wireMockStubs) {
-    this.wireMockStubs = wireMockStubs;
+  public WireMockOptionsFactory(WireMockStubs stubs) {
+    this.stubs = stubs;
     this.addExtensions();
   }
 
   WireMockOptions create(){
-    return new WireMockOptions(wireMockStubs.getResolverAccessor(),
+    return new WireMockOptions(stubs.getResolverAccessor(),
       getRootPath(),
-      wireMockStubs.getConfig().requestJournalEnabled(),
-      wireMockStubs.getConfig().maxRequestJournalEntries(),
+      stubs.getConfig().requestJournalEnabled(),
+      stubs.getConfig().requestJournalMaxSize(),
       extensions);
   }
 
   private String getRootPath(){
-    return wireMockStubs.getRootPath() + "/" + wireMockStubs.getId();
+    return stubs.getRootPath() + "/" + stubs.getId();
   }
 
   private void addExtensions() {
-    JcrFileReader jcrFileReader = new JcrFileReader(wireMockStubs.getResolverAccessor(), getRootPath());
+    JcrFileReader jcrFileReader = new JcrFileReader(stubs.getResolverAccessor(), getRootPath());
     extensions.putAll(ExtensionLoader.asMap(
       Collections.singletonList(new PebbleTransformer(jcrFileReader,
-        wireMockStubs.getConfig().globalTransformer())))
+        stubs.getConfig().globalTransformer())))
     );
   }
 }

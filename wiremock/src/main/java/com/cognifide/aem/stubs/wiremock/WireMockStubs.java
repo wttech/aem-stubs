@@ -1,37 +1,43 @@
 package com.cognifide.aem.stubs.wiremock;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
-import com.cognifide.aem.stubs.core.StubsException;
-import com.cognifide.aem.stubs.core.util.JcrUtils;
-import com.cognifide.aem.stubs.wiremock.mapping.MappingCollection;
-import com.github.tomakehurst.wiremock.common.Json;
-import com.github.tomakehurst.wiremock.common.JsonException;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import org.apache.commons.io.IOUtils;
-import org.apache.sling.api.resource.Resource;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.metatype.annotations.*;
-import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.cognifide.aem.stubs.core.Stubs;
-import com.cognifide.aem.stubs.core.script.StubScript;
-import com.cognifide.aem.stubs.core.StubManager;
-import com.cognifide.aem.stubs.core.util.ResolverAccessor;
-import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
-import com.github.tomakehurst.wiremock.http.Request;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.sling.api.resource.Resource;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cognifide.aem.stubs.core.StubManager;
+import com.cognifide.aem.stubs.core.Stubs;
+import com.cognifide.aem.stubs.core.StubsException;
+import com.cognifide.aem.stubs.core.script.StubScript;
+import com.cognifide.aem.stubs.core.util.JcrUtils;
+import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.mapping.MappingCollection;
+import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
+import com.github.tomakehurst.wiremock.common.Json;
+import com.github.tomakehurst.wiremock.common.JsonException;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 @Component(
   service = {Stubs.class, WireMockStubs.class},
@@ -80,13 +86,17 @@ public class WireMockStubs implements Stubs<WireMockApp> {
       .ifPresent(input -> {
         app.mappingFrom((stubMappings) -> {
           try {
-            MappingCollection stubCollection = Json.read(IOUtils.toString(input, StandardCharsets.UTF_8.displayName()), MappingCollection.class);
+            MappingCollection stubCollection = Json
+              .read(IOUtils.toString(input, StandardCharsets.UTF_8.displayName()),
+                MappingCollection.class);
             for (StubMapping mapping : stubCollection.getMappings()) {
               mapping.setDirty(false);
               stubMappings.addMapping(mapping);
             }
           } catch (JsonException | IOException e) {
-            throw new StubsException(String.format("Cannot load AEM Stubs mapping from resource at path '%s'!", file.getPath()), e);
+            throw new StubsException(String
+              .format("Cannot load AEM Stubs mapping from resource at path '%s'!", file.getPath()),
+              e);
           }
         });
       });
@@ -175,15 +185,15 @@ public class WireMockStubs implements Stubs<WireMockApp> {
     return servlet;
   }
 
-  public ResolverAccessor getResolverAccessor(){
+  public ResolverAccessor getResolverAccessor() {
     return resolverAccessor;
   }
 
-  public String getRootPath(){
+  public String getRootPath() {
     return manager.getRootPath();
   }
 
-  public Config getConfig(){
+  public Config getConfig() {
     return config;
   }
 
@@ -209,7 +219,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     @AttributeDefinition(
       name = "Request journal",
-      description = "Enable the request journal, which records incoming requests for later verification. For long running instances can exhaust the heap."
+      description = "Enable the request journal, which records incoming requests for later verification. Protects against reserving too much memory."
     )
     boolean requestJournalEnabled() default false;
 
@@ -217,6 +227,6 @@ public class WireMockStubs implements Stubs<WireMockApp> {
       name = "Max Request Journal Entries",
       description = "Set maximum number of entries in request journal (if enabled). When this limit is reached oldest entries will be discarded. 0 means no limits."
     )
-    int maxRequestJournalEntries() default 0;
+    int requestJournalMaxSize() default 0;
   }
 }

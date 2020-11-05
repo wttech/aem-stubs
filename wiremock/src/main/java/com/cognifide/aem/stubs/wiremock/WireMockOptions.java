@@ -91,7 +91,8 @@ class WireMockOptions implements Options {
 
   @Override
   public MappingsLoader mappingsLoader() {
-    return stubMappings -> {}; // intentionally, loading is just done later
+    return stubMappings -> {
+    }; // intentionally, loading is just done later
   }
 
   @Override
@@ -111,7 +112,7 @@ class WireMockOptions implements Options {
 
   @Override
   public Optional<Integer> maxRequestJournalEntries() {
-    if(maxRequestJournalEntries > 0) {
+    if (maxRequestJournalEntries > 0) {
       return Optional.of(maxRequestJournalEntries);
     }
     return Optional.absent();
