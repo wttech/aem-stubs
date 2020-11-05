@@ -1,6 +1,5 @@
 package com.cognifide.aem.stubs.wiremock;
 
-import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.http.AdminRequestHandler;
 import com.github.tomakehurst.wiremock.http.StubRequestHandler;
@@ -11,8 +10,7 @@ public class WireMockApp {
 
   private final com.github.tomakehurst.wiremock.core.WireMockApp app;
 
-  public WireMockApp(ResolverAccessor resolverAccessor, String rootPath, boolean globalTransformer) {
-    WireMockOptions wiremockOptions = new WireMockOptions(resolverAccessor, rootPath, globalTransformer);
+  public WireMockApp(WireMockOptions wiremockOptions) {
     app = new com.github.tomakehurst.wiremock.core.WireMockApp(wiremockOptions,
       new NotImplementedContainer());
   }
