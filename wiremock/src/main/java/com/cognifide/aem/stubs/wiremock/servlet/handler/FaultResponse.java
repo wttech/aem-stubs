@@ -1,6 +1,9 @@
-package com.cognifide.aem.stubs.wiremock.servlet;
+package com.cognifide.aem.stubs.wiremock.servlet.handler;
+
+import static com.cognifide.aem.stubs.wiremock.servlet.handler.AdminHandler.ADMIN_ERROR_PREFIX;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +22,7 @@ final class FaultResponse {
     this.statusCode = statusCode;
   }
 
-  public boolean isNotSupported() {
+  public boolean hasError() {
     return notSupported;
   }
 
@@ -48,7 +51,17 @@ final class FaultResponse {
         .notSupportedResponse("Delay not supported by AEM Stubs");
     }
 
+    if (isAdminAPIIssue(response)) {
+      return FaultResponse.notSupportedResponse(response.getStatusMessage());
+    }
+
     return FaultResponse.supported();
+  }
+
+  private static Boolean isAdminAPIIssue(Response response) {
+    return Optional.ofNullable(response.getStatusMessage())
+      .map(msg -> msg.startsWith(ADMIN_ERROR_PREFIX))
+      .orElse(false);
   }
 
   private static FaultResponse supported() {
