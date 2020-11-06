@@ -67,7 +67,7 @@ tasks {
                     "com.jayway.jsonpath.spi.mapper"
             )
             embedPackage("net.sf.jopt-simple:jopt-simple:5.0.4", "joptsimple.*")
-            embedPackage("com.github.jknack:handlebars:4.1.2",
+            embedPackage(files("libs/handlebars-4.1.2.jar"),
                     "com.github.jknack.handlebars",
                     "com.github.jknack.handlebars.cache",
                     "com.github.jknack.handlebars.context",

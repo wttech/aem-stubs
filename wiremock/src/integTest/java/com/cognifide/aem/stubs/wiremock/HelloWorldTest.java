@@ -61,12 +61,22 @@ public class HelloWorldTest {
   }
 
   @Test
-  public void shouldGetFineWithBodyTemplated() {
+  public void shouldGetFineWithBodyTemplatedByPebble() {
     given()
       .when()
-      .get("http://localhost:4502/stubs/templated")
+      .get("http://localhost:4502/stubs/templated-pebbles")
       .then()
-      .body(equalTo("templated"))
+      .body(equalTo("templated-pebbles"))
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldGetFineWithBodyTemplatedByHandlebar() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/templated-handlebars")
+      .then()
+      .body(equalTo("templated-handlebars"))
       .statusCode(200);
   }
 

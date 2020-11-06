@@ -1,5 +1,7 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import static com.cognifide.aem.stubs.wiremock.TransformerEngine.HANDLEBARS;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -206,10 +208,10 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     @AttributeDefinition(
       name = "Global Template Transformer",
-      description = "Enables Pebble template engine / templating"
+      description = "Enables template engine / templating. Handlebars and Pebbles engines are supported"
         + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
         + " instead of preloading and simplifies defining stubs.")
-    boolean globalTransformer() default true;
+    TransformerEngine globalTransformer() default HANDLEBARS;
 
     @AttributeDefinition(
       name = "Request journal",
