@@ -1,4 +1,5 @@
 import static com.cognifide.aem.stubs.wiremock.WireMockUtils.*
+import com.cognifide.aem.stubs.wiremock.transformers.DynamicParameterProvider
 
 stubs.server.with {
     // template body
@@ -25,11 +26,12 @@ stubs.server.with {
                     .withHeader("Content-Type", "application/json")
                     .withTransformers("pebble-response-template")))
 
-    // template file - file name passed as http header
+    // template with dynamic parameter
     stubFor(get(urlPathEqualTo("/templated-dynamic"))
             .willReturn(aResponse()
                     .withBody("{{parameters.date}}")
-                    .withTransformerParameter("date", {new Date()})))
+                    .withTransformerParameter("date", dynamicParameter({new Date()}))
+                    .withTransformers("pebble-response-template")))
 
     // proxy templates
     stubFor(get(urlPathEqualTo("/templated/api"))

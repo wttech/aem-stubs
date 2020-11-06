@@ -30,6 +30,7 @@ import com.cognifide.aem.stubs.core.util.JcrUtils;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.mapping.MappingCollection;
 import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
+import com.cognifide.aem.stubs.wiremock.transformers.DynamicParameterProvider;
 import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.common.JsonException;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -104,6 +105,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer()
       .addStaticStars(WireMockUtils.class.getName())
+      .addStaticStars(DynamicParameterProvider.class.getName())
       .addStarImports(Request.class.getPackage().getName())
     );
 
