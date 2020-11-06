@@ -11,29 +11,23 @@ configure<ForkExtension> {
                     description = "Local - instance will be created on local file system\nRemote - connecting to remote instance only"
                     controller { toggle(value == "local", "instanceRunModes", "instanceJvmOpts", "localInstance*") }
                 },
+                "instanceAuthorEnabled" to {
+                    label = "Author Enabled"
+                    checkbox(true)
+                },
                 "instanceAuthorHttpUrl" to {
                     label = "Author HTTP URL"
                     url("http://localhost:4502")
                     optional()
-                    description = "For accessing AEM author instance (leave empty to skip creating it)"
+                },
+                "instancePublishEnabled" to {
+                    label = "Publish Enabled"
+                    checkbox(false)
                 },
                 "instancePublishHttpUrl" to {
                     label = "Publish HTTP URL"
                     url("http://localhost:4503")
                     optional()
-                    description = "For accessing AEM publish instance (leave empty to skip creating it)"
-                },
-                "instanceAuthorOnly" to {
-                    label = "Author Only"
-                    description = "Limits instances to work with to author instance only."
-                    checkbox(false)
-                    controller { other("instancePublishOnly").enabled = !value.toBoolean() }
-                },
-                "instancePublishOnly" to {
-                    label = "Publish Only"
-                    description = "Limits instances to work with to publish instance only."
-                    checkbox(false)
-                    controller { other("instanceAuthorOnly").enabled = !value.toBoolean() }
                 },
                 "instanceSatisfierEnabled" to {
                     label = "Satisfier Enabled"
@@ -121,7 +115,7 @@ configure<ForkExtension> {
                     description = "Turns on/off temporary disablement of assets processing for package deployment time.\n" +
                             "Useful to avoid redundant rendition generation when package contains renditions synchronized earlier."
                     checkbox(true)
-                    dynamic()
+                    dynamic("props")
                 }
         ))
 
