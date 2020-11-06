@@ -37,4 +37,14 @@ public class AdminConsoleTest {
       .body("request.url", equalTo("/scenario"))
       .statusCode(200);
   }
+
+  @Test
+  public void shouldReturnAllMappings() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/__admin/mappings")
+      .then()
+      .body("meta.total", equalTo(25))
+      .statusCode(200);
+  }
 }

@@ -23,7 +23,7 @@ public class DynamicParameterProvider {
   }
 
   public String getDynamicProvider() {
-    return Closure.class.getName();
+    return provider.toString();
   }
 
   @JsonIgnore
@@ -48,6 +48,11 @@ public class DynamicParameterProvider {
     public Object call() {
       return closure.call();
     }
+
+    @Override
+    public String toString(){
+      return Closure.class.getName();
+    }
   }
 
   private static class SupplierCall implements FunctionCall {
@@ -60,6 +65,11 @@ public class DynamicParameterProvider {
     @Override
     public Object call() {
       return supplier.get();
+    }
+
+    @Override
+    public String toString(){
+      return Supplier.class.getName();
     }
   }
 }

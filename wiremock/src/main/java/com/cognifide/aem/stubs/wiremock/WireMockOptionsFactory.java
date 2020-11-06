@@ -1,7 +1,5 @@
 package com.cognifide.aem.stubs.wiremock;
 
-import static com.cognifide.aem.stubs.wiremock.TransformerEngine.HANDLEBARS;
-import static com.cognifide.aem.stubs.wiremock.TransformerEngine.PEBBLE;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 
 import java.util.List;
@@ -21,7 +19,7 @@ class WireMockOptionsFactory {
 
   public WireMockOptionsFactory(WireMockStubs stubs) {
     this.stubs = stubs;
-    this. extensions.putAll(ExtensionLoader.asMap(transformers()));;
+    this.extensions.putAll(ExtensionLoader.asMap(transformers()));
   }
 
   public WireMockOptions create() {
@@ -39,8 +37,12 @@ class WireMockOptionsFactory {
   private List<Extension> transformers() {
     JcrFileReader jcrFileReader = new JcrFileReader(stubs.getResolverAccessor(), getRootPath());
     return ImmutableList.<Extension>builder()
-      .add(new PebbleTransformer(jcrFileReader, stubs.getConfig().globalTransformer() == PEBBLE))
-      .add(new ResponseTemplateTransformer(stubs.getConfig().globalTransformer() == HANDLEBARS))
+      .add(new PebbleTransformer(jcrFileReader, isGlobal(TransformerEngine.PEBBLE)))
+      .add(new ResponseTemplateTransformer(isGlobal(TransformerEngine.HANDLEBARS)))
       .build();
+  }
+
+  private boolean isGlobal(TransformerEngine engine){
+    return stubs.getConfig().globalTransformer() == engine;
   }
 }
