@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.dreamhead.moco.model.MessageContent.content;
@@ -33,27 +34,28 @@ public class JcrResourceReader implements ContentResourceReader {
 
   @Override
   public MediaType getContentType(HttpRequest request) {
-    return MediaType.HTML_UTF_8;
+    return MediaType.PLAIN_TEXT_UTF_8;
   }
 
-  @Override
   public MessageContent readFor(Request request) {
-    AtomicReference<String> result = new AtomicReference<>("");
-    resolverAccessor.consume(resourceResolver -> {
-      Resource resource = resourceResolver.getResource(jcrPathResource.readFor(request).toString());
-      if (resource != null) {
-        InputStream inputStream = resource.adaptTo(InputStream.class);
-        if (inputStream != null) {
-          try {
-            result.set(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
-          } catch (IOException e) {
-            LOG.warn("Could not read input stream", e);
-          }
-        }
-      }
-    });
-    MessageContent.Builder builder = content().withContent(result.get());
+    return resolverAccessor.resolve(resourceResolver ->
+      Optional.ofNullable(jcrPathResource.readFor(request))
+        .map(MessageContent::toString)
+        .map(resourceResolver::getResource)
+        .map(resource -> resource.adaptTo(InputStream.class))
+        .map(is -> content()
+          .withContent(toString(is))
+          .build())
+        .orElse(content().build())
+    );
+  }
 
-    return builder.build();
+  private String toString(InputStream is) {
+    try {
+      return IOUtils.toString(is, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      LOG.warn("Could not read input stream", e);
+      return "";
+    }
   }
 }
