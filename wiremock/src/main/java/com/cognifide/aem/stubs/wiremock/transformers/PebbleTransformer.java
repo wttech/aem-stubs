@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.cognifide.aem.stubs.wiremock.WireMockException;
@@ -24,8 +23,6 @@ import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.google.common.collect.ImmutableMap;
-
-import groovy.lang.Closure;
 
 public class PebbleTransformer extends ResponseDefinitionTransformer {
 
@@ -115,10 +112,8 @@ public class PebbleTransformer extends ResponseDefinitionTransformer {
     return firstNonNull(parameters, Collections.<String, Object>emptyMap()).entrySet()
       .stream()
       .collect(Collectors.toMap(Entry::getKey, e -> {
-        if (e.getValue() instanceof Closure) {
-          return ((Closure) e.getValue()).call();
-        } else if (e.getValue() instanceof Supplier<?>) {
-          return ((Supplier) e.getValue()).get();
+        if (e.getValue() instanceof DynamicParameterProvider){
+          return ((DynamicParameterProvider) e.getValue()).call();
         } else {
           return e.getValue();
         }

@@ -2,13 +2,15 @@ package com.cognifide.aem.stubs.wiremock;
 
 import static com.google.common.collect.Maps.newLinkedHashMap;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.extension.Extension;
 import com.github.tomakehurst.wiremock.extension.ExtensionLoader;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.google.common.collect.ImmutableList;
 
 class WireMockOptionsFactory {
 
@@ -17,7 +19,7 @@ class WireMockOptionsFactory {
 
   public WireMockOptionsFactory(WireMockStubs stubs) {
     this.stubs = stubs;
-    this.addExtensions();
+    this.extensions.putAll(ExtensionLoader.asMap(transformers()));
   }
 
   public WireMockOptions create() {
@@ -32,11 +34,15 @@ class WireMockOptionsFactory {
     return stubs.getRootPath() + "/" + stubs.getId();
   }
 
-  private void addExtensions() {
+  private List<Extension> transformers() {
     JcrFileReader jcrFileReader = new JcrFileReader(stubs.getResolverAccessor(), getRootPath());
-    extensions.putAll(ExtensionLoader.asMap(
-      Collections.singletonList(new PebbleTransformer(jcrFileReader,
-        stubs.getConfig().globalTransformer())))
-    );
+    return ImmutableList.<Extension>builder()
+      .add(new PebbleTransformer(jcrFileReader, isGlobal(TransformerEngine.PEBBLE)))
+      .add(new ResponseTemplateTransformer(isGlobal(TransformerEngine.HANDLEBARS)))
+      .build();
+  }
+
+  private boolean isGlobal(TransformerEngine engine){
+    return stubs.getConfig().globalTransformer() == engine;
   }
 }
