@@ -5,6 +5,7 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cognifide.aem.stubs.wiremock.admin.DocRequestFilter;
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.extension.Extension;
@@ -20,6 +21,7 @@ class WireMockOptionsFactory {
   public WireMockOptionsFactory(WireMockStubs stubs) {
     this.stubs = stubs;
     this.extensions.putAll(ExtensionLoader.asMap(transformers()));
+    this.extensions.putAll(ExtensionLoader.asMap(adminFilters()));
   }
 
   public WireMockOptions create() {
@@ -42,7 +44,13 @@ class WireMockOptionsFactory {
       .build();
   }
 
-  private boolean isGlobal(TransformerEngine engine){
+  private List<Extension> adminFilters() {
+    return ImmutableList.<Extension>builder()
+      .add(new DocRequestFilter())
+      .build();
+  }
+
+  private boolean isGlobal(TransformerEngine engine) {
     return stubs.getConfig().globalTransformer() == engine;
   }
 }
