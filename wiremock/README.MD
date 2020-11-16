@@ -135,49 +135,55 @@ WireMock can selectively proxy requests through to other hosts. Code snippets co
 #### Response Templating
 
 [WireMock](http://wiremock.org) supports by default [handlebars](http://handlebarsjs.com/) as templating engine.
-[Handlebars](http://handlebarsjs.com/) is not an OSGi-ready library and is not supported by AEM Stubs.
-
-Current implementation supports basic functionality of [Pebble](https://pebbletemplates.io/) templating engine.
+AEM Stubs by default has Global Templating Engine set for handlebars.
 
 ```
 stubs.server.with {
     stubFor(get(urlPathEqualTo("/templated"))
             .willReturn(aResponse()
-                    .withBody("{{request.path[0]}}")
+                    .withBody("{{request.path.[0]}}")
 }
+
 ```
+
+In addition, AEM Stubs supports also [Pebble](https://pebbletemplates.io/) templating engine.
+
+```
+    stubFor(get(urlPathEqualTo("/templated-pebbles"))
+            .willReturn(aResponse()
+                    .withBody("{{request.path[0]}}")
+                    .withTransformers("pebble-response-template")))
+```
+
+__Note__ As [handlebars](http://handlebarsjs.com/) is a default Templating Engine you need to set transformer `pebble-response-template` in stub definition
 
 The request model available from a template is the same as described on WireMock response templating [documentation](http://wiremock.org/docs/response-templating/).
 
 #### Templating parameters
 
-Parameters can be passed to WireMock extension `pebble-response-template` (loaded by default) by calling `withTransformerParameter` method:
+Parameters can be passed to templating transformers by calling `withTransformerParameter` method:
 
 ```
-stubs.server.with {
     stubFor(get(urlPathEqualTo("/templated-file"))
             .willReturn(aResponse()
-                    .withBodyFile("samples/template.json")
+                    .withBodyFile("samples/templating/template.json")
                     .withHeader("Content-Type", "application/json")
-                    .withTransformerParameter("message", "Hello Templates!")
-
-}
-```
-<a name="dynamic-parameters-values">
-Also, dynamic values are possible:
-</a>
+                    .withTransformerParameter("message", "Hello Templates!")))
 
 ```
-stubs.server.with {
+Pebble transformer supports also dynamic parameter values:
+
+
+```
     stubFor(get(urlPathEqualTo("/templated-dynamic"))
             .willReturn(aResponse()
                     .withBody("{{parameters.date}}")
-                    .withTransformerParameter("date", {new Date()})
+                    .withTransformerParameter("date", dynamicParameter({new Date()}))
+                    .withTransformers("pebble-response-template")))
 
-}
 ```
 
-#### The WireMock admin API
+#### WireMock admin API
 
 Most of the admin functionalities are supported. Please check http://wiremock.org/docs/api/ for details.
 
