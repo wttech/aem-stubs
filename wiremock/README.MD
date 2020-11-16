@@ -49,7 +49,7 @@ stubs.server.with {
         * [Proxying](#proxying)
         * [Response Templating](#response-templating)
         * [Templating parameters](#templating-parameters)
-        * [The WireMock admin API](#the-wiremock-admin-api)
+        * [WireMock admin API](#the-wiremock-admin-api)
      * [Not supported features](#not-supported-features)
 
 ## Installation
@@ -185,7 +185,6 @@ Known issues:
 
 | endpoint          | Issue                                                                                                                                                                                                                                                                                                                                                                                                                    |
 |-------------------|----------------------------------------------------------------------------------------------------------| 
-| [/stubs/__admin/mappings  (GET)](http://wiremock.org/docs/api/#tag/Stub-Mappings/paths/~1__admin~1mappings/get) | For dynamic [parameters in template](#dynamic-parameters-values) mappings are not available |
 | [/stubs/__admin/mappings/save (POST)](http://wiremock.org/docs/api/#tag/Stub-Mappings/paths/~1__admin~1mappings~1save/post)  | Not supported
 
  
