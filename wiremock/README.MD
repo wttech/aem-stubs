@@ -49,7 +49,7 @@ stubs.server.with {
         * [Proxying](#proxying)
         * [Response Templating](#response-templating)
         * [Templating parameters](#templating-parameters)
-        * [WireMock admin API](#the-wiremock-admin-api)
+        * [WireMock admin API](#wiremock-admin-api)
      * [Not supported features](#not-supported-features)
 
 ## Installation
@@ -135,7 +135,7 @@ WireMock can selectively proxy requests through to other hosts. Code snippets co
 #### Response Templating
 
 [WireMock](http://wiremock.org) supports by default [handlebars](http://handlebarsjs.com/) as templating engine.
-AEM Stubs by default has Global Templating Engine set for handlebars.
+AEM Stubs is using Handlebars template engine as [global response transformer|link] by default.
 
 ```
 stubs.server.with {
@@ -146,7 +146,7 @@ stubs.server.with {
 
 ```
 
-In addition, AEM Stubs supports also [Pebble](https://pebbletemplates.io/) templating engine.
+In addition, AEM Stubs supports also [Pebble](https://pebbletemplates.io/) templating engine because it seems to be high performant and feature-rich.
 
 ```
     stubFor(get(urlPathEqualTo("/templated-pebbles"))
@@ -161,7 +161,7 @@ The request model available from a template is the same as described on WireMock
 
 #### Templating parameters
 
-Parameters can be passed to templating transformers by calling `withTransformerParameter` method:
+Parameters can be passed to templates by using `withTransformerParameter` method:
 
 ```
     stubFor(get(urlPathEqualTo("/templated-file"))
@@ -171,8 +171,7 @@ Parameters can be passed to templating transformers by calling `withTransformerP
                     .withTransformerParameter("message", "Hello Templates!")))
 
 ```
-Pebble transformer supports also dynamic parameter values:
-
+What might be considered very useful and unique to Pebble integration, it also supports values being evaluated dynamically:
 
 ```
     stubFor(get(urlPathEqualTo("/templated-dynamic"))
