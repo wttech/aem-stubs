@@ -1,5 +1,16 @@
 package com.cognifide.aem.stubs.moco;
 
+import static com.github.dreamhead.moco.model.MessageContent.content;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.github.dreamhead.moco.HttpRequest;
 import com.github.dreamhead.moco.Request;
@@ -7,18 +18,6 @@ import com.github.dreamhead.moco.model.MessageContent;
 import com.github.dreamhead.moco.resource.ContentResource;
 import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
 import com.google.common.net.MediaType;
-import org.apache.commons.io.IOUtils;
-import org.apache.sling.api.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static com.github.dreamhead.moco.model.MessageContent.content;
 
 public class JcrResourceReader implements ContentResourceReader {
 
@@ -37,6 +36,7 @@ public class JcrResourceReader implements ContentResourceReader {
     return MediaType.PLAIN_TEXT_UTF_8;
   }
 
+  @Override
   public MessageContent readFor(Request request) {
     return resolverAccessor.resolve(resourceResolver ->
       Optional.ofNullable(jcrPathResource.readFor(request))
