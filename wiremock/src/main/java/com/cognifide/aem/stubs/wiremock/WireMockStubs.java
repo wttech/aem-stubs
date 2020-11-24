@@ -193,6 +193,6 @@ public class WireMockStubs implements Stubs<WireMockApp> {
       name = "Max Request Journal Entries",
       description = "Set maximum number of entries in request journal (if enabled). When this limit is reached oldest entries will be discarded. 0 means no limits."
     )
-    int requestJournalMaxSize() default 0;
+    int requestJournalMaxSize() default 200;
   }
 }

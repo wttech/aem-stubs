@@ -44,7 +44,7 @@ public class AdminConsoleTest {
       .when()
       .get("http://localhost:4502/stubs/__admin/mappings")
       .then()
-      .body("meta.total", equalTo(25))
+      .body("meta.total", equalTo(26))
       .statusCode(200);
   }
 }

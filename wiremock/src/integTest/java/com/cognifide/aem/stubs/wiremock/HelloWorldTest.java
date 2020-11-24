@@ -64,9 +64,9 @@ public class HelloWorldTest {
   public void shouldGetFineWithBodyTemplatedByPebble() {
     given()
       .when()
-      .get("http://localhost:4502/stubs/templated-pebbles")
+      .get("http://localhost:4502/stubs/templated-pebble")
       .then()
-      .body(equalTo("templated-pebbles"))
+      .body(equalTo("templated-pebble"))
       .statusCode(200);
   }
 
@@ -79,12 +79,21 @@ public class HelloWorldTest {
       .body(equalTo("templated-handlebars"))
       .statusCode(200);
   }
-
   @Test
-  public void shouldReturnJsonFromFilePointedInHeader() {
+  public void shouldReturnJsonFromFilePointedInHeaderPebble() {
     given().header("X-WM-Body-File", "samples/message.json")
       .when()
-      .get("http://localhost:4502/stubs/header-body-file")
+      .get("http://localhost:4502/stubs/header-body-file-pebble")
+      .then()
+      .body("message", equalTo("Hello World!"))
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldReturnJsonFromFilePointedInHeaderHandlebars() {
+    given().header("X-WM-Body-File", "samples/message.json")
+      .when()
+      .get("http://localhost:4502/stubs/header-body-file-handlebars")
       .then()
       .body("message", equalTo("Hello World!"))
       .statusCode(200);
