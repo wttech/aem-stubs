@@ -24,11 +24,13 @@ plugins.withId("com.cognifide.aem.common") {
 plugins.withId("com.cognifide.aem.package") {
     tasks {
         withType<PackageCompose>().configureEach {
-            vaultDefinition {
+            vault {
+                val text = "Tool for providing sample data for AEM applications in a simple and flexible way. Stubbing server on AEM, no separate needed"
                 description.set("""
-                    &lt;p class="description"&gt;Tool for providing sample data for AEM applications in a simple and flexible way. Stubbing server on AEM, no separate needed.&lt;/p&gt;
+                    &lt;p class="description"&gt;$text.&lt;/p&gt;
                     &lt;p&gt;&lt;a href="https://github.com/Cognifide/aem-stubs">Documentation&lt;/a&gt;
                 """.trimIndent())
+                manifestProperties.put("Implementation-Title", text)
             }
         }
     }
@@ -60,7 +62,6 @@ plugins.withId("java") {
     dependencies {
         "testImplementation"("org.junit.jupiter:junit-jupiter-api:5.3.2")
         "testRuntimeOnly"("org.junit.jupiter:junit-jupiter-engine:5.3.2")
-        "testImplementation"("io.wcm:io.wcm.testing.aem-mock.junit5:2.3.2")
     }
 
     tasks {

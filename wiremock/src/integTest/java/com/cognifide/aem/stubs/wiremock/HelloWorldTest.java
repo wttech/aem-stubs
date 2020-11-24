@@ -3,6 +3,8 @@ package com.cognifide.aem.stubs.wiremock;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -59,20 +61,39 @@ public class HelloWorldTest {
   }
 
   @Test
-  public void shouldGetFineWithBodyTemplated() {
+  public void shouldGetFineWithBodyTemplatedByPebble() {
     given()
       .when()
-      .get("http://localhost:4502/stubs/templated")
+      .get("http://localhost:4502/stubs/templated-pebble")
       .then()
-      .body(equalTo("templated"))
+      .body(equalTo("templated-pebble"))
       .statusCode(200);
   }
 
   @Test
-  public void shouldReturnJsonFromFilePointedInHeader() {
+  public void shouldGetFineWithBodyTemplatedByHandlebar() {
+    given()
+      .when()
+      .get("http://localhost:4502/stubs/templated-handlebars")
+      .then()
+      .body(equalTo("templated-handlebars"))
+      .statusCode(200);
+  }
+  @Test
+  public void shouldReturnJsonFromFilePointedInHeaderPebble() {
     given().header("X-WM-Body-File", "samples/message.json")
       .when()
-      .get("http://localhost:4502/stubs/header-body-file")
+      .get("http://localhost:4502/stubs/header-body-file-pebble")
+      .then()
+      .body("message", equalTo("Hello World!"))
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldReturnJsonFromFilePointedInHeaderHandlebars() {
+    given().header("X-WM-Body-File", "samples/message.json")
+      .when()
+      .get("http://localhost:4502/stubs/header-body-file-handlebars")
       .then()
       .body("message", equalTo("Hello World!"))
       .statusCode(200);
@@ -205,5 +226,32 @@ public class HelloWorldTest {
       .then()
       .statusCode(404)
       .statusLine(containsString("No stub defined for this request"));
+  }
+
+  @Test
+  public void shouldProceedByExampleScenario(){
+    resetScenario();
+    String started = callScenario();
+    String step1 = callScenario();
+
+    resetScenario();
+    String afterReset = callScenario();
+
+    assertEquals(afterReset, started);
+    assertNotEquals(step1, started);
+  }
+
+  private void resetScenario() {
+    given()
+      .when()
+      .post("http://localhost:4502/stubs/__admin/scenarios/reset");
+  }
+
+  private String callScenario() {
+    return given()
+      .when()
+      .get("http://localhost:4502/stubs/scenario")
+      .body()
+      .asString();
   }
 }

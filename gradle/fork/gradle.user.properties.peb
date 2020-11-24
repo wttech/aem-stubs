@@ -14,27 +14,23 @@ package.manager.deployAvoidance={{packageDeployAvoidance}}
 package.manager.workflowToggle=[dam_asset=false]
 {% endif %}
 
-instance.author={{instanceAuthorOnly}}
-instance.publish={{instancePublishOnly}}
 instance.satisfy.enabled={{instanceSatisfierEnabled}}
 instance.provision.enabled={{instanceProvisionerEnabled}}
 instance.awaitUp.help.enabled={{ instanceAwaitUpHelpEnabled }}
 
-{% if instanceAuthorHttpUrl is not empty %}
+instance.local-author.enabled={{instanceAuthorEnabled}}
 instance.local-author.httpUrl={{instanceAuthorHttpUrl}}
 instance.local-author.type={{instanceType}}
 instance.local-author.runModes={{localInstanceRunModes}}
 instance.local-author.jvmOpts={{localInstanceJvmOpts}}
 instance.local-author.openPath={{localInstanceOpenPath}}
-{% endif %}
 
-{% if instancePublishHttpUrl is not empty %}
+instance.local-publish.enabled={{instancePublishEnabled}}
 instance.local-publish.httpUrl={{instancePublishHttpUrl}}
 instance.local-publish.type={{instanceType}}
 instance.local-publish.runModes={{localInstanceRunModes}}
 instance.local-publish.jvmOpt={{localInstanceJvmOpts}}
 instance.local-publish.openPath={{localInstanceOpenPath}}
-{% endif %}
 
 {% if instanceType == 'local' %}
 localInstance.source={{ localInstanceSource }}

@@ -126,7 +126,7 @@ Which means to use samples, it is needed to remove path exclusion, rename a fold
 
 ### OSGi configuration
 
-There are framework specific OSGi configurations ([WireMock](moco#osgi-configuration), [Moco](moco#osgi-configuration)) and common listed below:
+There are framework specific OSGi configurations ([WireMock](wiremock#osgi-configuration), [Moco](moco#osgi-configuration)) and common listed below:
 
 [Stub Manager](http://localhost:4502/system/console/configMgr/com.cognifide.aem.stubs.core.ConfigurableStubManager)
 

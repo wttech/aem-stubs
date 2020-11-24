@@ -4,34 +4,22 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import com.cognifide.aem.stubs.core.StubsException;
-import com.cognifide.aem.stubs.core.util.JcrUtils;
-import com.cognifide.aem.stubs.wiremock.mapping.MappingCollection;
-import com.github.tomakehurst.wiremock.common.Json;
-import com.github.tomakehurst.wiremock.common.JsonException;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.Resource;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.*;
-import org.osgi.service.metatype.annotations.*;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.osgi.service.metatype.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
-import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
 import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
+import com.cognifide.aem.stubs.wiremock.transformers.DynamicParameterProvider;
 import com.github.tomakehurst.wiremock.http.Request;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 @Component(
   service = {Stubs.class, WireMockStubs.class},
@@ -45,6 +33,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   private static final Logger LOG = LoggerFactory.getLogger(WireMockStubs.class);
 
   private WireMockApp app;
+
+  private MappingsLoader mappingsLoader;
 
   private Config config;
 
@@ -73,23 +63,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   @Override
   public void loadMapping(Resource file) {
-    Optional.ofNullable(file.getChild(JcrUtils.JCR_CONTENT))
-      .flatMap(fileContent -> Optional.of(fileContent)
-        .map(r -> r.adaptTo(InputStream.class))
-        .map(BufferedInputStream::new))
-      .ifPresent(input -> {
-        app.mappingFrom((stubMappings) -> {
-          try {
-            MappingCollection stubCollection = Json.read(IOUtils.toString(input, StandardCharsets.UTF_8.displayName()), MappingCollection.class);
-            for (StubMapping mapping : stubCollection.getMappings()) {
-              mapping.setDirty(false);
-              stubMappings.addMapping(mapping);
-            }
-          } catch (JsonException | IOException e) {
-            throw new StubsException(String.format("Cannot load AEM Stubs mapping from resource at path '%s'!", file.getPath()), e);
-          }
-        });
-      });
+    mappingsLoader.loadMapping(file);
   }
 
   @Override
@@ -98,6 +72,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer()
       .addStaticStars(WireMockUtils.class.getName())
+      .addStaticStars(DynamicParameterProvider.class.getName())
       .addStarImports(Request.class.getPackage().getName())
     );
 
@@ -122,7 +97,8 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private void start() {
     LOG.info("Starting AEM Stubs WireMock Servlet");
-    app = new WireMockApp(resolverAccessor, manager.getRootPath() + "/" + getId(), config.globalTransformer());
+    app = new WireMockApp(new WireMockOptionsFactory(this).create());
+    mappingsLoader = new MappingsLoader(app);
     servletPath = getServletPath(config.path());
 
     try {
@@ -162,7 +138,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   }
 
   private WireMockServlet createServlet() {
-    return new WireMockServlet(config.path(), app.buildStubRequestHandler());
+    return new WireMockServlet(config.path(), app);
   }
 
   public boolean isBypassable(ServletRequest request) {
@@ -174,6 +150,19 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   public WireMockServlet getServlet() {
     return servlet;
   }
+
+  public ResolverAccessor getResolverAccessor() {
+    return resolverAccessor;
+  }
+
+  public String getRootPath() {
+    return manager.getRootPath();
+  }
+
+  public Config getConfig() {
+    return config;
+  }
+
 
   @ObjectClassDefinition(name = "AEM Stubs WireMock Server")
   public @interface Config {
@@ -189,9 +178,21 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
     @AttributeDefinition(
       name = "Global Template Transformer",
-      description = "Enables Pebble template engine / templating"
+      description = "Enables template engine / templating. Handlebars and Pebbles engines are supported"
         + " for response body content and file paths when loading body files. Effectively enables dynamic file loading"
         + " instead of preloading and simplifies defining stubs.")
-    boolean globalTransformer() default true;
+    TransformerEngine globalTransformer() default TransformerEngine.HANDLEBARS;
+
+    @AttributeDefinition(
+      name = "Request journal",
+      description = "Enable the request journal, which records incoming requests for later verification. Protects against reserving too much memory."
+    )
+    boolean requestJournalEnabled() default false;
+
+    @AttributeDefinition(
+      name = "Max Request Journal Entries",
+      description = "Set maximum number of entries in request journal (if enabled). When this limit is reached oldest entries will be discarded. 0 means no limits."
+    )
+    int requestJournalMaxSize() default 200;
   }
 }
