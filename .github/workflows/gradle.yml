@@ -5,12 +5,18 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: 
+    branches:
       - master
       - develop
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Test'
+        required: true
+        default: 'Mona the Octocat'
 
 jobs:
   build:
