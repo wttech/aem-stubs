@@ -27,6 +27,10 @@ stubs.server
         .response("Hello! I am sample stub.")
 
 stubs.server
+        .get(by(uri("/get-json-file")))
+        .response(jcr(template("/conf/stubs/moco/file-\${req.queries['id']}.json")))
+
+stubs.server
         .get(
                 and(
                         by(uri("/secured")),

@@ -16,6 +16,7 @@ public final class MocoUtils {
     return new SupplierExtractor<>(checkNotNull(textSupplier, "Template variable supplier should not be null or empty"));
   }
 
+
 }
 
 
