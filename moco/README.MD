@@ -27,8 +27,8 @@ stubs.server
         .response("Hello! I am sample stub.")
 
 stubs.server
-        .get(by(uri("/get-json-file")))
-        .response(jcr(template("/conf/stubs/moco/file-\${req.queries['id']}.json")))
+        .get(by(uri("/read_query_file")))
+        .response(jcr(template('/conf/stubs/moco/samples/${req.queries["id"]}.json')))
 
 stubs.server
         .get(

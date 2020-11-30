@@ -18,3 +18,8 @@ stubs.server
 stubs.server
         .get(by(uri("/read-itself")))
         .response(repository.readText("./hello-world.stub.groovy"))
+
+stubs.server
+        .get(by(uri("/read_query_file")))
+        .response(jcr(template('/conf/stubs/moco/samples/${req.queries["id"]}.json')))
+

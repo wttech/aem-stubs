@@ -57,4 +57,17 @@ public class HelloWorldTest {
       .body(containsString("bar"))
       .statusCode(200);
   }
+
+  @Test
+  public void shouldReturnFileByQueryParam() {
+    given()
+      .param("id", "hello-world.stub")
+      .when()
+      .get("http://localhost:5555/read_query_file")
+      .then()
+      .body(containsString("\"uri\" : \"/foo\""))
+      .and()
+      .body(containsString("\"text\" : \"bar\""))
+      .statusCode(200);
+  }
 }
