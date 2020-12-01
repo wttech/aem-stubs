@@ -70,6 +70,7 @@ class Responder implements HttpResponder {
     write(servletResponse, response.getBodyStream());
   }
 
+  @SuppressWarnings("PMD.UseTryWithResources")
   private static void write(HttpServletResponse response, InputStream content) {
     try (ServletOutputStream out = response.getOutputStream()) {
       ByteStreams.copy(content, out);

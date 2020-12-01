@@ -20,6 +20,7 @@ public class JcrResourceReaderFactory {
     this.resolverAccessor = resolverAccessor;
   }
 
+  @SuppressWarnings("PMD.UnusedPrivateMethod")
   private static ContentResource contentResource(final Identifiable id, final ResourceConfigApplier applier,
                                                  final ContentResourceReader reader) {
     return new ContentResource(id, applier, reader);
