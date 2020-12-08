@@ -93,6 +93,12 @@ tasks {
 
     afterReleaseBuild {
         dependsOn(
+            // Jars
+            ":core:bintrayUpload",
+            ":wiremock:bintrayUpload",
+            ":moco:bintrayUpload",
+
+            // ZIPs
             ":assembly:all:bintrayUpload",
             ":assembly:app:bintrayUpload",
             ":assembly:moco-all:bintrayUpload",
