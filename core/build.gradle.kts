@@ -4,12 +4,19 @@ plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
     id("com.cognifide.aem.package.sync")
-    pmd
+    id("com.jfrog.bintray")
+    id("maven-publish")
+    id("pmd")
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
 
 description = "AEM Stubs - Core"
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
 tasks {
     jar {
@@ -19,3 +26,14 @@ tasks {
         }
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}
+
+bintrayOptions()
+bintray { setPublications("maven") }

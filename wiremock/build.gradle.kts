@@ -4,7 +4,9 @@ plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
     id("nebula.integtest-standalone")
-    pmd
+    id("com.jfrog.bintray")
+    id("maven-publish")
+    id("pmd")
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
@@ -15,6 +17,11 @@ dependencies {
 
     testImplementation("io.rest-assured:rest-assured:3.3.0")
     testImplementation("io.rest-assured:json-schema-validator:3.3.0")
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks {
@@ -101,3 +108,14 @@ tasks {
         enabled = false
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}
+
+bintrayOptions()
+bintray { setPublications("maven") }
