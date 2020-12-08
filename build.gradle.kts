@@ -52,7 +52,6 @@ githubRelease {
     tagName(project.version.toString())
     releaseName(project.version.toString())
     draft((findProperty("github.draft") ?: "false").toString().toBoolean())
-    prerelease((findProperty("github.prerelease") ?: "false").toString().toBoolean())
     overwrite((findProperty("github.override") ?: "true").toString().toBoolean())
 
     gradle.projectsEvaluated {
@@ -66,19 +65,24 @@ githubRelease {
         ).map { rootProject.tasks.getByPath(it) })
     }
 
-    body { """
-    |# What's new
-    |
-    |TBD
-    |
-    |# Upgrade notes
-    |
-    |Nothing to do.
-    |
-    |# Contributions
-    |
-    |None.
-    """.trimMargin()
+    val prerelease = (findProperty("github.prerelease") ?: "true").toString().toBoolean()
+    if (prerelease) {
+        prerelease(true)
+    } else {
+        body { """
+        |# What's new
+        |
+        |TBD
+        |
+        |# Upgrade notes
+        |
+        |Nothing to do.
+        |
+        |# Contributions
+        |
+        |None.
+        """.trimMargin()
+        }
     }
 }
 
