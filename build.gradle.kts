@@ -45,7 +45,6 @@ aem {
     }
 }
 
-
 githubRelease {
     owner("Cognifide")
     repo("aem-stubs")
@@ -86,6 +85,17 @@ githubRelease {
 tasks {
     named("githubRelease") {
         mustRunAfter(release)
+    }
+
+    afterReleaseBuild {
+        dependsOn(
+            ":assembly:all:bintrayUpload",
+            ":assembly:app:bintrayUpload",
+            ":assembly:moco-all:bintrayUpload",
+            ":assembly:moco-app:bintrayUpload",
+            ":assembly:wiremock-all:bintrayUpload",
+            ":assembly:wiremock-app:bintrayUpload"
+        )
     }
 
     register("fullRelease") {

@@ -1,5 +1,6 @@
 plugins {
     id("com.cognifide.aem.package")
+    id("com.jfrog.bintray")
     `maven-publish`
 }
 
@@ -26,3 +27,6 @@ publishing {
         }
     }
 }
+
+bintrayOptions()
+bintray { setPublications("maven") }
