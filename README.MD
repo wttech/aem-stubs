@@ -17,6 +17,8 @@ Simply [install](#installation) ready-to-use CRX package on AEM instance and sta
 
 ![Screenshot](docs/screenshot2.jpg)
 
+AdaptTo 2020 Live Demo - <https://adapt.to/2020/en/schedule/lightning-talks/aem-stubs.html>
+
 Main concepts of AEM Stubs tool are:
 
 * **Simplicity** 
