@@ -1,5 +1,7 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import static com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration.enabled;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import com.cognifide.aem.stubs.core.StubManager;
 import com.cognifide.aem.stubs.core.Stubs;
 import com.cognifide.aem.stubs.core.script.StubScript;
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration;
 import com.cognifide.aem.stubs.wiremock.servlet.WireMockServlet;
 import com.cognifide.aem.stubs.wiremock.transformers.DynamicParameterProvider;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -138,7 +141,12 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   }
 
   private WireMockServlet createServlet() {
-    return new WireMockServlet(config.path(), app);
+    return new WireMockServlet(config.path(), app, getCorsConfiguration());
+  }
+
+  private CorsConfiguration getCorsConfiguration() {
+    return config.corsEnabled() ? enabled(config.allowHeaders(), config.allowMethods(), config.allowOrigin())
+      : CorsConfiguration.disabled();
   }
 
   public boolean isBypassable(ServletRequest request) {
@@ -194,5 +202,22 @@ public class WireMockStubs implements Stubs<WireMockApp> {
       description = "Set maximum number of entries in request journal (if enabled). When this limit is reached oldest entries will be discarded. 0 means no limits."
     )
     int requestJournalMaxSize() default 200;
+
+    @AttributeDefinition(
+      name = "CORS Enabled",
+      description = "Enable automatic sending of CORS headers")
+    boolean corsEnabled() default true;
+
+    @AttributeDefinition(name = "Allow-Headers",
+      description = "Access-Control-Allow-Headers")
+    String allowHeaders() default "*";
+
+    @AttributeDefinition(name = "Allow-Methods",
+      description = "Access-Control-Allow-Methods")
+    String allowMethods() default "*";
+
+    @AttributeDefinition(name = "Allow-Origin",
+      description = "Access-Control-Allow-Origin")
+    String allowOrigin() default "*";
   }
 }
