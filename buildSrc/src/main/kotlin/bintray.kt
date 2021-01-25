@@ -14,7 +14,7 @@ fun Project.bintrayOptions() {
       name = "aem-stubs"
       userOrg = "cognifide"
       setLicenses("Apache-2.0")
-      vcsUrl = "https://github.com/Cognifide/aem-stubs.git"
+      vcsUrl = "https://github.com/wttech/aem-stubs.git"
       setLabels("aem", "cq", "mock", "stubs", "mocking", "stubbing", "wiremock", "moco")
       with(version) {
         name = project.version.toString()

@@ -28,7 +28,7 @@ plugins.withId("com.cognifide.aem.package") {
                 val text = "Tool for providing sample data for AEM applications in a simple and flexible way. Stubbing server on AEM, no separate needed"
                 description.set("""
                     &lt;p class="description"&gt;$text.&lt;/p&gt;
-                    &lt;p&gt;&lt;a href="https://github.com/Cognifide/aem-stubs">Documentation&lt;/a&gt;
+                    &lt;p&gt;&lt;a href="https://github.com/wttech/aem-stubs">Documentation&lt;/a&gt;
                 """.trimIndent())
                 manifestProperties.put("Implementation-Title", text)
             }

@@ -54,7 +54,7 @@ stubs.server.with {
 
 ## Installation
 
-Download appropriate distribution from [releases](https://github.com/Cognifide/aem-stubs/releases) section:
+Download appropriate distribution from [releases](https://github.com/wttech/aem-stubs/releases) section:
 
 * wiremock-all - WireMock framework only with Groovy OSGi bundle included,
 * wiremock-app - WireMock framework only without Groovy OSGi bundle included.
