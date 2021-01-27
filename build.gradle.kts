@@ -46,7 +46,7 @@ aem {
 }
 
 githubRelease {
-    owner("Wunderman Thompson Technology")
+    owner("wttech")
     repo("aem-stubs")
     token((findProperty("github.token") ?: "").toString())
     tagName(project.version.toString())
