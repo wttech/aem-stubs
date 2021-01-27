@@ -46,7 +46,7 @@ aem {
 }
 
 githubRelease {
-    owner("Cognifide")
+    owner("wttech")
     repo("aem-stubs")
     token((findProperty("github.token") ?: "").toString())
     tagName(project.version.toString())

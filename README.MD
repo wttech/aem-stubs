@@ -1,8 +1,8 @@
-[![Cognifide logo](docs/cognifide-logo.png)](http://cognifide.com)
+[![WTT logo](docs/wtt-logo.png)](https://www.wundermanthompson.com)
 
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/Cognifide/aem-stubs)
-![GitHub All Releases](https://img.shields.io/github/downloads/Cognifide/aem-stubs/total)
-![Java CI with Gradle](https://github.com/Cognifide/aem-stubs/workflows/Java%20CI%20with%20Gradle/badge.svg)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/wttech/aem-stubs)
+![GitHub All Releases](https://img.shields.io/github/downloads/wttech/aem-stubs/total)
+![Java CI with Gradle](https://github.com/wttech/aem-stubs/workflows/Java%20CI%20with%20Gradle/badge.svg)
 [![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
 
 <p>
@@ -67,7 +67,7 @@ However, keep in mind using both frameworks on AEM is also supported. It may be 
 
 ## Installation
 
-Simply install ready to use AEM package downloaded from GitHub [releases](https://github.com/Cognifide/aem-stubs/releases) section.
+Simply install ready to use AEM package downloaded from GitHub [releases](https://github.com/wttech/aem-stubs/releases) section.
 
 Distribution types:
 
@@ -171,7 +171,7 @@ Issues reported or pull requests created will be very appreciated.
 
 ## Building
 
-Project build is based on [Gradle](https://docs.gradle.org/current/userguide/userguide.html) and using [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
+Project build is based on [Gradle](https://docs.gradle.org/current/userguide/userguide.html) and using [Gradle AEM Plugin](https://github.com/wttech/gradle-aem-plugin).
 
 To setup AEM instance, provide details required by running command:
 
