@@ -12,9 +12,9 @@ public class WireMockServlet extends HttpServlet {
 
   private final MocksHandlerFactory factory;
 
-  public WireMockServlet(String path, WireMockApp app, CorsConfiguration corsConfiguration) {
+  public WireMockServlet(String path, WireMockApp app) {
     super();
-    factory = new MocksHandlerFactory(app.buildStubRequestHandler(), app.buildAdminHandler(), path, corsConfiguration);
+    factory = new MocksHandlerFactory(app.buildStubRequestHandler(), app.buildAdminHandler(), path, app.getWiremockOptions().getCorsConfiguration());
   }
 
   @Override

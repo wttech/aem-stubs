@@ -141,12 +141,7 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   }
 
   private WireMockServlet createServlet() {
-    return new WireMockServlet(config.path(), app, getCorsConfiguration());
-  }
-
-  private CorsConfiguration getCorsConfiguration() {
-    return config.corsEnabled() ? enabled(config.allowHeaders(), config.allowMethods(), config.allowOrigin())
-      : CorsConfiguration.disabled();
+    return new WireMockServlet(config.path(), app);
   }
 
   public boolean isBypassable(ServletRequest request) {

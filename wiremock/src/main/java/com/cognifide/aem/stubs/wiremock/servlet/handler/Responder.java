@@ -53,9 +53,9 @@ class Responder implements HttpResponder {
   private void applyResponse(Request request, Response response, HttpServletResponse servletResponse)
     throws IOException {
     CorsHandler corsHandler = new CorsHandler(corsConfiguration, request, response, httpResponse);
-    FaultResponse faultResponse = FaultResponse.fromResponse(response);
+    FaultResponse faultResponse = FaultResponse.create(corsHandler, response);
 
-    if (!corsHandler.isCorsPreflightRequest() && faultResponse.hasError()) {
+    if (faultResponse.hasError()) {
       faultResponse.sendError(servletResponse);
       return;
     }
