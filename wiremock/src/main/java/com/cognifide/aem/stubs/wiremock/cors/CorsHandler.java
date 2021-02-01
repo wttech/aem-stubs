@@ -22,23 +22,23 @@ public final class CorsHandler {
   public CorsHandler(CorsConfiguration configuration,
     Request request, Response response, HttpServletResponse httpServletResponse) {
     this.configuration = configuration;
-    this.corsPreflightRequest = isCorsPreflightRequest(request);
+    this.corsPreflightRequest = isPreflightRequest(request);
     this.httpServletResponse = httpServletResponse;
     this.response = response;
   }
 
-  private boolean isCorsPreflightRequest(Request request) {
+  private boolean isPreflightRequest(Request request) {
     return configuration.isEnabled() && "OPTIONS".equals(request.getMethod().getName()) &&
       !isNull(request.getHeader(ACCESS_CONTROL_REQUEST_HEADERS)) &&
       !isNull(request.getHeader(ACCESS_CONTROL_REQUEST_METHOD));
   }
 
-  public void handleCorsHeaders() {
+  public void handleHeaders() {
     if (!configuration.isEnabled()) {
       return;
     }
 
-    if (isCorsPreflightRequest()) {
+    if (isPreflightRequest()) {
       httpServletResponse.setStatus(200);
       addHeader(ACCESS_CONTROL_ALLOW_HEADERS, configuration.getAllowHeaders());
       addHeader(ACCESS_CONTROL_ALLOW_METHODS, configuration.getAllowMethods());
@@ -54,7 +54,7 @@ public final class CorsHandler {
 
     httpServletResponse.addHeader(key, value);
   }
-  public boolean isCorsPreflightRequest() {
+  public boolean isPreflightRequest() {
     return corsPreflightRequest;
   }
 }

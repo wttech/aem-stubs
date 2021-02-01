@@ -32,7 +32,7 @@ final class FaultResponse {
   }
 
   public static FaultResponse create(CorsHandler corsHandler, Response response) {
-    if (!corsHandler.isCorsPreflightRequest() && !response.wasConfigured()) {
+    if (!corsHandler.isPreflightRequest() && !response.wasConfigured()) {
       return FaultResponse.notSupportedResponse("No stub defined for this request", 404);
     }
 

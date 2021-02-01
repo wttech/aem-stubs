@@ -66,7 +66,7 @@ class Responder implements HttpResponder {
       servletResponse.setStatus(response.getStatus(), response.getStatusMessage());
     }
 
-    corsHandler.handleCorsHeaders();
+    corsHandler.handleHeaders();
 
     for (HttpHeader header : response.getHeaders().all()) {
       for (String value : header.values()) {
