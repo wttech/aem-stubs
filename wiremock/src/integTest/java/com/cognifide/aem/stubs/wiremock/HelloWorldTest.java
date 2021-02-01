@@ -168,6 +168,34 @@ public class HelloWorldTest {
   }
 
   @Test
+  public void shouldAddDefaultCorsForPreflightRequest() {
+    given()
+      .when()
+      .header("Access-Control-Request-Headers", "*")
+      .header("Access-Control-Request-Method", "*")
+      .options("http://localhost:4502/stubs/cors-preflight")
+      .then()
+      .header("Access-Control-Allow-Origin" , "*")
+      .header("Access-Control-Allow-Headers", "*")
+      .header("Access-Control-Allow-Methods" , "*")
+      .statusCode(200);
+  }
+
+  @Test
+  public void shouldNotChangeDefinedCors() {
+    given()
+      .when()
+      .header("Access-Control-Request-Headers", "*")
+      .header("Access-Control-Request-Method", "*")
+      .options("http://localhost:4502/stubs/cors-preflight-overwrite")
+      .then()
+      .header("Access-Control-Allow-Origin" , "origin")
+      .header("Access-Control-Allow-Headers", "custom-header")
+      .header("Access-Control-Allow-Methods" , "method")
+      .statusCode(200);
+  }
+
+  @Test
   public void shouldReturnMappingOneBody() {
     given()
       .when()

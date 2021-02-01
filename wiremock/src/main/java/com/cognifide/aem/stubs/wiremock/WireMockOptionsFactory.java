@@ -1,11 +1,13 @@
 package com.cognifide.aem.stubs.wiremock;
 
+import static com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration.enabled;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 
 import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.wiremock.admin.DocRequestFilter;
+import com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration;
 import com.cognifide.aem.stubs.wiremock.transformers.PebbleTransformer;
 import com.cognifide.aem.stubs.wiremock.util.JcrFileReader;
 import com.github.tomakehurst.wiremock.extension.Extension;
@@ -29,7 +31,7 @@ class WireMockOptionsFactory {
       getRootPath(),
       stubs.getConfig().requestJournalEnabled(),
       stubs.getConfig().requestJournalMaxSize(),
-      extensions);
+      extensions, getCorsConfiguration());
   }
 
   private String getRootPath() {
@@ -52,5 +54,10 @@ class WireMockOptionsFactory {
 
   private boolean isGlobal(TransformerEngine engine) {
     return stubs.getConfig().globalTransformer() == engine;
+  }
+
+  private CorsConfiguration getCorsConfiguration() {
+    return stubs.getConfig().corsEnabled() ? enabled(stubs.getConfig().allowHeaders(), stubs.getConfig().allowMethods(), stubs.getConfig().allowOrigin())
+      : CorsConfiguration.disabled();
   }
 }

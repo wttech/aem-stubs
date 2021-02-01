@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.cognifide.aem.stubs.wiremock.cors.CorsHandler;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.Response;
 
@@ -30,8 +31,8 @@ final class FaultResponse {
     servletResponse.sendError(statusCode, msg);
   }
 
-  public static FaultResponse fromResponse(Response response) {
-    if (!response.wasConfigured()) {
+  public static FaultResponse create(CorsHandler corsHandler, Response response) {
+    if (!corsHandler.isPreflightRequest() && !response.wasConfigured()) {
       return FaultResponse.notSupportedResponse("No stub defined for this request", 404);
     }
 

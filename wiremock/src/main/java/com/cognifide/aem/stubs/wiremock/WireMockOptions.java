@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cognifide.aem.stubs.core.util.ResolverAccessor;
+import com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration;
 import com.github.tomakehurst.wiremock.common.AsynchronousResponseSettings;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.HttpsSettings;
@@ -31,22 +32,24 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
-class WireMockOptions implements Options {
+public class WireMockOptions implements Options {
 
   private final ResolverAccessor resolverAccessor;
   private final String rootPath;
   private final boolean requestJournalEnabled;
   private final Integer requestJournalEntriesMaxSize;
   private final Map<String, Extension> extensions;
+  private final CorsConfiguration corsConfiguration;
 
   public WireMockOptions(ResolverAccessor resolverAccessor, String rootPath,
     boolean requestJournalEnabled, int requestJournalEntriesMaxSize,
-    Map<String, Extension> extensions) {
+    Map<String, Extension> extensions, CorsConfiguration corsConfiguration) {
     this.resolverAccessor = resolverAccessor;
     this.rootPath = rootPath;
     this.requestJournalEnabled = requestJournalEnabled;
     this.requestJournalEntriesMaxSize = requestJournalEntriesMaxSize;
     this.extensions = extensions;
+    this.corsConfiguration = corsConfiguration;
   }
 
   @Override
@@ -192,5 +195,9 @@ class WireMockOptions implements Options {
   @Override
   public boolean getStubRequestLoggingDisabled() {
     return true;
+  }
+
+  public CorsConfiguration getCorsConfiguration() {
+    return corsConfiguration;
   }
 }

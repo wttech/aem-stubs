@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration;
+import com.cognifide.aem.stubs.wiremock.cors.CorsHandler;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpResponder;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -26,11 +28,13 @@ class Responder implements HttpResponder {
 
   private final HttpServletRequest httpRequest;
   private final HttpServletResponse httpResponse;
+  private final CorsConfiguration corsConfiguration;
 
   public Responder(HttpServletRequest httpRequest,
-    HttpServletResponse httpResponse) {
+    HttpServletResponse httpResponse, CorsConfiguration corsConfiguration) {
     this.httpRequest = httpRequest;
     this.httpResponse = httpResponse;
+    this.corsConfiguration = corsConfiguration;
   }
 
   @Override
@@ -39,16 +43,17 @@ class Responder implements HttpResponder {
     Response response) {
     httpRequest.setAttribute(ORIGINAL_REQUEST_KEY, LoggedRequest.createFrom(request));
     try {
-      applyResponse(response, httpResponse);
+      applyResponse(request, response, httpResponse);
     } catch (Exception e) {
       throwUnchecked(e);
     }
   }
 
   @SuppressWarnings("deprecation")
-  private void applyResponse(Response response, HttpServletResponse servletResponse)
+  private void applyResponse(Request request, Response response, HttpServletResponse servletResponse)
     throws IOException {
-    FaultResponse faultResponse = FaultResponse.fromResponse(response);
+    CorsHandler corsHandler = new CorsHandler(corsConfiguration, request, response, httpResponse);
+    FaultResponse faultResponse = FaultResponse.create(corsHandler, response);
 
     if (faultResponse.hasError()) {
       faultResponse.sendError(servletResponse);
@@ -60,6 +65,8 @@ class Responder implements HttpResponder {
     } else {
       servletResponse.setStatus(response.getStatus(), response.getStatusMessage());
     }
+
+    corsHandler.handleHeaders();
 
     for (HttpHeader header : response.getHeaders().all()) {
       for (String value : header.values()) {
