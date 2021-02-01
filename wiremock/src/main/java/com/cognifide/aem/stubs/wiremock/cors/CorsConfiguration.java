@@ -4,13 +4,13 @@ public class CorsConfiguration {
   private final String allowHeaders;
   private final String allowMethods;
   private final String allowOrigin;
-  private final boolean enabled;
+  private final boolean corsEnabled;
 
-  public CorsConfiguration(boolean enabled, String allowHeaders, String allowMethods, String allowOrigin) {
+  public CorsConfiguration(boolean corsEnabled, String allowHeaders, String allowMethods, String allowOrigin) {
     this.allowHeaders = allowHeaders;
     this.allowMethods = allowMethods;
     this.allowOrigin = allowOrigin;
-    this.enabled = enabled;
+    this.corsEnabled = corsEnabled;
   }
 
   public static CorsConfiguration disabled() {
@@ -37,7 +37,7 @@ public class CorsConfiguration {
     return allowOrigin;
   }
 
-  public boolean isEnabled() {
-    return enabled;
+  public boolean isCorsEnabled() {
+    return corsEnabled;
   }
 }

@@ -1,6 +1,5 @@
 package com.cognifide.aem.stubs.wiremock;
 
-import com.cognifide.aem.stubs.wiremock.cors.CorsConfiguration;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.http.AdminRequestHandler;
 import com.github.tomakehurst.wiremock.http.StubRequestHandler;

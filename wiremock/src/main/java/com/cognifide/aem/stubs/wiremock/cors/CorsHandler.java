@@ -1,16 +1,12 @@
 package com.cognifide.aem.stubs.wiremock.cors;
 
-import static com.google.common.net.HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS;
-import static com.google.common.net.HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS;
-import static com.google.common.net.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN;
-import static com.google.common.net.HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS;
-import static com.google.common.net.HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD;
 import static java.util.Objects.isNull;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
+import com.google.common.net.HttpHeaders;
 
 public final class CorsHandler {
 
@@ -28,23 +24,23 @@ public final class CorsHandler {
   }
 
   private boolean isPreflightRequest(Request request) {
-    return configuration.isEnabled() && "OPTIONS".equals(request.getMethod().getName()) &&
-      !isNull(request.getHeader(ACCESS_CONTROL_REQUEST_HEADERS)) &&
-      !isNull(request.getHeader(ACCESS_CONTROL_REQUEST_METHOD));
+    return configuration.isCorsEnabled() && "OPTIONS".equals(request.getMethod().getName()) &&
+      !isNull(request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS)) &&
+      !isNull(request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD));
   }
 
   public void handleHeaders() {
-    if (!configuration.isEnabled()) {
+    if (!configuration.isCorsEnabled()) {
       return;
     }
 
     if (isPreflightRequest()) {
       httpServletResponse.setStatus(200);
-      addHeader(ACCESS_CONTROL_ALLOW_HEADERS, configuration.getAllowHeaders());
-      addHeader(ACCESS_CONTROL_ALLOW_METHODS, configuration.getAllowMethods());
+      addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, configuration.getAllowHeaders());
+      addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, configuration.getAllowMethods());
     }
 
-    addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, configuration.getAllowOrigin());
+    addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, configuration.getAllowOrigin());
   }
 
   private void addHeader(String key, String value) {
