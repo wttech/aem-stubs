@@ -50,6 +50,7 @@ stubs.server.with {
         * [Response Templating](#response-templating)
         * [Templating parameters](#templating-parameters)
         * [WireMock admin API](#wiremock-admin-api)
+        * [Cross-origin response headers (CORS)](#CORS)
      * [Not supported features](#not-supported-features)
 
 ## Installation
@@ -88,7 +89,7 @@ Then check see Wiremock specific OSGi configuration below:
 
 ### Stub script API
 
-At first, see [common](../#stub-script-api) script API.
+At first, see [common](../README.MD#stub-script-api) script API.
 
 Pre-defined variables:
 
@@ -192,7 +193,8 @@ Known issues:
 |-------------------|----------------------------------------------------------------------------------------------------------| 
 | [/stubs/__admin/mappings/save (POST)](http://wiremock.org/docs/api/#tag/Stub-Mappings/paths/~1__admin~1mappings~1save/post)  | Not supported
 
- 
+#### CORS
+AEM Stubs by default sends CORS headers with responses. Can be configured by [OSGi Configuration](#osgi-configuration) 
 
 ### Not supported features
 
