@@ -4,8 +4,8 @@ plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
     id("com.cognifide.aem.package.sync")
-    id("com.jfrog.bintray")
     id("maven-publish")
+    id("com.jfrog.bintray")
     id("pmd")
 }
 

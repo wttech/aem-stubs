@@ -1,7 +1,7 @@
 plugins {
     id("com.cognifide.aem.package")
-    id("com.jfrog.bintray")
     `maven-publish`
+    id("com.jfrog.bintray")
 }
 
 apply(from = rootProject.file("gradle/common.gradle.kts"))
