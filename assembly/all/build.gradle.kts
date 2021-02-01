@@ -27,6 +27,5 @@ publishing {
         }
     }
 }
-
-bintrayOptions()
 bintray { setPublications("maven") }
+bintrayOptions()
