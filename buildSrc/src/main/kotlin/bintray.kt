@@ -25,20 +25,4 @@ fun Project.bintrayOptions() {
     publish = (project.findProperty("bintray.publish") ?: "true").toString().toBoolean()
     override = (project.findProperty("bintray.override") ?: "false").toString().toBoolean()
   }
-
-  tasks.withType(BintrayUploadTask::class.java).configureEach {
-    doFirst {
-      extensions.configure(PublishingExtension::class.java) {
-        publications.filterIsInstance<MavenPublication>()
-          .forEach { publication ->
-            val moduleFile = buildDir.resolve("publications/${publication.name}/module.json")
-            if (moduleFile.exists()) {
-              publication.artifact(object : FileBasedMavenArtifact(moduleFile) {
-                override fun getDefaultExtension() = "module"
-              })
-            }
-          }
-      }
-    }
-  }
 }
