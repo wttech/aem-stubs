@@ -28,16 +28,17 @@ fun Project.bintrayOptions() {
 
   tasks.withType(BintrayUploadTask::class.java).configureEach {
     doFirst {
-      extensions.getByType(PublishingExtension::class.java).publications
-        .filterIsInstance<MavenPublication>()
-        .forEach { publication ->
-          val moduleFile = buildDir.resolve("publications/${publication.name}/module.json")
-          if (moduleFile.exists()) {
-            publication.artifact(object : FileBasedMavenArtifact(moduleFile) {
-              override fun getDefaultExtension() = "module"
-            })
+      extensions.configure(PublishingExtension::class.java) {
+        publications.filterIsInstance<MavenPublication>()
+          .forEach { publication ->
+            val moduleFile = buildDir.resolve("publications/${publication.name}/module.json")
+            if (moduleFile.exists()) {
+              publication.artifact(object : FileBasedMavenArtifact(moduleFile) {
+                override fun getDefaultExtension() = "module"
+              })
+            }
           }
-        }
+      }
     }
   }
 }
