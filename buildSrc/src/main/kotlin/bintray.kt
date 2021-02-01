@@ -27,6 +27,7 @@ fun Project.bintrayOptions() {
   }
 
   tasks.withType(BintrayUploadTask::class.java).configureEach {
+    mustRunAfter("generatePomFileForMavenPublication")
     doFirst {
       extensions.configure(PublishingExtension::class.java) {
         publications.filterIsInstance<MavenPublication>()
