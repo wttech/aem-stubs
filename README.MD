@@ -88,16 +88,20 @@ When using Moco, ensure that Moco Stubs Server (running by default on port 5555)
 
 ## Compatibility
 
-| AEM Stubs      | AEM           | Java  |
-|----------------|---------------|-------|
-| 1.0.0, 1.0.1   | 6.4, 6.5      | 8     |
-| >= 1.0.2       | 6.3, 6.4, 6.5 | 8     |
-| 2.0.0          | 6.3, 6.4, 6.5 | 11    |
-| 2.0.1          | 6.3, 6.4, 6.5 | 8, 11 |
+| AEM Stubs    | AEM           | Java  | Groovy |
+|--------------|---------------|-------|--------|
+| 1.0.0, 1.0.1 | 6.4, 6.5      | 8     | 2.x    |
+| >= 1.0.2     | 6.3, 6.4, 6.5 | 8     | 2.x    |
+| 2.0.0        | 6.3, 6.4, 6.5 | 11    | 2.x    |
+| 2.0.1        | 6.3, 6.4, 6.5 | 8, 11 | 2.x    |
+| 3.0.0        | 6.3, 6.4, 6.5 | 8, 11 | 4.x    |
 
 Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
 AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more fault-tolerant when AEM version is changing. 
 It is compatible with AEM Groovy Console - simply install one of AEM Stubs distributions without Groovy console OSGi bundle included as it is usually provided by Groovy Console AEM package. 
+
+From AEM Stubs 3.x onwards, Groovy has been upgraded to version 4.x. Groovy has stopped providing a groovy-all 'uber' bundle. In this package, only the groovy 'core' bundle is included. It is possible to add extra Groovy modules in your own project.
+A list of groovy subprojects can be found here at the [Groovy GitHub Project](https://github.com/apache/groovy/tree/master/subprojects)
 
 ## Documentation
 

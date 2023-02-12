@@ -16,8 +16,8 @@ dependencies {
     compileOnly(project(":core"))
     compileOnly("io.netty:netty-handler:4.1.46.Final")
 
-    testImplementation("io.rest-assured:rest-assured:3.3.0")
-    testImplementation("io.rest-assured:json-schema-validator:3.3.0")
+    testImplementation("io.rest-assured:rest-assured:5.3.0")
+    testImplementation("io.rest-assured:json-schema-validator:5.3.0")
 
 }
 
