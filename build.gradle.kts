@@ -94,17 +94,17 @@ tasks {
     afterReleaseBuild {
         dependsOn(
             // Jars
-            ":core:bintrayUpload",
-            ":wiremock:bintrayUpload",
-            ":moco:bintrayUpload",
+            //":core:bintrayUpload",
+            //":wiremock:bintrayUpload",
+            //":moco:bintrayUpload",
 
             // ZIPs
-            ":assembly:all:bintrayUpload",
-            ":assembly:app:bintrayUpload",
-            ":assembly:moco-all:bintrayUpload",
-            ":assembly:moco-app:bintrayUpload",
-            ":assembly:wiremock-all:bintrayUpload",
-            ":assembly:wiremock-app:bintrayUpload"
+            //":assembly:all:bintrayUpload",
+            //":assembly:app:bintrayUpload",
+            //":assembly:moco-all:bintrayUpload",
+            //":assembly:moco-app:bintrayUpload",
+            //":assembly:wiremock-all:bintrayUpload",
+            //":assembly:wiremock-app:bintrayUpload"
         )
     }
 

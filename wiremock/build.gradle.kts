@@ -3,9 +3,8 @@ import com.cognifide.gradle.aem.bundle.tasks.bundle
 plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
-    id("nebula.integtest-standalone")
+    id("com.netflix.nebula.integtest-standalone")
     id("maven-publish")
-    id("com.jfrog.bintray")
     id("pmd")
 }
 
@@ -116,6 +115,3 @@ publishing {
         }
     }
 }
-
-bintray { setPublications("maven") }
-bintrayOptions()
