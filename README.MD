@@ -61,7 +61,7 @@ Both frameworks have their own pros and cons, see comparison:
 After choosing stubbing framework, it is recommended to explore dedicated AEM Stubs **framework related documentation**:
 
 * [AEM Stubs - WireMock](wiremock)
-* [AEM Stubs - Moco](moco)
+* [AEM Stubs - Moco](moco) (discontinued, only in 1.x and 2.x)
 
 However, keep in mind using both frameworks on AEM is also supported. It may be useful when some features are missing in one framework, but they are available in another one.
 
@@ -71,12 +71,8 @@ Simply install ready to use AEM package downloaded from GitHub [releases](https:
 
 Distribution types:
 
-* all - both frameworks with Groovy OSGi bundle included,
-* app - both frameworks without Groovy OSGi bundle included.
-* wiremock-all - WireMock framework only with Groovy OSGi bundle included,
-* wiremock-app - WireMock framework only without Groovy OSGi bundle included.
-* moco-all - Moco framework only with Groovy OSGi bundle included,
-* moco-app - Moco framework only without Groovy OSGi bundle included.
+* wiremock-all - WireMock framework with Groovy OSGi bundle included,
+* wiremock-app - WireMock framework without Groovy OSGi bundle included.
 
 ### Post installation steps
 
