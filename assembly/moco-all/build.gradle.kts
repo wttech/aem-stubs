@@ -12,7 +12,7 @@ tasks {
         mergePackageProject(":core")
         mergePackageProject(":moco")
 
-        installBundle("org.codehaus.groovy:groovy-all:2.4.15")
+        installBundle("org.apache.groovy:groovy:4.0.9")
     }
 }
 
