@@ -85,26 +85,9 @@ tasks {
     named("githubRelease") {
         mustRunAfter(release)
     }
-
-    afterReleaseBuild {
-        dependsOn(
-            // Jars
-            //":core:bintrayUpload",
-            //":wiremock:bintrayUpload",
-            //":moco:bintrayUpload",
-
-            // ZIPs
-            //":assembly:all:bintrayUpload",
-            //":assembly:app:bintrayUpload",
-            //":assembly:wiremock-all:bintrayUpload",
-            //":assembly:wiremock-app:bintrayUpload"
-        )
-    }
-
     register("fullRelease") {
         dependsOn("release", "githubRelease")
     }
-
     instanceProvision {
         dependsOn(":assembly:wiremock-all:packageCompose")
     }
