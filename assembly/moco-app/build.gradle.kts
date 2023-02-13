@@ -8,8 +8,11 @@ description = "AEM Stubs - Moco App"
 
 tasks {
     packageCompose {
-        // TODO mergePackageProject(":core")
-        // TODO mergePackageProject(":moco")
+        from(project(":core").layout.projectDirectory.dir("src/main/content"))
+        installBundleBuilt(":core:jar") { dirPath.set("/apps/stubs/core/install")}
+
+        from(project(":moco").layout.projectDirectory.dir("src/main/content"))
+        installBundleBuilt(":moco:jar") { dirPath.set("/apps/stubs/moco/install")}
     }
 }
 

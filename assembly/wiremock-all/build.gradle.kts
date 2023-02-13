@@ -8,10 +8,13 @@ description = "AEM Stubs - WireMock All-In-One"
 
 tasks {
     packageCompose {
-        // TODO mergePackageProject(":core")
-        // TODO mergePackageProject(":wiremock")
+        from(project(":core").layout.projectDirectory.dir("src/main/content"))
+        installBundleBuilt(":core:jar") { dirPath.set("/apps/stubs/core/install")}
 
-        installBundle("org.apache.groovy:groovy:4.0.9")
+        from(project(":wiremock").layout.projectDirectory.dir("src/main/content"))
+        installBundleBuilt(":wiremock:jar") { dirPath.set("/apps/stubs/wiremock/install")}
+
+        installBundle("org.apache.groovy:groovy:4.0.9") { dirPath.set("/apps/stubs/wiremock/install") }
     }
 }
 

@@ -98,7 +98,7 @@ tasks {
     }
 
     integrationTest {
-        mustRunAfter(":assembly:all:packageDeploy")
+        mustRunAfter(":assembly:wiremock-all:packageDeploy")
         outputs.upToDateWhen { false }
         testLogging.showStandardStreams = true
     }

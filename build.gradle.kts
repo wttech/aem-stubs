@@ -16,9 +16,8 @@ common {
         registerSequence("develop") {
             dependsOn(
                     ":instanceSetup",
-                    ":assembly:all:packageDeploy",
+                    ":assembly:wiremock-all:packageDeploy",
                     ":wiremock:integrationTest",
-                    ":moco:integrationTest"
             )
         }
     }
@@ -31,7 +30,7 @@ aem {
             gradle.projectsEvaluated {
                 enableCrxDe()
                 deployPackage("com.neva.felix:search-webconsole-plugin:1.3.0")
-                deployPackage(project(":assembly:all").tasks.named("packageCompose"))
+                deployPackage(project(":assembly:wiremock-all").tasks.named("packageCompose"))
                 step("enableStubsSamples") {
                     version.set("2")
                     sync {
@@ -56,8 +55,6 @@ githubRelease {
 
     gradle.projectsEvaluated {
         releaseAssets(listOf(
-                ":assembly:all:packageCompose",
-                ":assembly:app:packageCompose",
                 ":assembly:wiremock-all:packageCompose",
                 ":assembly:wiremock-app:packageCompose",
                 ":assembly:moco-all:packageCompose",
@@ -113,6 +110,6 @@ tasks {
     }
 
     instanceProvision {
-        dependsOn(":assembly:all:packageCompose")
+        dependsOn(":assembly:wiremock-all:packageCompose")
     }
 }

@@ -8,8 +8,11 @@ description = "AEM Stubs - WireMock App"
 
 tasks {
     packageCompose {
-        // TODO mergePackageProject(":core")
-        // TODO mergePackageProject(":wiremock")
+        from(project(":core").layout.projectDirectory.dir("src/main/content"))
+        installBundleBuilt(":core:jar") { dirPath.set("/apps/stubs/core/install") }
+
+        from(project(":wiremock").layout.projectDirectory.dir("src/main/content"))
+        installBundleBuilt(":wiremock:jar") { dirPath.set("/apps/stubs/wiremock/install") }
     }
 }
 

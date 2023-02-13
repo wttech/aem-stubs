@@ -59,7 +59,7 @@ tasks {
     }
 
     integrationTest {
-        mustRunAfter(":assembly:all:packageDeploy")
+        mustRunAfter(":assembly:moco-all:packageDeploy")
         outputs.upToDateWhen { false }
         testLogging.showStandardStreams = true
     }
