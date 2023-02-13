@@ -46,7 +46,12 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
   @Override
   public void reload() {
-    runnables.forEach(this::reload);
+    if (runnables.isEmpty()) {
+      LOG.info("Reloading AEM Stubs skipped as no runnables found");
+    } else {
+      LOG.info("Reloading AEM Stubs runnables ({})", runnables.size());
+      runnables.forEach(this::reload);
+    }
   }
 
   @Override

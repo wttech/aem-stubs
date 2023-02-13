@@ -16,9 +16,8 @@ common {
         registerSequence("develop") {
             dependsOn(
                     ":instanceSetup",
-                    ":assembly:all:packageDeploy",
+                    ":assembly:wiremock-all:packageDeploy",
                     ":wiremock:integrationTest",
-                    ":moco:integrationTest"
             )
         }
     }
@@ -31,7 +30,7 @@ aem {
             gradle.projectsEvaluated {
                 enableCrxDe()
                 deployPackage("com.neva.felix:search-webconsole-plugin:1.3.0")
-                deployPackage(project(":assembly:all").tasks.named("packageCompose"))
+                deployPackage(project(":assembly:wiremock-all").tasks.named("packageCompose"))
                 step("enableStubsSamples") {
                     version.set("2")
                     sync {
@@ -56,12 +55,8 @@ githubRelease {
 
     gradle.projectsEvaluated {
         releaseAssets(listOf(
-                ":assembly:all:packageCompose",
-                ":assembly:app:packageCompose",
                 ":assembly:wiremock-all:packageCompose",
                 ":assembly:wiremock-app:packageCompose",
-                ":assembly:moco-all:packageCompose",
-                ":assembly:moco-app:packageCompose"
         ).map { rootProject.tasks.getByPath(it) })
     }
 
@@ -90,29 +85,10 @@ tasks {
     named("githubRelease") {
         mustRunAfter(release)
     }
-
-    afterReleaseBuild {
-        dependsOn(
-            // Jars
-            ":core:bintrayUpload",
-            ":wiremock:bintrayUpload",
-            ":moco:bintrayUpload",
-
-            // ZIPs
-            ":assembly:all:bintrayUpload",
-            ":assembly:app:bintrayUpload",
-            ":assembly:moco-all:bintrayUpload",
-            ":assembly:moco-app:bintrayUpload",
-            ":assembly:wiremock-all:bintrayUpload",
-            ":assembly:wiremock-app:bintrayUpload"
-        )
-    }
-
     register("fullRelease") {
         dependsOn("release", "githubRelease")
     }
-
     instanceProvision {
-        dependsOn(":assembly:all:packageCompose")
+        dependsOn(":assembly:wiremock-all:packageCompose")
     }
 }

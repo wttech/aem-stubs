@@ -3,9 +3,8 @@ import com.cognifide.gradle.aem.bundle.tasks.bundle
 plugins {
     id("com.cognifide.aem.bundle")
     id("com.cognifide.aem.package")
-    id("nebula.integtest-standalone")
+    id("com.netflix.nebula.integtest-standalone")
     id("maven-publish")
-    id("com.jfrog.bintray")
     id("pmd")
 }
 
@@ -99,7 +98,7 @@ tasks {
     }
 
     integrationTest {
-        mustRunAfter(":assembly:all:packageDeploy")
+        mustRunAfter(":assembly:wiremock-all:packageDeploy")
         outputs.upToDateWhen { false }
         testLogging.showStandardStreams = true
     }
@@ -116,6 +115,3 @@ publishing {
         }
     }
 }
-
-bintray { setPublications("maven") }
-bintrayOptions()

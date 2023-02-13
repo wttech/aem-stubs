@@ -7,7 +7,6 @@ repositories {
     jcenter()
     mavenCentral()
     maven("https://repo.adobe.com/nexus/content/groups/public")
-    maven("https://dl.bintray.com/acs/releases")
 }
 
 plugins.withId("com.cognifide.aem.common") {
@@ -79,6 +78,5 @@ plugins.withId("org.gradle.pmd") {
         isConsoleOutput = true
         ruleSets = listOf()
         ruleSetFiles = files(rootProject.file("pmd.xml"))
-        rulePriority = 5
     }
 }
