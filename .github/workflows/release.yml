@@ -20,6 +20,4 @@ jobs:
       - name: Build, release then publish assets
         run: |
           ./gradlew -i -S fullRelease \
-            -Pgithub.token=${{ secrets.GITHUB_TOKEN }} \
-            -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} \
-            -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
+            -Pgithub.token=${{ secrets.GITHUB_TOKEN }}
