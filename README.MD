@@ -1,8 +1,8 @@
 [![WTT logo](docs/wtt-logo.png)](https://www.wundermanthompson.com)
 
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/wttech/aem-stubs)
-![GitHub All Releases](https://img.shields.io/github/downloads/wttech/aem-stubs/total)
-![Check](https://github.com/wttech/aem-stubs/workflows/Check/badge.svg)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/wttech/aem-stubs)](https://github.com/wttech/aem-stubs/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/wttech/aem-stubs/total)](https://github.com/wttech/aem-stubs/releases)
+[![Check](https://github.com/wttech/aem-stubs/workflows/Check/badge.svg)](https://github.com/wttech/aem-stubs/actions/workflows/check.yml)
 [![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
 
 <p>
