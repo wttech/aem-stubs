@@ -57,6 +57,8 @@ githubRelease {
         releaseAssets(listOf(
                 ":assembly:wiremock-all:packageCompose",
                 ":assembly:wiremock-app:packageCompose",
+                ":assembly:moco-all:packageCompose",
+                ":assembly:moco-app:packageCompose"
         ).map { rootProject.tasks.getByPath(it) })
     }
 

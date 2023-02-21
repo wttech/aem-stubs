@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/apps/stubs/core"/>
+    <filter root="/apps/stubs/moco"/>
+    <filter root="/conf/stubs/moco/samples"/>
+    <filter root="/conf/stubs/rep:policy"/>
+    <filter root="/home/users/system/iIT1Dgf_7ltACJS6kJgR"/>
+</workspaceFilter>
