@@ -71,8 +71,6 @@ Simply install ready to use AEM package downloaded from GitHub [releases](https:
 
 Distribution types:
 
-* all - both frameworks with Groovy OSGi bundle included,
-* app - both frameworks without Groovy OSGi bundle included.
 * wiremock-all - WireMock framework only with Groovy OSGi bundle included,
 * wiremock-app - WireMock framework only without Groovy OSGi bundle included.
 * moco-all - Moco framework only with Groovy OSGi bundle included,
