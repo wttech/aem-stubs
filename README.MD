@@ -2,7 +2,7 @@
 
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/wttech/aem-stubs)
 ![GitHub All Releases](https://img.shields.io/github/downloads/wttech/aem-stubs/total)
-![Java CI with Gradle](https://github.com/wttech/aem-stubs/workflows/Java%20CI%20with%20Gradle/badge.svg)
+![Check](https://github.com/wttech/aem-stubs/workflows/Check/badge.svg)
 [![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
 
 <p>
