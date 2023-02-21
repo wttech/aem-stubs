@@ -87,7 +87,7 @@ Then check see Moco specific OSGi configuration below:
 
 ### Stub script API
 
-At first, see [common](../#stub-script-api) script API.
+At first, see [common](../README.MD#stub-script-api) script API.
 
 Pre-defined variables:
 
