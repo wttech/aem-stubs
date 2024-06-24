@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/apps/stubs/clientlibs"/>
-    <filter root="/apps/stubs/components"/>
-    <filter root="/apps/stubs/i18n"/>
+    <filter root="/apps/stubs"/>
 </workspaceFilter>

@@ -15,7 +15,6 @@
  */
 package com.wttech.aem.stubs.core.testcontext;
 
-import static com.adobe.cq.wcm.core.components.testing.mock.ContextPlugins.CORE_COMPONENTS;
 import static org.apache.sling.testing.mock.caconfig.ContextPlugins.CACONFIG;
 
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -53,7 +52,6 @@ public final class AppAemContext {
     public static AemContextBuilder newAemContextBuilder(ResourceResolverType resourceResolverType) {
         return new AemContextBuilder()
                 .plugin(CACONFIG)
-                .plugin(CORE_COMPONENTS)
                 .afterSetUp(SETUP_CALLBACK);
     }
 

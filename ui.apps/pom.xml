@@ -54,22 +54,6 @@
                     <group>com.wttech.aem.stubs</group>
                     <name>stubs.ui.apps</name>
                     <packageType>application</packageType>
-                    <repositoryStructurePackages>
-                        <repositoryStructurePackage>
-                            <groupId>com.wttech.aem.stubs</groupId>
-                            <artifactId>stubs.ui.apps.structure</artifactId>
-                        </repositoryStructurePackage>
-                    </repositoryStructurePackages>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.adobe.cq</groupId>
-                            <artifactId>core.wcm.components.content</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.adobe.cq</groupId>
-                            <artifactId>core.wcm.components.config</artifactId>
-                        </dependency>
-                    </dependencies>
                 </configuration>
             </plugin>
             <plugin>
@@ -119,38 +103,6 @@
             <artifactId>stubs.core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.wttech.aem.stubs</groupId>
-            <artifactId>stubs.ui.frontend</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.wttech.aem.stubs</groupId>
-            <artifactId>stubs.ui.apps.structure</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.adobe.cq</groupId>
-            <artifactId>core.wcm.components.core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.adobe.cq</groupId>
-            <artifactId>core.wcm.components.content</artifactId>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>com.adobe.cq</groupId>
-            <artifactId>core.wcm.components.config</artifactId>
-            <type>zip</type>
-        </dependency>
-
 
         <dependency>
             <groupId>com.adobe.aem</groupId>
