@@ -131,12 +131,7 @@ Import-Package: javax.annotation;version=0.0.0,*
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.util.tracker</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
-            <version>7.0.0</version>
-            <scope>provided</scope>
-        </dependency>
+
         <!-- Other Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -167,6 +162,14 @@ Import-Package: javax.annotation;version=0.0.0,*
             <artifactId>org.apache.sling.models.api</artifactId>
         </dependency>
 
+        <!-- Custom Dependencies -->
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>7.0.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Testing -->
         <dependency>

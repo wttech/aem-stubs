@@ -71,6 +71,12 @@
                             <artifactId>stubs.core</artifactId>
                             <target>/apps/stubs-packages/application/install</target>
                         </embedded>
+                        <!-- TODO embed it as 'private-package' in core bundle instead -->
+                        <embedded>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <target>/apps/stubs-packages/application/install</target>
+                        </embedded>
                     </embeddeds>
                 </configuration>
             </plugin>
@@ -171,6 +177,11 @@
             <artifactId>stubs.ui.config</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.18</version>
         </dependency>
     </dependencies>
 </project>

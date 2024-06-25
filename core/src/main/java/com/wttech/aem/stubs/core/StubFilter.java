@@ -1,9 +1,6 @@
 package com.wttech.aem.stubs.core;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.*;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -23,10 +20,13 @@ import java.io.IOException;
         },
         configurationPolicy = ConfigurationPolicy.REQUIRE
 )
-@Designate(ocd = StubsFilter.Config.class)
-public class StubsFilter implements Filter {
+@Designate(ocd = StubFilter.Config.class)
+public class StubFilter implements Filter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StubsFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StubFilter.class);
+
+    @Reference
+    private StubRepository repository;
 
     private Config config;
 
@@ -47,18 +47,26 @@ public class StubsFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        var request = (HttpServletRequest) req;
+        var response = (HttpServletResponse) res;
 
+        try {
+            var it = repository.findStubs().iterator();
+            while (it.hasNext()) {
+                var stub = it.next();
+                if (stub.isRequested(request)) {
+                    stub.respond(request, response);
+                    return;
+                }
+            }
 
-        response.setContentType("application/json; charset=utf-8");
-        response.getWriter().write("{\"message\": \"Hello World!\"}");
+        } catch (StubException e) {
+            LOG.error("Stubs error", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot find stub: " + e.getMessage());
+        }
 
-
-       // LOG.info("Stubs | Hello World!");
-
-       // chain.doFilter(request, response);
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Cannot find any stub for current request!");
     }
 
     @Override
