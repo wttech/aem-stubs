@@ -62,8 +62,9 @@ public class StubFilter implements Filter {
             }
 
         } catch (StubException e) {
-            LOG.error("Stubs error", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot find stub: " + e.getMessage());
+            LOG.error("Cannot find stubs!", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot find stubs: " + e.getMessage());
+            return;
         }
 
         response.sendError(HttpServletResponse.SC_NOT_FOUND, "Cannot find any stub for current request!");
