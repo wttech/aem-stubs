@@ -54,6 +54,12 @@
                     <group>com.wttech.aem.stubs</group>
                     <name>stubs.ui.apps</name>
                     <packageType>application</packageType>
+                    <repositoryStructurePackages>
+                        <repositoryStructurePackage>
+                            <groupId>com.wttech.aem.stubs</groupId>
+                            <artifactId>stubs.ui.apps.structure</artifactId>
+                        </repositoryStructurePackage>
+                    </repositoryStructurePackages>
                 </configuration>
             </plugin>
             <plugin>
@@ -98,6 +104,13 @@
     <!-- D E P E N D E N C I E S                                                -->
     <!-- ====================================================================== -->
     <dependencies>
+        <dependency>
+            <groupId>com.wttech.aem.stubs</groupId>
+            <artifactId>stubs.ui.apps.structure</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+        </dependency>
+
         <dependency>
             <groupId>com.wttech.aem.stubs</groupId>
             <artifactId>stubs.core</artifactId>

@@ -1,0 +1,4 @@
+{
+  "osgi.http.whiteboard.filter.regex": "/stubs/.*",
+  "enabled": true
+}
