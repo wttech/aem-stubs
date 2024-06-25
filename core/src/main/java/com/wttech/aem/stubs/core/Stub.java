@@ -7,7 +7,7 @@ public interface Stub {
 
     String getId();
 
-    boolean isRequested(HttpServletRequest request) throws StubException;
+    boolean request(HttpServletRequest request) throws StubRequestException;
 
-    void respond(HttpServletRequest request, HttpServletResponse response) throws StubException;
+    void respond(HttpServletRequest request, HttpServletResponse response) throws StubResponseException;
 }

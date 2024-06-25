@@ -47,7 +47,7 @@ public class StubFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException {
         var request = (HttpServletRequest) req;
         var response = (HttpServletResponse) res;
 
@@ -55,15 +55,24 @@ public class StubFilter implements Filter {
             var it = repository.findStubs().iterator();
             while (it.hasNext()) {
                 var stub = it.next();
-                if (stub.isRequested(request)) {
-                    stub.respond(request, response);
+                try {
+                    if (stub.request(request)) {
+                        stub.respond(request, response);
+                        return;
+                    }
+                } catch (StubRequestException e) {
+                    LOG.error(String.format("Cannot request stub '%s'!", stub.getId()), e);
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot request stub: " + e.getMessage());
+                    return;
+                } catch (StubResponseException e) {
+                    LOG.error(String.format("Cannot respond with stub '%s'!", stub.getId()), e);
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot respond with stub: " + e.getMessage());
                     return;
                 }
             }
-
         } catch (StubException e) {
-            LOG.error("Cannot find stubs!", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot find stubs: " + e.getMessage());
+            LOG.error("Stubs error!", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs error: " + e.getMessage());
             return;
         }
 

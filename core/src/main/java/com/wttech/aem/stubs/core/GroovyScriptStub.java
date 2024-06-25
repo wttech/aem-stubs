@@ -20,14 +20,14 @@ public class GroovyScriptStub implements Stub {
 
     // TODO provide utility methods to map '/stubs/products/123' to '/conf/stubs/products/123.GET.groovy'
     @Override
-    public boolean isRequested(HttpServletRequest request) throws StubException {
+    public boolean request(HttpServletRequest request) throws StubRequestException {
         // TODO delegate to groovy script method 'isRequested';
         // TODO script could look like: $.match(request).method('GET').path('/stubs/products/{id}')
         return false;
     }
 
     @Override
-    public void respond(HttpServletRequest request, HttpServletResponse response) throws StubException {
+    public void respond(HttpServletRequest request, HttpServletResponse response) throws StubResponseException {
         // TODO delegate to groovy script method 'respond'
         // TODO var id = $.path('/stubs/products/{id}').get('id');
         // TODO script could look like: $.respond(request, response).method('GET').path('/stubs/products/{id}').body('{"id": 123, "name": "Product"}')
