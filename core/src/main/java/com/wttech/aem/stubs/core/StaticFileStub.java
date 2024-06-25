@@ -21,6 +21,8 @@ public class StaticFileStub implements Stub {
     }
 
     // TODO match part of path to the request url, match resource extension to the request accept header or requested extension
+    // TODO for example when requesting GET '/stubs/products/123' the resource '/conf/stubs/products/123.GET.json' should be responded
+    // TODO for example when requesting POST '/stubs/products/123' the resource '/conf/stubs/products/123.POST.json' should be responded
     @Override
     public boolean isRequested(HttpServletRequest request) throws StubException {
         return false;
