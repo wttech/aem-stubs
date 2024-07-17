@@ -14,8 +14,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -46,20 +44,16 @@ public class StubRepository {
         this.config = config;
     }
 
-    public Stream<Stub> findStubs() throws StubException {
+    public Stream<Stub> findStubs(ResourceResolver resolver) throws StubException {
         Stream<Stub> result = Stream.empty();
-        try (var resolver = getResolver()) {
-            for (var path : config.searchPaths()) {
-                var root = resolver.getResource(path);
-                if (root == null) {
-                    throw new StubException(String.format("Cannot read stubs search path '%s'!", path));
-                }
-                result = Stream.concat(result, StreamUtils.asStream(root.listChildren()).map(this::fromResource));
+        for (var path : config.searchPaths()) {
+            var root = resolver.getResource(path);
+            if (root == null) {
+                throw new StubException(String.format("Cannot read stubs search path '%s'!", path));
             }
-            return result;
-        } catch (LoginException e) {
-            throw new StubException("Cannot access repository while finding stubs", e);
+            result = Stream.concat(result, StreamUtils.asStream(root.listChildren()).map(this::fromResource));
         }
+        return result;
     }
 
     private Stub fromResource(Resource resource) {
@@ -70,7 +64,7 @@ public class StubRepository {
         }
     }
 
-    private ResourceResolver getResolver() throws LoginException {
+    public ResourceResolver createResolver() throws LoginException {
         return resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, RESOLVER_SUBSERVICE));
     }
 

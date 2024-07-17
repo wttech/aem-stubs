@@ -1,5 +1,3 @@
-package conf.stubs.example
-
 import HttpServletRequest;
 import HttpServletResponse;
 import StringUtils;

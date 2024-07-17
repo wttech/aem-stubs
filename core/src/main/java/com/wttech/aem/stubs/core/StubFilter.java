@@ -1,5 +1,6 @@
 package com.wttech.aem.stubs.core;
 
+import org.apache.sling.api.resource.LoginException;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -51,8 +52,8 @@ public class StubFilter implements Filter {
         var request = (HttpServletRequest) req;
         var response = (HttpServletResponse) res;
 
-        try {
-            var it = repository.findStubs().iterator();
+        try (var resolver = repository.createResolver()) {
+            var it = repository.findStubs(resolver).iterator();
             while (it.hasNext()) {
                 var stub = it.next();
                 try {
@@ -70,7 +71,7 @@ public class StubFilter implements Filter {
                     return;
                 }
             }
-        } catch (StubException e) {
+        } catch (StubException | LoginException e) {
             LOG.error("Stubs error!", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs error: " + e.getMessage());
             return;
