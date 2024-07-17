@@ -1,30 +1,24 @@
 package com.wttech.aem.stubs.core;
 
-import com.wttech.aem.stubs.core.util.JcrUtils;
 import com.wttech.aem.stubs.core.util.ResourceTreeSpliterator;
-import com.wttech.aem.stubs.core.util.StreamUtils;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Component(service = StubRepository.class, immediate = true)
+@Designate(ocd = StubRepository.Config.class)
 public class StubRepository {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StubRepository.class);
-
-    // TODO complete setup: https://medium.com/@toimrank/aem-service-user-mapping-and-resourceresolver-bd4a15d8cff2
     private static final String RESOLVER_SUBSERVICE = "stubs";
-
 
     @Reference
     private ResourceResolverFactory resolverFactory;
