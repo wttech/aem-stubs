@@ -37,10 +37,6 @@ public class GroovyScriptStub implements Stub {
         return resource.getPath();
     }
 
-    public String getPath() {
-        return resource.getPath();
-    }
-
     // TODO provide utility methods to map '/stubs/products/123' to '/conf/stubs/products/123.GET.groovy'
     @Override
     public boolean request(HttpServletRequest request) throws StubRequestException {
@@ -54,7 +50,7 @@ public class GroovyScriptStub implements Stub {
             }
             return result;
         } catch (StubException e) {
-            throw new StubRequestException(String.format("Cannot match request to stub script '%s'", getPath()), e);
+            throw new StubRequestException(String.format("Stub script '%s' cannot match request properly", getId()), e);
         }
     }
 
@@ -67,7 +63,7 @@ public class GroovyScriptStub implements Stub {
             invokeMethod("respond", new Object[]{request, response});
             LOG.info("Stub '{}' responded to request '{} {}'", getId(), request.getMethod(), request.getRequestURI());
         } catch (StubException e) {
-            throw new StubResponseException(String.format("Cannot respond using stub script '%s'", getPath()), e);
+            throw new StubResponseException(String.format("Stub script '%s' cannot respond properly", getId()), e);
         }
     }
 
@@ -75,7 +71,7 @@ public class GroovyScriptStub implements Stub {
         if (shell == null) {
             var binding = new Binding();
             binding.setVariable("resourceResolver", resource.getResourceResolver());
-            binding.setVariable("log", LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), getPath())));
+            binding.setVariable("log", LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), getId())));
             binding.setVariable("gson", new Gson());
 
             var compilerConfiguration = new CompilerConfiguration();
@@ -95,11 +91,11 @@ public class GroovyScriptStub implements Stub {
             var script = getOrCreateShell().parse(readSourceCode());
             return script.invokeMethod(name, args);
         } catch (CompilationFailedException e) {
-            throw new StubException(String.format("Stub script '%s' cannot be compiled", getPath()), e);
+            throw new StubException(String.format("Stub script '%s' cannot be compiled", getId()), e);
         } catch (MissingMethodException e) {
-            throw new StubException(String.format("Stub script '%s' does not define method '%s'", getPath(), name), e);
+            throw new StubException(String.format("Stub script '%s' does not define method '%s'", getId(), name), e);
         } catch (Exception e) {
-            throw new StubException(String.format("Stub script '%s' has a method '%s' that cannot be properly invoked (e.g. throws exception)", getPath(), name), e);
+            throw new StubException(String.format("Stub script '%s' has a method '%s' that cannot be properly invoked (e.g. throws exception)", getId(), name), e);
         }
     }
 
@@ -108,6 +104,6 @@ public class GroovyScriptStub implements Stub {
         return Optional.ofNullable(resource.getChild(JcrUtils.JCR_CONTENT))
                 .map(r -> r.adaptTo(InputStream.class))
                 .map(InputStreamReader::new)
-                .orElseThrow(() -> new StubException(String.format("Cannot read stub script '%s'!", getPath())));
+                .orElseThrow(() -> new StubException(String.format("Cannot read stub script '%s'!", getId())));
     }
 }

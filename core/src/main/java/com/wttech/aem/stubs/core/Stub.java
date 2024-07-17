@@ -10,4 +10,5 @@ public interface Stub {
     boolean request(HttpServletRequest request) throws StubRequestException;
 
     void respond(HttpServletRequest request, HttpServletResponse response) throws StubResponseException;
+
 }

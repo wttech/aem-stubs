@@ -1,6 +1,6 @@
 package com.wttech.aem.stubs.core;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
@@ -14,6 +14,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Component(
         service = Filter.class,
@@ -26,6 +27,12 @@ import java.io.IOException;
 public class StubFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(StubFilter.class);
+
+    private static final String STUB_NAME_FAIL = "$fail.groovy";
+
+    private static final String STUB_NAME_MISSING = "$missing.groovy";
+
+    private static final List<String> STUB_NAMES = List.of(STUB_NAME_FAIL, STUB_NAME_MISSING);
 
     @Reference
     private StubRepository repository;
@@ -54,31 +61,52 @@ public class StubFilter implements Filter {
         var response = (HttpServletResponse) res;
 
         try (var resolver = repository.createResolver()) {
-            var it = repository.findStubs(resolver).iterator();
-            while (it.hasNext()) {
-                var stub = it.next();
-                try {
-                    if (stub.request(request)) {
+            try {
+                var it = repository.findStubs(resolver).iterator();
+                while (it.hasNext()) {
+                    var stub = it.next();
+                    if (!isSpecial(stub) && stub.request(request)) {
                         stub.respond(request, response);
                         return;
                     }
-                } catch (StubRequestException e) {
-                    LOG.error(String.format("Cannot request stub '%s'!", stub.getId()), e);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stub request error. " + e.getMessage());
-                    return;
-                } catch (StubResponseException e) {
-                    LOG.error(String.format("Cannot respond with stub '%s'!", stub.getId()), e);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stub response error. " + e.getMessage());
-                    return;
                 }
-            }
-        } catch (StubException | LoginException e) {
-            LOG.error("Stubs error!", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs error: " + e.getMessage());
-            return;
-        }
+            } catch (StubException e) {
+                LOG.error("Stubs error!", e);
 
-        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Cannot find any stub for current request!");
+                var stub = repository.findStub(resolver, STUB_NAME_FAIL).orElse(null);
+                if (stub != null) {
+                    try {
+                        stub.respond(request, response);
+                    } catch (StubException e2) {
+                        LOG.error("Stubs fail error!", e2);
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs fail error. " + e.getMessage());
+                    }
+                } else {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs error. " + e.getMessage());
+                }
+                return;
+            }
+
+            var stub = repository.findStub(resolver, STUB_NAME_MISSING).orElse(null);
+            if (stub != null) {
+                try {
+                    stub.respond(request, response);
+                } catch (StubException e) {
+                    LOG.error("Stubs missing error!", e);
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs missing error. " + e.getMessage());
+                }
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Stub not found!");
+            }
+            return;
+        } catch (LoginException e) {
+            LOG.error("Stubs repository error!", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs error. " + e.getMessage());
+        }
+    }
+
+    private boolean isSpecial(Stub stub) {
+        return STUB_NAMES.contains(StringUtils.substringAfterLast(stub.getId(), "/"));
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -62,4 +63,13 @@ public class StubRepository {
         return resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, RESOLVER_SUBSERVICE));
     }
 
+    public Optional<Stub> findStub(ResourceResolver resolver, String subPath) {
+        for (var path : config.searchPaths()) {
+            var result = resolver.getResource(String.format("%s/%s", path, subPath));
+            if (result != null) {
+                return Optional.of(result).map(this::fromResource);
+            }
+        }
+        return Optional.empty();
+    }
 }
