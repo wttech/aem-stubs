@@ -1,9 +1,5 @@
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.apache.commons.lang3.StringUtils
-
 boolean request(HttpServletRequest request) {
-    return true
+    return request.getRequestURI() == "/stubs/hello-world"
 }
 
 void respond(HttpServletRequest request, HttpServletResponse response) {

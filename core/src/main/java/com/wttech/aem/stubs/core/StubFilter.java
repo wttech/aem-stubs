@@ -59,7 +59,6 @@ public class StubFilter implements Filter {
                 try {
                     if (stub.request(request)) {
                         stub.respond(request, response);
-
                         return;
                     }
                 } catch (StubRequestException e) {

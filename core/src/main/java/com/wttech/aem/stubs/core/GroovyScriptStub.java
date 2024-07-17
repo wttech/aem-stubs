@@ -1,13 +1,14 @@
 package com.wttech.aem.stubs.core;
 
+import com.google.gson.Gson;
 import com.wttech.aem.stubs.core.util.JcrUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingMethodException;
-import groovy.lang.Script;
 import org.apache.sling.api.resource.Resource;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,18 +26,10 @@ public class GroovyScriptStub implements Stub {
 
     private final Resource resource;
 
-    private final Binding binding = new Binding();
-
-    private final CompilerConfiguration compilerConfig = new CompilerConfiguration();
-
-    private final GroovyShell shell = new GroovyShell(binding, compilerConfig);
-
+    private GroovyShell shell;
 
     public GroovyScriptStub(Resource resource) {
         this.resource = resource;
-
-        binding.setVariable("resourceResolver", resource.getResourceResolver());
-        binding.setVariable("log", LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), getPath())));
     }
 
     @Override
@@ -78,11 +71,29 @@ public class GroovyScriptStub implements Stub {
         }
     }
 
+    private GroovyShell getOrCreateShell() {
+        if (shell == null) {
+            var binding = new Binding();
+            binding.setVariable("resourceResolver", resource.getResourceResolver());
+            binding.setVariable("log", LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), getPath())));
+            binding.setVariable("gson", new Gson());
+
+            var compilerConfiguration = new CompilerConfiguration();
+            ImportCustomizer importCustomizer = new ImportCustomizer();
+            importCustomizer.addImport("StringUtils", "org.apache.commons.lang3.StringUtils");
+            importCustomizer.addImport("HttpServletRequest", "javax.servlet.http.HttpServletRequest");
+            importCustomizer.addImport("HttpServletResponse", "javax.servlet.http.HttpServletResponse");
+            compilerConfiguration.addCompilationCustomizers(importCustomizer);
+
+            shell = new GroovyShell(binding, compilerConfiguration);
+        }
+        return shell;
+    }
+
     private Object invokeMethod(String name, Object[] args) throws StubException {
         try {
             // Ensure the compiler configuration is used
-            GroovyShell shell = new GroovyShell(this.getClass().getClassLoader(), binding, compilerConfig);
-            Script script = shell.parse(readSourceCode());
+            var script = getOrCreateShell().parse(readSourceCode());
             return script.invokeMethod(name, args);
         } catch (CompilationFailedException e) {
             LOG.error("Compilation error in script '{}': {}", getPath(), e.getMessage(), e);
