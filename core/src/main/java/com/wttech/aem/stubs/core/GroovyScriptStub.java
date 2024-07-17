@@ -3,8 +3,10 @@ package com.wttech.aem.stubs.core;
 import com.wttech.aem.stubs.core.util.JcrUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import groovy.lang.MissingMethodException;
 import groovy.lang.Script;
 import org.apache.sling.api.resource.Resource;
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,11 +80,19 @@ public class GroovyScriptStub implements Stub {
 
     private Object invokeMethod(String name, Object[] args) throws StubException {
         try {
-            GroovyShell shell = new GroovyShell();
+            // Ensure the compiler configuration is used
+            GroovyShell shell = new GroovyShell(this.getClass().getClassLoader(), binding, compilerConfig);
             Script script = shell.parse(readSourceCode());
             return script.invokeMethod(name, args);
+        } catch (CompilationFailedException e) {
+            LOG.error("Compilation error in script '{}': {}", getPath(), e.getMessage(), e);
+            throw new StubException(String.format("Compilation error in script '%s'", getPath()), e);
+        } catch (MissingMethodException e) {
+            LOG.error("The method '{}' is not defined in script '{}'.", name, getPath(), e);
+            throw new StubException(String.format("The method '%s' is not defined in script '%s'", name, getPath()), e);
         } catch (Exception e) {
-            throw new StubResponseException(String.format("Cannot invoke method '%s' of script '%s'", name, getPath()), e);
+            LOG.error("Error invoking method '{}' of script '{}'", name, getPath(), e);
+            throw new StubException(String.format("Cannot invoke method '%s' of script '%s'", name, getPath()), e);
         }
     }
 

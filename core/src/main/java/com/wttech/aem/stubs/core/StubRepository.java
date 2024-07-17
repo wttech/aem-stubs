@@ -1,10 +1,9 @@
 package com.wttech.aem.stubs.core;
 
+import com.wttech.aem.stubs.core.util.JcrUtils;
+import com.wttech.aem.stubs.core.util.ResourceTreeSpliterator;
 import com.wttech.aem.stubs.core.util.StreamUtils;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Component(service = StubRepository.class, immediate = true)
 public class StubRepository {
@@ -51,7 +51,7 @@ public class StubRepository {
             if (root == null) {
                 throw new StubException(String.format("Cannot read stubs search path '%s'!", path));
             }
-            result = Stream.concat(result, StreamUtils.asStream(root.listChildren()).map(this::fromResource));
+            result = Stream.concat(result, StreamSupport.stream(new ResourceTreeSpliterator(root), false).map(this::fromResource));
         }
         return result;
     }

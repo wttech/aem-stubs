@@ -44,6 +44,7 @@
                         <configuration>
                             <bnd><![CDATA[
 Import-Package: javax.annotation;version=0.0.0,*
+DynamicImport-Package: *
                                 ]]></bnd>
                         </configuration>
                     </execution>
