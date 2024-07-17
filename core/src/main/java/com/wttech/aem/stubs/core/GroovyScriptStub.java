@@ -92,18 +92,17 @@ public class GroovyScriptStub implements Stub {
 
     private Object invokeMethod(String name, Object[] args) throws StubException {
         try {
-            // Ensure the compiler configuration is used
             var script = getOrCreateShell().parse(readSourceCode());
             return script.invokeMethod(name, args);
         } catch (CompilationFailedException e) {
-            LOG.error("Compilation error in script '{}': {}", getPath(), e.getMessage(), e);
-            throw new StubException(String.format("Compilation error in script '%s'", getPath()), e);
+            LOG.error("Stub script '{}' cannot be compiled", getPath(), e);
+            throw new StubException(String.format("Stub script '%s' cannot be compiled", getPath()), e);
         } catch (MissingMethodException e) {
-            LOG.error("The method '{}' is not defined in script '{}'.", name, getPath(), e);
-            throw new StubException(String.format("The method '%s' is not defined in script '%s'", name, getPath()), e);
+            LOG.error("Stub script '{}' does not define method '{}'", getPath(), name, e);
+            throw new StubException(String.format("Stub script '%s' does not define method '%s'", getPath(), name), e);
         } catch (Exception e) {
-            LOG.error("Error invoking method '{}' of script '{}'", name, getPath(), e);
-            throw new StubException(String.format("Cannot invoke method '%s' of script '%s'", name, getPath()), e);
+            LOG.error("Stub script '{}' has a method '{}' that cannot be properly invoked", getPath(), name, e);
+            throw new StubException(String.format("Stub script '%s' has a method '%s' that cannot be properly invoked", getPath(), name), e);
         }
     }
 
