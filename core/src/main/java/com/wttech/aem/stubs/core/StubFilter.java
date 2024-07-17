@@ -1,5 +1,6 @@
 package com.wttech.aem.stubs.core;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
@@ -63,11 +64,11 @@ public class StubFilter implements Filter {
                     }
                 } catch (StubRequestException e) {
                     LOG.error(String.format("Cannot request stub '%s'!", stub.getId()), e);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot request stub: " + e.getMessage());
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stub request error. " + e.getMessage());
                     return;
                 } catch (StubResponseException e) {
                     LOG.error(String.format("Cannot respond with stub '%s'!", stub.getId()), e);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot respond with stub: " + e.getMessage());
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stub response error. " + e.getMessage());
                     return;
                 }
             }

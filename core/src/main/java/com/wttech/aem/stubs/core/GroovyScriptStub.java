@@ -54,7 +54,7 @@ public class GroovyScriptStub implements Stub {
             }
             return result;
         } catch (StubException e) {
-            throw new StubRequestException(String.format("Cannot invoke 'request' method of stub script '%s'", getPath()), e);
+            throw new StubRequestException(String.format("Cannot match request to stub script '%s'", getPath()), e);
         }
     }
 
@@ -67,7 +67,7 @@ public class GroovyScriptStub implements Stub {
             invokeMethod("respond", new Object[]{request, response});
             LOG.info("Stub '{}' responded to request '{} {}'", getId(), request.getMethod(), request.getRequestURI());
         } catch (StubException e) {
-            throw new StubResponseException(String.format("Cannot invoke 'response' method of stub script '%s'", getPath()), e);
+            throw new StubResponseException(String.format("Cannot respond using stub script '%s'", getPath()), e);
         }
     }
 
@@ -95,14 +95,11 @@ public class GroovyScriptStub implements Stub {
             var script = getOrCreateShell().parse(readSourceCode());
             return script.invokeMethod(name, args);
         } catch (CompilationFailedException e) {
-            LOG.error("Stub script '{}' cannot be compiled", getPath(), e);
             throw new StubException(String.format("Stub script '%s' cannot be compiled", getPath()), e);
         } catch (MissingMethodException e) {
-            LOG.error("Stub script '{}' does not define method '{}'", getPath(), name, e);
             throw new StubException(String.format("Stub script '%s' does not define method '%s'", getPath(), name), e);
         } catch (Exception e) {
-            LOG.error("Stub script '{}' has a method '{}' that cannot be properly invoked", getPath(), name, e);
-            throw new StubException(String.format("Stub script '%s' has a method '%s' that cannot be properly invoked", getPath(), name), e);
+            throw new StubException(String.format("Stub script '%s' has a method '%s' that cannot be properly invoked (e.g. throws exception)", getPath(), name), e);
         }
     }
 
