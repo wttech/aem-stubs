@@ -2,4 +2,5 @@
 <workspaceFilter version="1.0">
     <filter root="/conf/stubs/internal"/>
     <filter root="/conf/stubs/examples" mode="update"/>
+    <filter root="/content/dam/stubs"/>
 </workspaceFilter>
