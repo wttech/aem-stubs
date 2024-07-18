@@ -1,23 +1,109 @@
-# Sample AEM project template
+[![WTT logo](docs/wtt-logo.png)](https://www.wundermanthompson.com)
 
-This is a project template for AEM-based applications. It is intended as a best-practice set of examples as well as a potential starting point to develop your own functionality.
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/wttech/aem-stubs)](https://github.com/wttech/aem-stubs/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/wttech/aem-stubs/total)](https://github.com/wttech/aem-stubs/releases)
+[![Check](https://github.com/wttech/aem-stubs/workflows/Check/badge.svg)](https://github.com/wttech/aem-stubs/actions/workflows/check.yml)
+[![Apache License, Version 2.0, January 2004](docs/apache-license-badge.svg)](http://www.apache.org/licenses/)
 
-## Modules
+<p>
+  <img src="docs/logo-text.svg" alt="AEM Stubs" width="300"/>
+</p>
 
-The main parts of the template are:
+Tool for providing sample data for AEM applications in a simple and flexible way.
 
-* [core:](core/README.md) Java bundle containing all core functionality like OSGi services, listeners or schedulers, as well as component-related Java code such as servlets or request filters.
-* [it.tests:](it.tests/README.md) Java based integration tests
-* [ui.apps:](ui.apps/README.md) contains the /apps (and /etc) parts of the project, ie JS&CSS clientlibs, components, and templates
-* [ui.content:](ui.content/README.md) contains sample content using the components from the ui.apps
-* ui.config: contains runmode specific OSGi configs for the project
-* [ui.frontend:](ui.frontend.general/README.md) an optional dedicated front-end build mechanism (Angular, React or general Webpack project)
-* [ui.tests.cypress:](ui.tests.cypress/README.md) Cypress based UI tests
-* [ui.tests.wdio:](ui.tests.wdio/README.md) Selenium based UI tests
-* all: a single content package that embeds all of the compiled modules (bundles and content packages) including any vendor dependencies
-* analyse: this module runs analysis on the project which provides additional validation for deploying into AEMaaCS
+Simply [install](#installation) ready-to-use CRX package on AEM instance and start stubbing!
 
-## How to build
+![Screenshot](docs/screenshot2.jpg)
+
+AdaptTo 2020 Live Demo - <https://adapt.to/2020/en/schedule/lightning-talks/aem-stubs.html>
+
+Main concepts of AEM Stubs tool are:
+
+* **Simplicity**
+    * Creating stubs should be as much simple as it is possible,
+* **Reactivity**
+    * Trivial tool deployment - installable on AEM via all-in-one CRX package in the time when stubs are actually needed,
+    * Trivial stubs deployment - reloading stubs tied to regular AEM application deployment.
+
+## Installation
+
+Simply install ready to use AEM package downloaded from GitHub [releases](https://github.com/wttech/aem-stubs/releases) section.
+
+### Post installation steps
+
+Remember that using AEM Stubs on AEM Publish instances may require an additional configuration.
+
+In case of WireMock, ensure that AEM Stubs Filter prefix `/stubs` is not filtered by AEM Dispatcher configuration. Alternatively, by creating OSGi configuration, update that path prefix to path which is already accessible.
+
+## Compatibility
+
+| AEM Stubs    | AEM           | Java  | Groovy |
+|--------------|---------------|-------|--------|
+| 1.0.0, 1.0.1 | 6.4, 6.5      | 8     | 2.x    |
+| >= 1.0.2     | 6.3, 6.4, 6.5 | 8     | 2.x    |
+| 2.0.0        | 6.3, 6.4, 6.5 | 11    | 2.x    |
+| 2.0.1        | 6.3, 6.4, 6.5 | 8, 11 | 2.x    |
+| 3.0.0        | 6.3, 6.4, 6.5 | 8, 11 | 4.x    |
+| 4.0.0        | 6.3, 6.4, 6.5 | 8, 11 | 4.x    |
+
+Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
+AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more fault-tolerant when AEM version is changing.
+It is compatible with AEM Groovy Console - simply install one of AEM Stubs distributions without Groovy console OSGi bundle included as it is usually provided by Groovy Console AEM package.
+
+From AEM Stubs 3.x onwards, Groovy has been upgraded to version 4.x. Groovy has stopped providing a groovy-all 'uber' bundle. In this package, only the groovy 'core' bundle is included. It is possible to add extra Groovy modules in your own project.
+A list of groovy subprojects can be found here at the [Groovy GitHub Project](https://github.com/apache/groovy/tree/master/subprojects)
+
+## Documentation
+
+### Basics
+
+Stubs could be provided by:
+
+* Groovy Scripts (_*.stub.groovy_) so called stub scripts e.g file named _my-feature.stub.groovy_.
+
+For example, when decided to choose WireMock framework, then these files should be put into AEM under path _/conf/stubs/wiremock/*_
+via CRX package with corresponding Vault workspace filter:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/apps/mysite"/>
+    <filter root="/conf/stubs/mysite"/>
+</workspaceFilter>
+```
+
+### OSGi configuration
+
+[Stub Filter](http://localhost:4502/system/console/configMgr/com.wttech.aem.stubs.core.StubFilter)
+[Stub Repository](http://localhost:4502/system/console/configMgr/com.wttech.aem.stubs.core.StubRepository)
+
+### Stub script API
+
+#### Pre-defined variables:
+
+* [resourceResolver](https://sling.apache.org/apidocs/sling11/org/apache/sling/api/resource/ResourceResolver.html) - for accessing AEM repository,
+* [log](https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java) - SLF4j logger connected to script being run.
+* [template](https://github.com/wttech/aem-stubs/blob/main-v4/core/src/main/java/com/wttech/aem/stubs/core/GroovyTemplate.java) - Template engine-based rendering
+
+
+## Other tools
+
+There are no other dedicated tools for stubbing data available for AEM and it was main purpose to create AEM Stubs tool.
+
+## Authors
+
+* [Krystian Panek](mailto:krystian.panek@vml.com) - Project Founder, Main Developer,
+* [Piotr Marcinkowski](mailto:piotr.marcinkowski@vml.com) - Main Developer.
+
+## Contributing
+
+Issues reported or pull requests created will be very appreciated.
+
+1. Fork plugin source code using a dedicated GitHub button.
+2. Do code changes on a feature branch created from *main* branch.
+3. Create a pull request with a base of *main* branch.
+
+## Building
 
 To build all the modules run in the project root directory the following command with Maven 3:
 
@@ -43,81 +129,6 @@ Or to deploy only a single content package, run in the sub-module directory (i.e
 
     mvn clean install -PautoInstallPackage
 
-## Documentation
+## License
 
-The build process also generates documentation in the form of README.md files in each module directory for easy reference. Depending on the options you select at build time, the content may be customized to your project.
-
-## Testing
-
-There are three levels of testing contained in the project:
-
-### Unit tests
-
-This show-cases classic unit testing of the code contained in the bundle. To
-test, execute:
-
-    mvn clean test
-
-### Integration tests
-
-This allows running integration tests that exercise the capabilities of AEM via
-HTTP calls to its API. To run the integration tests, run:
-
-    mvn clean verify -Plocal
-
-Test classes must be saved in the `src/main/java` directory (or any of its
-subdirectories), and must be contained in files matching the pattern `*IT.java`.
-
-The configuration provides sensible defaults for a typical local installation of
-AEM. If you want to point the integration tests to different AEM author and
-publish instances, you can use the following system properties via Maven's `-D`
-flag.
-
-| Property | Description | Default value |
-| --- | --- | --- |
-| `it.author.url` | URL of the author instance | `http://localhost:4502` |
-| `it.author.user` | Admin user for the author instance | `admin` |
-| `it.author.password` | Password of the admin user for the author instance | `admin` |
-| `it.publish.url` | URL of the publish instance | `http://localhost:4503` |
-| `it.publish.user` | Admin user for the publish instance | `admin` |
-| `it.publish.password` | Password of the admin user for the publish instance | `admin` |
-
-The integration tests in this archetype use the [AEM Testing
-Clients](https://github.com/adobe/aem-testing-clients) and showcase some
-recommended [best
-practices](https://github.com/adobe/aem-testing-clients/wiki/Best-practices) to
-be put in use when writing integration tests for AEM.
-
-## Static Analysis
-
-The `analyse` module performs static analysis on the project for deploying into AEMaaCS. It is automatically
-run when executing
-
-    mvn clean install
-
-from the project root directory. Additional information about this analysis and how to further configure it
-can be found here https://github.com/adobe/aemanalyser-maven-plugin
-
-### UI tests
-
-They will test the UI layer of your AEM application using either Cypress or Selenium technology.
-
-Check README file in `ui.tests.cypress` or `ui.tests.wdio` module for more details.
-
-## ClientLibs
-
-The frontend module is made available using an [AEM ClientLib](https://helpx.adobe.com/experience-manager/6-5/sites/developing/using/clientlibs.html). When executing the NPM build script, the app is built and the [`aem-clientlib-generator`](https://github.com/wcm-io-frontend/aem-clientlib-generator) package takes the resulting build output and transforms it into such a ClientLib.
-
-A ClientLib will consist of the following files and directories:
-
-- `css/`: CSS files which can be requested in the HTML
-- `css.txt` (tells AEM the order and names of files in `css/` so they can be merged)
-- `js/`: JavaScript files which can be requested in the HTML
-- `js.txt` (tells AEM the order and names of files in `js/` so they can be merged
-- `resources/`: Source maps, non-entrypoint code chunks (resulting from code splitting), static assets (e.g. icons), etc.
-
-## Maven settings
-
-The project comes with the auto-public repository configured. To setup the repository in your Maven settings, refer to:
-
-    http://helpx.adobe.com/experience-manager/kb/SetUpTheAdobeMavenRepository.html
+**AEM Stubs** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
