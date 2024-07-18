@@ -34,6 +34,10 @@
             <td>${request.requestURI}</td>
         </tr>
         <tr>
+            <td>Query String</td>
+            <td>${request.queryString ?: "(empty)" }</td>
+        </tr>
+        <tr>
             <td>Exception</td>
             <td>${exception.class.name}: ${exception.message}</td>
         </tr>
