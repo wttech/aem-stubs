@@ -1,8 +1,8 @@
-// TODO render more sophisticated 404 from HTML gstring template
-// TODO pass exception as request attribute
-void respond(HttpServletRequest request, HttpServletResponse response) {
-    response.setContentType("application/json; charset=UTF-8")
-    response.getWriter().write(gson.toJson([
-            "message": "Fail!",
-    ]))
+void fail(HttpServletRequest request, HttpServletResponse response, Exception exception) {
+    response.setStatus(500)
+    template.render(response, "/conf/stubs/\$fail.html", [
+            "request": request,
+            "response": response,
+            "exception": exception,
+    ])
 }

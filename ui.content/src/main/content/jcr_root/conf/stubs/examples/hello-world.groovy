@@ -3,6 +3,6 @@ boolean request(HttpServletRequest request) {
 }
 
 void respond(HttpServletRequest request, HttpServletResponse response) {
-    def message = StringUtils.defaultIfBlank(request.getParameter("message"), "Hello, World!")
+    def message = StringUti ls.defaultIfBlank(request.getParameter("message"), "Hello, World!")
     response.getWriter().write("""{"message": "$message"}""")
 }

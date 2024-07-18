@@ -184,6 +184,12 @@ DynamicImport-Package: *
             <version>4.0.9</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.28.5</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Testing -->
         <dependency>

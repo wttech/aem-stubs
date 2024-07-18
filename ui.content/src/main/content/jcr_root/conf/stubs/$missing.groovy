@@ -1,7 +1,7 @@
-// TODO render more sophisticated 404 from HTML gstring template
 void respond(HttpServletRequest request, HttpServletResponse response) {
-    response.setContentType("application/json; charset=UTF-8")
-    response.getWriter().write(gson.toJson([
-            "message": "Missing!",
-    ]))
+    response.setStatus(404)
+    template.render(response, "/conf/stubs/\$missing.html", [
+            "request": request,
+            "response": response,
+    ])
 }

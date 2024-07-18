@@ -67,12 +67,24 @@ public class GroovyScriptStub implements Stub {
         }
     }
 
+    @Override
+    public void fail(HttpServletRequest request, HttpServletResponse response, Exception exception) throws StubResponseException {
+        try {
+            LOG.info("Stub '{}' is handling failed request '{} {}'", getId(), request.getMethod(), request.getRequestURI());
+            invokeMethod("fail", new Object[]{request, response, exception});
+            LOG.info("Stub '{}' handled failed request '{} {}'", getId(), request.getMethod(), request.getRequestURI());
+        } catch (StubException e) {
+            throw new StubResponseException(String.format("Stub script '%s' cannot handle failed request properly", getId()), e);
+        }
+    }
+
     private GroovyShell getOrCreateShell() {
         if (shell == null) {
             var binding = new Binding();
             binding.setVariable("resourceResolver", resource.getResourceResolver());
             binding.setVariable("log", LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), getId())));
             binding.setVariable("gson", new Gson());
+            binding.setVariable("template", new GroovyTemplate(resource.getResourceResolver()));
 
             var compilerConfiguration = new CompilerConfiguration();
             ImportCustomizer importCustomizer = new ImportCustomizer();

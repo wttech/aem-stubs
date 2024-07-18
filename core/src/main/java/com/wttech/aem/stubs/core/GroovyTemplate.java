@@ -2,38 +2,55 @@ package com.wttech.aem.stubs.core;
 
 import com.wttech.aem.stubs.core.util.JcrUtils;
 import groovy.text.GStringTemplateEngine;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.tika.Tika;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Map;
 import java.util.Optional;
 
 public class GroovyTemplate {
 
-    private final Resource resource;
+    private final ResourceResolver resourceResolver;
 
-    public GroovyTemplate(Resource resource) {
-        this.resource = resource;
+    private final GStringTemplateEngine engine;
+
+    public GroovyTemplate(ResourceResolver resourceResolver) {
+        this.resourceResolver = resourceResolver;
+        this.engine = new GStringTemplateEngine();
     }
 
-    public String getPath() {
-        return resource.getPath();
+    public void render(Writer writer, String path, Map<?, ?> vars) throws IOException, ClassNotFoundException {
+        var resource = resourceResolver.getResource(path);
+        if (resource == null) {
+            throw new IllegalArgumentException(String.format("Template at path '%s' does not exist!", path));
+        }
+        engine.createTemplate(read(resource)).make(vars).writeTo(writer);
     }
 
-    public void render(Writer writer) throws StubException {
-        var engine = new GStringTemplateEngine();
-        var binding = Map.of("resource", resource);
-        try {
-            engine.createTemplate(readSourceCode()).make(binding).writeTo(writer);
-        } catch (IOException | ClassNotFoundException e) {
-            throw new StubException(String.format("Cannot render stub template '%s'!", getPath()));
+    public void render(Writer writer, String path) throws IOException, ClassNotFoundException {
+        render(writer, path, Map.of());
+    }
+
+    public void render(HttpServletResponse response, String path, Map<?,?> vars) throws IOException, ClassNotFoundException {
+        render(response.getWriter(), path, vars);
+        var contentType = new Tika().detect(StringUtils.substringAfterLast(path, "/"));
+        if (contentType != null) {
+            response.setContentType(contentType);
         }
     }
 
-    private Reader readSourceCode() throws StubException {
+    public void render(HttpServletResponse response, String path) throws IOException, ClassNotFoundException {
+        render(response.getWriter(), path, Map.of());
+    }
+
+    private Reader read(Resource resource) throws IOException {
         return Optional.ofNullable(resource.getChild(JcrUtils.JCR_CONTENT))
                 .map(r -> r.adaptTo(InputStream.class))
                 .map(InputStreamReader::new)
-                .orElseThrow(() -> new StubException(String.format("Cannot read stub template '%s'!", getPath())));
+                .orElseThrow(() -> new IOException(String.format("Template at path '%s' cannot be read!", resource.getPath())));
     }
 }

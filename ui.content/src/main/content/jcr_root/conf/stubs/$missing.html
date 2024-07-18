@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stubs - 404 Not Found</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .info-section { margin-top: 20px; }
+        .not-found { color: red; }
+        table { width: 100%; border-collapse: collapse; }
+        tr:nth-child(odd) td { background-color: #f9f9f9; }
+        tr:nth-child(even) td { background-color: #ffffff; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+    </style>
+</head>
+<body>
+
+<h1>Stubs - 404 Not Found</h1>
+
+<div class="not-found">
+    The requested resource was not found on this server.
+</div>
+
+<div class="info-section">
+    <h2>Details</h2>
+    <table>
+        <tr>
+            <td>Method</td>
+            <td>${request.method}</td>
+        </tr>
+        <tr>
+            <td>URI</td>
+            <td>${request.requestURI}</td>
+        </tr>
+    </table>
+</div>
+<div class="info-section">
+    <h2>Headers:</h2>
+    <table>
+        <% request.headerNames.toList().sort().each { headerName -> %>
+        <tr>
+            <td>${headerName}</td>
+            <td>${request.getHeader(headerName)}</td>
+        </tr>
+        <% } %>
+    </table>
+</div>
+
+</body>
+</html>

@@ -76,7 +76,7 @@ public class StubFilter implements Filter {
                 var stub = repository.findStub(resolver, STUB_NAME_FAIL).orElse(null);
                 if (stub != null) {
                     try {
-                        stub.respond(request, response);
+                        stub.fail(request, response, e);
                     } catch (StubException e2) {
                         LOG.error("Stubs fail error!", e2);
                         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs fail error. " + e.getMessage());

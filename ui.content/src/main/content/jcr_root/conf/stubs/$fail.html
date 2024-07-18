@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stubs - Error</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .info-section { margin-top: 20px; }
+        .not-ok { color: red; }
+        table { width: 100%; border-collapse: collapse; }
+        tr:nth-child(odd) td { background-color: #f9f9f9; }
+        tr:nth-child(even) td { background-color: #ffffff; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        pre { background-color: #f2f2f2; padding: 10px; border: 1px solid #ddd; overflow: auto; }
+    </style>
+</head>
+<body>
+
+<h1>Stubs - ${response.status} Error</h1>
+
+<div class="not-ok">
+    The requested resource cannot be processed by server properly.
+</div>
+
+<div class="info-section">
+    <h2>Details</h2>
+    <table>
+        <tr>
+            <td>Method</td>
+            <td>${request.method}</td>
+        </tr>
+        <tr>
+            <td>URI</td>
+            <td>${request.requestURI}</td>
+        </tr>
+        <tr>
+            <td>Exception Type</td>
+            <td>${exception.class.name}</td>
+        </tr>
+        <tr>
+            <td>Exception Message</td>
+            <td>${exception.message}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="stack-trace-section">
+    <h2>Stack Trace</h2>
+    <pre>${exception.stackTrace.join('\n')}</pre>
+</div>
+
+<div class="info-section">
+    <h2>Headers:</h2>
+    <table>
+        <% request.headerNames.toList().sort().each { headerName -> %>
+        <tr>
+            <td>${headerName}</td>
+            <td>${request.getHeader(headerName)}</td>
+        </tr>
+        <% } %>
+    </table>
+</div>
+
+</body>
+</html>

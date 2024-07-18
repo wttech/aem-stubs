@@ -42,4 +42,9 @@ public class StaticFileStub implements Stub {
             throw new StubResponseException(String.format("Cannot write file stub response '%s'", resource.getPath()), e);
         }
     }
+
+    @Override
+    public void fail(HttpServletRequest request, HttpServletResponse response, Exception e) throws StubResponseException {
+        throw new StubResponseException(String.format("Stub '%s' is static and thus cannot handle failed requests!", getId()), e);
+    }
 }
