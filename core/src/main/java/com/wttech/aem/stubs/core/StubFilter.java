@@ -1,7 +1,9 @@
 package com.wttech.aem.stubs.core;
 
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Component(
         service = Filter.class,
@@ -28,11 +32,13 @@ public class StubFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(StubFilter.class);
 
-    private static final String STUB_NAME_FAIL = "$fail.groovy";
+    private static final String INTERNAL_DIR = "internal";
 
-    private static final String STUB_NAME_MISSING = "$missing.groovy";
+    private static final String FAIL_PATH = INTERNAL_DIR + "/fail.groovy";
 
-    private static final List<String> STUB_NAMES = List.of(STUB_NAME_FAIL, STUB_NAME_MISSING);
+    private static final String MISSING_PATH = INTERNAL_DIR + "/missing.groovy";
+
+    private static final List<String> SPECIAL_PATHS = List.of(FAIL_PATH, MISSING_PATH);
 
     @Reference
     private StubRepository repository;
@@ -73,7 +79,7 @@ public class StubFilter implements Filter {
             } catch (StubException e) {
                 LOG.error("Stubs error!", e);
 
-                var stub = repository.findStub(resolver, STUB_NAME_FAIL).orElse(null);
+                var stub = findSpecial(resolver, FAIL_PATH).orElse(null);
                 if (stub != null) {
                     try {
                         stub.fail(request, response, e);
@@ -87,7 +93,7 @@ public class StubFilter implements Filter {
                 return;
             }
 
-            var stub = repository.findStub(resolver, STUB_NAME_MISSING).orElse(null);
+            var stub = findSpecial(resolver, MISSING_PATH).orElse(null);
             if (stub != null) {
                 try {
                     stub.respond(request, response);
@@ -105,8 +111,12 @@ public class StubFilter implements Filter {
         }
     }
 
+    private Optional<Stub> findSpecial(ResourceResolver resolver, String subPath) {
+        return repository.findSpecialStub(resolver, subPath);
+    }
+
     private boolean isSpecial(Stub stub) {
-        return STUB_NAMES.contains(StringUtils.substringAfterLast(stub.getId(), "/"));
+        return SPECIAL_PATHS.stream().anyMatch(n -> StringUtils.endsWith(stub.getId(), "/" + n));
     }
 
     @Override

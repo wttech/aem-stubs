@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
+    <filter root="/conf/stubs/internal"/>
     <filter root="/conf/stubs/examples" mode="update"/>
-
-    <!-- TODO reorganize structure to simplify filters -->
-    <filter root="/conf/stubs/$missing.groovy" mode="update"/>
-    <filter root="/conf/stubs/$missing.html" mode="update"/>
-    <filter root="/conf/stubs/$fail.groovy" mode="update"/>
-    <filter root="/conf/stubs/$fail.html" mode="update"/>
 </workspaceFilter>

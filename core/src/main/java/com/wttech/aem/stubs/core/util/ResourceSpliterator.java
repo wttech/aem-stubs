@@ -4,20 +4,30 @@ import org.apache.sling.api.resource.Resource;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.Stack;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public class ResourceTreeSpliterator implements Spliterator<Resource> {
+public class ResourceSpliterator implements Spliterator<Resource> {
 
     private final Stack<Resource> stack = new Stack<>();
 
-    public ResourceTreeSpliterator(Resource root) {
+    private final Predicate<Resource> filter;
+
+    public ResourceSpliterator(Resource root, Predicate<Resource> filter) {
+        this.filter = filter;
         stack.push(root);
+    }
+
+    public static Stream<Resource> stream(Resource root, Predicate<Resource> filter) {
+        return StreamSupport.stream(new ResourceSpliterator(root, filter), false);
     }
 
     @Override
     public boolean tryAdvance(Consumer<? super Resource> action) {
         while (!stack.isEmpty()) {
             Resource current = stack.pop();
-            if (current.isResourceType(JcrUtils.NT_FILE)) {
+            if (filter.test(current)) {
                 action.accept(current);
                 return true;
             }

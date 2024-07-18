@@ -1,6 +1,7 @@
 package com.wttech.aem.stubs.core;
 
-import com.wttech.aem.stubs.core.util.ResourceTreeSpliterator;
+import com.wttech.aem.stubs.core.util.JcrUtils;
+import com.wttech.aem.stubs.core.util.ResourceSpliterator;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -13,7 +14,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Component(service = StubRepository.class, immediate = true)
 @Designate(ocd = StubRepository.Config.class)
@@ -29,8 +29,11 @@ public class StubRepository {
     @ObjectClassDefinition(name = "AEM Stubs - Repository")
     public @interface Config {
 
-        @AttributeDefinition(name = "Search paths")
-        String[] searchPaths() default { "/conf/stubs" };
+        @AttributeDefinition(name = "Search paths", description = "JCR repository paths to search for stub resources.")
+        String[] searchPaths() default {"/conf/stubs"};
+
+        @AttributeDefinition(name = "Classifier", description = "Resource name part used to distinguish stubs from other files.")
+        String classifier() default "stub";
     }
 
     @Activate
@@ -46,9 +49,14 @@ public class StubRepository {
             if (root == null) {
                 throw new StubException(String.format("Cannot read stubs search path '%s'!", path));
             }
-            result = Stream.concat(result, StreamSupport.stream(new ResourceTreeSpliterator(root), false).map(this::fromResource));
+            Stream<Resource> stream = ResourceSpliterator.stream(root, this::isStub);
+            result = Stream.concat(result, stream.map(this::fromResource));
         }
         return result;
+    }
+
+    private boolean isStub(Resource resource) {
+        return resource.isResourceType(JcrUtils.NT_FILE) && resource.getName().contains(config.classifier());
     }
 
     private Stub fromResource(Resource resource) {
@@ -60,16 +68,26 @@ public class StubRepository {
     }
 
     public ResourceResolver createResolver() throws LoginException {
-        return resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, RESOLVER_SUBSERVICE));
+        return resolverFactory.getServiceResourceResolver(Map.of(
+                ResourceResolverFactory.SUBSERVICE, RESOLVER_SUBSERVICE
+        ));
     }
 
-    public Optional<Stub> findStub(ResourceResolver resolver, String subPath) {
+    public Optional<Resource> findResource(ResourceResolver resolver, String subPath) {
         for (var path : config.searchPaths()) {
             var result = resolver.getResource(String.format("%s/%s", path, subPath));
             if (result != null) {
-                return Optional.of(result).map(this::fromResource);
+                return Optional.of(result);
             }
         }
         return Optional.empty();
+    }
+
+    public Optional<Stub> findStub(ResourceResolver resolver, String subPath) {
+        return findResource(resolver, subPath).filter(this::isStub).map(this::fromResource);
+    }
+
+    public Optional<Stub> findSpecialStub(ResourceResolver resolver, String subPath) {
+        return findResource(resolver, subPath).map(this::fromResource);
     }
 }
