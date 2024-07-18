@@ -3,8 +3,9 @@
 <head>
     <title>Stubs - 404 Not Found</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        body { margin: 20px; font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif }
         h1 { color: #333; }
+        .title-section img { width: 240px; margin-bottom: 5px; }
         .info-section { margin-top: 20px; }
         .not-found { color: red; }
         table { width: 100%; border-collapse: collapse; }
@@ -15,7 +16,10 @@
 </head>
 <body>
 
-<h1>Stubs - 404 Not Found</h1>
+<div class="title-section">
+    <img alt="AEM Stubs Logo" src="/content/dam/stubs/images/logo-text.png"/>
+    <h1>Not Found (${response.status})</h1>
+</div>
 
 <div class="not-found">
     The requested resource was not found on this server.
@@ -43,7 +47,7 @@
     <table>
         <% request.headerNames.toList().sort().each { headerName -> %>
         <tr>
-            <td>${headerName}</td>
+            <td style="width: 30%">${headerName}</td>
             <td>${request.getHeader(headerName)}</td>
         </tr>
         <% } %>
