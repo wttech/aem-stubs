@@ -44,7 +44,7 @@ In case of WireMock, ensure that AEM Stubs Filter prefix `/stubs` is not filtere
 | 2.0.0        | 6.3, 6.4, 6.5 | 11    | 2.x    |
 | 2.0.1        | 6.3, 6.4, 6.5 | 8, 11 | 2.x    |
 | 3.0.0        | 6.3, 6.4, 6.5 | 8, 11 | 4.x    |
-| 4.0.0        | 6.3, 6.4, 6.5 | 8, 11 | 4.x    |
+| 4.0.0        | 6.5, cloud    | 11    | 4.x    |
 
 Note that AEM Stubs is using Groovy scripts concept. However it is **not** using [AEM Groovy Console](https://github.com/icfnext/aem-groovy-console). It is done intentionally, because Groovy Console has close dependencies to concrete AEM version.
 AEM Stubs tool is implemented in a AEM version agnostic way, to make it more universal and more fault-tolerant when AEM version is changing.

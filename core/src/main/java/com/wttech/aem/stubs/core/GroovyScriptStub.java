@@ -1,10 +1,13 @@
 package com.wttech.aem.stubs.core;
 
 import com.google.gson.Gson;
+import com.wttech.aem.stubs.core.script.Repository;
+import com.wttech.aem.stubs.core.script.Template;
 import com.wttech.aem.stubs.core.util.JcrUtils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingMethodException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -34,7 +37,22 @@ public class GroovyScriptStub implements Stub {
 
     @Override
     public String getId() {
+        return getPath();
+    }
+
+    public String getPath() {
         return resource.getPath();
+    }
+
+    public String getDirPath() {
+        return StringUtils.substringBeforeLast(getPath(), "/");
+    }
+
+    public String resolvePath(String path) {
+        if (path.startsWith("/")) {
+            return path;
+        }
+        return getDirPath() + "/" + path;
     }
 
     // TODO provide utility methods to map '/stubs/products/123' to '/conf/stubs/products/123.GET.groovy'
@@ -84,7 +102,9 @@ public class GroovyScriptStub implements Stub {
             binding.setVariable("resourceResolver", resource.getResourceResolver());
             binding.setVariable("log", LoggerFactory.getLogger(String.format("%s(%s)", getClass().getSimpleName(), getId())));
             binding.setVariable("gson", new Gson());
-            binding.setVariable("template", new GroovyTemplate(resource.getResourceResolver()));
+            var repository = new Repository(this, resource.getResourceResolver());
+            binding.setVariable("repository", repository);
+            binding.setVariable("template", new Template(repository));
 
             var compilerConfiguration = new CompilerConfiguration();
             ImportCustomizer importCustomizer = new ImportCustomizer();
