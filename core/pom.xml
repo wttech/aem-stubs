@@ -25,7 +25,7 @@
     </parent>
     <artifactId>stubs.core</artifactId>
     <name>AEM Stubs - Core</name>
-    <description>Core bundle for AEM Stubs</description>
+    <description>Core bundle for AEM Stubs (tool for providing sample data)</description>
     <build>
         <plugins>
             <plugin>
