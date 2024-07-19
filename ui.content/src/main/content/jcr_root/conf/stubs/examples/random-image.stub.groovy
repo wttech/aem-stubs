@@ -5,9 +5,17 @@ boolean request(HttpServletRequest request) {
 }
 
 void respond(HttpServletRequest request, HttpServletResponse response) {
-    def images = resourceResolver.getResource("/content/dam/stubs/images")
-            .listChildren()
-            .findAll { it.isResourceType("dam:Asset") }
+    def imagesDir = resourceResolver.getResource(StringUtils.defaultIfBlank(request.getParameter("dir"), "/content/dam/stubs/images"))
+    if (!imagesDir) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND)
+        return
+    }
+
+    def images = imagesDir.listChildren().findAll { it.isResourceType("dam:Asset") }
+    if (images.isEmpty()) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND)
+        return
+    }
 
     images.shuffle()
 

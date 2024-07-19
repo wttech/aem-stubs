@@ -25,20 +25,33 @@ public class Repository {
     }
 
     public Resource getResource(String path) {
-        return resourceResolver.getResource(script.resolvePath(path));
+        var pathResolved = script.resolvePath(path);
+        var resource = resourceResolver.getResource(pathResolved);
+        if (resource == null) {
+            throw new IllegalArgumentException(String.format("Resource at path '%s' does not exist!", pathResolved));
+        }
+        return resource;
     }
 
     public String readAsString(String path) throws IOException {
-        var resource = getResource(path);
-        if (resource == null) {
-            throw new IllegalArgumentException(String.format("Resource at path '%s' does not exist!", path));
-        }
+        return readAsString(getResource(path));
+    }
+
+    public String readAsString(Resource resource) throws IOException {
         return IOUtils.toString(readAsStream(resource), StandardCharsets.UTF_8);
     }
 
     public String readAsBase64(String path) throws IOException {
-        var bytes = IOUtils.toByteArray(readAsStream(getResource(path)));
+        return readAsBase64(getResource(path));
+    }
+
+    public String readAsBase64(Resource resource) throws IOException {
+        var bytes = IOUtils.toByteArray(readAsStream(resource));
         return new String(Base64.getEncoder().encode(bytes));
+    }
+
+    public InputStream readAsStream(String path) throws IOException {
+        return readAsStream(getResource(path));
     }
 
     public InputStream readAsStream(Resource resource) throws IOException {
