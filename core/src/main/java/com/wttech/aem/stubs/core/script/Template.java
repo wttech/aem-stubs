@@ -21,11 +21,7 @@ public class Template {
     }
 
     public void render(Writer writer, String path, Map<?, ?> vars) throws IOException, ClassNotFoundException {
-        var resource = repository.getResource(path);
-        if (resource == null) {
-            throw new IllegalArgumentException(String.format("Template at path '%s' does not exist!", path));
-        }
-        engine.createTemplate(read(resource)).make(vars).writeTo(writer);
+        engine.createTemplate(read(repository.getResource(path))).make(vars).writeTo(writer);
     }
 
     public void render(Writer writer, String path) throws IOException, ClassNotFoundException {
