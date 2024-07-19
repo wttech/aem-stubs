@@ -8,9 +8,11 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.tika.Tika;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Optional;
 
 public class Repository {
@@ -63,5 +65,10 @@ public class Repository {
 
     public String detectContentType(String path) {
         return new Tika().detect(StringUtils.substringAfterLast(script.resolvePath(path), "/"));
+    }
+
+    public void render(HttpServletResponse response, String path) throws IOException {
+        response.setContentType(detectContentType(path));
+        IOUtils.copy(readAsStream(path), response.getOutputStream());
     }
 }

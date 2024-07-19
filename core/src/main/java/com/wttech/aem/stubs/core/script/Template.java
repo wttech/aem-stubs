@@ -29,11 +29,11 @@ public class Template {
     }
 
     public void render(HttpServletResponse response, String path, Map<?,?> vars) throws IOException, ClassNotFoundException {
-        render(response.getWriter(), path, vars);
         var contentType = repository.detectContentType(path);
         if (contentType != null) {
             response.setContentType(contentType);
         }
+        render(response.getWriter(), path, vars);
     }
 
     public void render(HttpServletResponse response, String path) throws IOException, ClassNotFoundException {
