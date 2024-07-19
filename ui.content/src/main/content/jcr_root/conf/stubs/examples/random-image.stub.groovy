@@ -1,13 +1,13 @@
 import com.day.cq.dam.api.Asset
-import org.apache.commons.io.IOUtils
 
 boolean request(HttpServletRequest request) {
     return request.getRequestURI() == "/stubs/random-image"
 }
 
 void respond(HttpServletRequest request, HttpServletResponse response) {
-    def images = resourceResolver.getResource("/content/dam/stubs/images").listChildren()
-            .findAll { it.isResourceType("dam:Asset") && it.name != "logo-text.png" }
+    def images = resourceResolver.getResource("/content/dam/stubs/images")
+            .listChildren()
+            .findAll { it.isResourceType("dam:Asset") }
 
     images.shuffle()
 

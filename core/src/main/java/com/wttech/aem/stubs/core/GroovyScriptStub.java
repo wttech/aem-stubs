@@ -109,6 +109,7 @@ public class GroovyScriptStub implements Stub {
             var compilerConfiguration = new CompilerConfiguration();
             ImportCustomizer importCustomizer = new ImportCustomizer();
             importCustomizer.addImport("StringUtils", "org.apache.commons.lang3.StringUtils");
+            importCustomizer.addImport("IOUtils", "org.apache.commons.io.IOUtils");
             importCustomizer.addImport("HttpServletRequest", "javax.servlet.http.HttpServletRequest");
             importCustomizer.addImport("HttpServletResponse", "javax.servlet.http.HttpServletResponse");
             compilerConfiguration.addCompilationCustomizers(importCustomizer);

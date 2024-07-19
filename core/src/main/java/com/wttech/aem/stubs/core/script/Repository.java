@@ -10,6 +10,7 @@ import org.apache.tika.Tika;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 
 public class Repository {
@@ -35,11 +36,16 @@ public class Repository {
         return IOUtils.toString(readAsStream(resource), StandardCharsets.UTF_8);
     }
 
+    public String readAsBase64(String path) throws IOException {
+        var bytes = IOUtils.toByteArray(readAsStream(getResource(path)));
+        return new String(Base64.getEncoder().encode(bytes));
+    }
+
     public InputStream readAsStream(Resource resource) throws IOException {
         return Optional.ofNullable(resource.getChild(JcrUtils.JCR_CONTENT))
                 .map(r -> r.adaptTo(InputStream.class))
                 .map(BufferedInputStream::new)
-                .orElseThrow(() -> new IOException(String.format("Template at path '%s' cannot be read!", resource.getPath())));
+                .orElseThrow(() -> new IOException(String.format("Resource at path '%s' cannot be read!", resource.getPath())));
     }
 
     public String detectContentType(String path) {

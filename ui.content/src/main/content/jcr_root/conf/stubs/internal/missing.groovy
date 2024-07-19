@@ -3,5 +3,7 @@ void respond(HttpServletRequest request, HttpServletResponse response) {
     template.render(response, "missing.html", [
             "request": request,
             "response": response,
+
+            "logo": repository.readAsBase64("logo-text.png"),
     ])
 }
