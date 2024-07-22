@@ -26,6 +26,9 @@
     <artifactId>stubs.core</artifactId>
     <name>AEM Stubs - Core</name>
     <description>Core bundle for AEM Stubs (tool for providing sample data)</description>
+    <properties>
+        <skipFormat>false</skipFormat>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -45,6 +48,8 @@
                             <bnd><![CDATA[
 Import-Package: javax.annotation;version=0.0.0,*
 DynamicImport-Package: *
+Private-Package: net.datafaker.*,com.mifmif.common.regex.*,dk.brics.automaton.*
+-includeresource: @datafaker-1.9.0.jar!/en.yml, @datafaker-1.9.0.jar!/en/*
                                 ]]></bnd>
                         </configuration>
                     </execution>
@@ -77,6 +82,48 @@ DynamicImport-Package: *
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+                    <skip>${skipFormat}</skip>
+                    <java>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        <cleanthat/>
+                        <palantirJavaFormat>
+                            <version>2.40.0</version>
+                            <style>PALANTIR</style>
+                            <formatJavadoc>true</formatJavadoc>
+                        </palantirJavaFormat>
+                        <importOrder/>
+                        <removeUnusedImports/>
+                        <formatAnnotations/>
+                    </java>
+                </configuration>
+                <executions>
+                    <!-- Automatically correct code style during the normal build -->
+                    <execution>
+                        <id>apply-style</id>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                    <!-- Validate only code style and fail the build eventually -->
+                    <!--
+                    <execution>
+                        <id>check-style</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                    -->
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -171,7 +218,6 @@ DynamicImport-Package: *
             <version>7.0.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy</artifactId>
@@ -189,6 +235,11 @@ DynamicImport-Package: *
             <artifactId>tika-core</artifactId>
             <version>1.28.5</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>1.9.0</version><!-- TODO upgrade when AEM supports JDK 17+ -->
         </dependency>
 
         <!-- Testing -->

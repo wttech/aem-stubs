@@ -1,12 +1,12 @@
 package com.wttech.aem.stubs.core.util;
 
-import org.apache.sling.api.resource.Resource;
 import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.Stack;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.sling.api.resource.Resource;
 
 public class ResourceSpliterator implements Spliterator<Resource> {
 

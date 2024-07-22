@@ -2,6 +2,9 @@ package com.wttech.aem.stubs.core;
 
 import com.wttech.aem.stubs.core.util.JcrUtils;
 import com.wttech.aem.stubs.core.util.ResourceSpliterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -10,10 +13,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component(service = StubRepository.class, immediate = true)
 @Designate(ocd = StubRepository.Config.class)
@@ -32,7 +31,9 @@ public class StubRepository {
         @AttributeDefinition(name = "Search paths", description = "JCR repository paths to search for stub resources.")
         String[] searchPaths() default {"/conf/stubs"};
 
-        @AttributeDefinition(name = "Classifier", description = "Resource name part used to distinguish stubs from other files.")
+        @AttributeDefinition(
+                name = "Classifier",
+                description = "Resource name part used to distinguish stubs from other files.")
         String classifier() default "stub";
     }
 
@@ -68,9 +69,8 @@ public class StubRepository {
     }
 
     public ResourceResolver createResolver() throws LoginException {
-        return resolverFactory.getServiceResourceResolver(Map.of(
-                ResourceResolverFactory.SUBSERVICE, RESOLVER_SUBSERVICE
-        ));
+        return resolverFactory.getServiceResourceResolver(
+                Map.of(ResourceResolverFactory.SUBSERVICE, RESOLVER_SUBSERVICE));
     }
 
     public Optional<Resource> findResource(ResourceResolver resolver, String subPath) {

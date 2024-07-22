@@ -12,5 +12,4 @@ public interface Stub {
     void respond(HttpServletRequest request, HttpServletResponse response) throws StubResponseException;
 
     void fail(HttpServletRequest request, HttpServletResponse response, Exception e) throws StubResponseException;
-
 }

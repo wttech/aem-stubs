@@ -1,6 +1,11 @@
 package com.wttech.aem.stubs.core;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -12,21 +17,13 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Component(
         service = Filter.class,
         property = {
-                HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME + "=*)"
+            HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=("
+                    + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME + "=*)"
         },
-        configurationPolicy = ConfigurationPolicy.REQUIRE
-)
+        configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = StubFilter.Config.class)
 public class StubFilter implements Filter {
 
@@ -85,7 +82,8 @@ public class StubFilter implements Filter {
                         stub.fail(request, response, e);
                     } catch (StubException e2) {
                         LOG.error("Stubs fail error!", e2);
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs fail error. " + e.getMessage());
+                        response.sendError(
+                                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs fail error. " + e.getMessage());
                     }
                 } else {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs error. " + e.getMessage());
@@ -99,7 +97,8 @@ public class StubFilter implements Filter {
                     stub.respond(request, response);
                 } catch (StubException e) {
                     LOG.error("Stubs missing error!", e);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs missing error. " + e.getMessage());
+                    response.sendError(
+                            HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stubs missing error. " + e.getMessage());
                 }
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Stub not found!");
