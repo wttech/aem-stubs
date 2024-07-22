@@ -20,9 +20,9 @@ public class StaticFileStub implements Stub {
     }
 
     /**
-       TODO match part of path to the request url, match resource extension to the request accept header or requested
-       TODO for example when requesting GET '/stubs/products/123' the resource '/conf/stubs/products/123.GET.json'
-       TODO for example when requesting POST '/stubs/products/123' the resource '/conf/stubs/products/123.POST.json'
+     * TODO match part of path to the request url, match resource extension to the request accept header or requested
+     * TODO for example when requesting GET '/stubs/products/123' the resource '/conf/stubs/products/123.GET.json' TODO
+     * for example when requesting POST '/stubs/products/123' the resource '/conf/stubs/products/123.POST.json'
      */
     @Override
     public boolean request(HttpServletRequest request) throws StubRequestException {

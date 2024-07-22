@@ -17,9 +17,11 @@ void respond(HttpServletRequest request, HttpServletResponse response) {
 
     for (int i = 0; i < count; i++) {
         generator.writeStartObject()
+                .write("id", i + 1)
                 .write("firstName", faker.name().firstName())
                 .write("lastName", faker.name().lastName())
-                .write("birthDate", faker.date().birthday().toString())
+                .write("address", faker.address().streetAddress())
+                .write("birth", faker.date().birthday().toString())
                 .writeEnd()
     }
 

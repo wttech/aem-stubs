@@ -83,8 +83,9 @@ via CRX package with corresponding Vault workspace filter:
 
 * [resourceResolver](https://sling.apache.org/apidocs/sling11/org/apache/sling/api/resource/ResourceResolver.html) - for accessing AEM repository,
 * [log](https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java) - SLF4j logger connected to script being run.
-* [template](https://github.com/wttech/aem-stubs/blob/main-v4/core/src/main/java/com/wttech/aem/stubs/core/GroovyTemplate.java) - Template engine-based rendering
-
+* [template](https://github.com/wttech/aem-stubs/blob/main-v4/core/src/main/java/com/wttech/aem/stubs/core/script/Template.java) - Template engine-based rendering
+* [repository](https://github.com/wttech/aem-stubs/blob/main-v4/core/src/main/java/com/wttech/aem/stubs/core/script/Repository.java) - Easy access to AEM repository
+* [faker](https://github.com/datafaker-net/datafaker/blob/main/src/main/java/net/datafaker/Faker.java) - Data Faker library for generating random data
 
 ## Other tools
 
