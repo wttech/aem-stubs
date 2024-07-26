@@ -13,7 +13,9 @@ Tool for providing sample data for AEM applications in a simple and flexible way
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and start stubbing!
 
-TODO add screenshot of new stubs v4
+<p>
+  <img src="docs/screenshot.png" alt="AEM Stubs Screenshot" width="480"/>
+</p>
 
 AdaptTo 2020 Live Demo - <https://adapt.to/2020/en/schedule/lightning-talks/aem-stubs.html>
 
