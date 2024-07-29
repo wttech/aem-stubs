@@ -142,3 +142,10 @@ aem/home/
 .task/
 .env
 .env.*
+
+
+# AEM Compose
+aem/home/
+.task/
+.env
+.env.*
