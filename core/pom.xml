@@ -222,13 +222,11 @@ Private-Package: net.datafaker.*,com.mifmif.common.regex.*,dk.brics.automaton.*
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>4.0.18</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-templates</artifactId>
             <version>4.0.9</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
