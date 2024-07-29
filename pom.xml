@@ -25,6 +25,7 @@
     <description>AEM Stubs</description>
     <modules>
         <module>all</module>
+        <module>min</module>
         <module>core</module>
         <module>ui.apps</module>
         <module>ui.apps.structure</module>

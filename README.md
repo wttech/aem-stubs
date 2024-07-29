@@ -29,13 +29,23 @@ Main concepts of AEM Stubs tool are:
 
 ## Installation
 
-Simply install ready to use AEM package downloaded from GitHub [releases](https://github.com/wttech/aem-stubs/releases) section.
+The ready-to-install AEM packages are available on [GitHub releases](https://github.com/wttech/aem-stubs/releases).
+
+There are two ways to install AEM Stubs on your AEM instances:
+
+1. Using the 'all' package:
+    * Recommended for fresh AEM instances.
+    * This package will also install AEM Groovy Console and AEM Stubs examples.
+2. Using the 'minimal' package:
+    * Recommended for AEM instances that already contain some dependencies shared with other tools.
+    * This package does not include Groovy bundles, which can be provided by other tools like [AEM Easy Content Upgrade](https://github.com/valtech/aem-easy-content-upgrade/releases) (AECU) or [AEM Groovy Console](https://github.com/orbinson/aem-groovy-console/releases).
 
 ### Post installation steps
 
-Remember that using AEM Stubs on AEM Publish instances may require an additional configuration.
+Remember that using AEM Stubs on AEM Publish instances through AEM Dispatcher may require an additional configuration.
 
-In case of WireMock, ensure that AEM Stubs Filter prefix `/stubs` is not filtered by AEM Dispatcher configuration. Alternatively, by creating OSGi configuration, update that path prefix to path which is already accessible.
+Simply ensure that AEM Stubs Filter prefix `/stubs` (configured in [AEM Stubs HTTP Filter](https://github.com/wttech/aem-stubs/blob/main-v4/core/src/main/java/com/wttech/aem/stubs/core/StubFilter.java) is not filtered by AEM Dispatcher configuration. 
+Alternatively, by creating OSGi configuration, update that path prefix (or regex pattern) to the something which is already accessible.
 
 ## Compatibility
 
@@ -76,8 +86,8 @@ via CRX package with corresponding Vault workspace filter:
 
 ### OSGi configuration
 
-[Stub Filter](http://localhost:4502/system/console/configMgr/com.wttech.aem.stubs.core.StubFilter)
-[Stub Repository](http://localhost:4502/system/console/configMgr/com.wttech.aem.stubs.core.StubRepository)
+[AEM Stubs HTTP Filter](http://localhost:4502/system/console/configMgr/com.wttech.aem.stubs.core.StubFilter)
+[AEM Stubs Repository](http://localhost:4502/system/console/configMgr/com.wttech.aem.stubs.core.StubRepository)
 
 ### Stub script API
 

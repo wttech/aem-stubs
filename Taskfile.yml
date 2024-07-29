@@ -116,12 +116,24 @@ tasks:
     desc: build AEM package
     cmd: mvn clean install
 
-  deploy:
-    desc: deploy AEM package to AEM instances
+  deploy:all:
+    desc: deploy all AEM package to AEM instances
     cmd: sh aemw package deploy --file "all/target/stubs.all-*.zip"
 
-  develop:
-    desc: build & deploy AEM packages to instances
+  deploy:min:
+    desc: deploy minimal AEM package to AEM instances
+    cmd: sh aemw package deploy --file "min/target/stubs.min-*.zip"
+
+  develop:all:
+    desc: build & deploy all AEM package to instances
     cmds:
       - task: build
-      - task: deploy
+      - task: deploy:all
+
+  develop:min:
+    desc: build & deploy minimal AEM package to instances
+    cmds:
+      - task: build
+      - sh aemw package deploy --url 'https://github.com/orbinson/aem-groovy-console/releases/download/19.0.5/aem-groovy-console-all-19.0.5.zip'
+      - task: deploy:min
+      - sh aemw package deploy --file 'ui.content/target/stubs.ui.content-4.0.0-SNAPSHOT.zip'

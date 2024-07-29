@@ -16,10 +16,10 @@
     <!-- ====================================================================== -->
     <!-- P R O J E C T  D E S C R I P T I O N                                   -->
     <!-- ====================================================================== -->
-    <artifactId>stubs.all</artifactId>
+    <artifactId>stubs.min</artifactId>
     <packaging>content-package</packaging>
-    <name>AEM Stubs - All</name>
-    <description>Complete distribution package for AEM Stubs</description>
+    <name>AEM Stubs - Minimal</name>
+    <description>Minimal distribution package for AEM Stubs</description>
 
     <!-- ====================================================================== -->
     <!-- B U I L D   D E F I N I T I O N                                        -->
@@ -47,12 +47,6 @@
                         </embedded>
                         <embedded>
                             <groupId>com.wttech.aem.stubs</groupId>
-                            <artifactId>stubs.ui.content</artifactId>
-                            <type>zip</type>
-                            <target>/apps/stubs-packages/content/install</target>
-                        </embedded>
-                        <embedded>
-                            <groupId>com.wttech.aem.stubs</groupId>
                             <artifactId>stubs.ui.config</artifactId>
                             <type>zip</type>
                             <target>/apps/stubs-packages/application/install</target>
@@ -60,16 +54,6 @@
                         <embedded>
                             <groupId>com.wttech.aem.stubs</groupId>
                             <artifactId>stubs.core</artifactId>
-                            <target>/apps/stubs-packages/application/install</target>
-                        </embedded>
-                        <embedded>
-                            <groupId>org.apache.groovy</groupId>
-                            <artifactId>groovy</artifactId>
-                            <target>/apps/stubs-packages/application/install</target>
-                        </embedded>
-                        <embedded>
-                            <groupId>org.apache.groovy</groupId>
-                            <artifactId>groovy-templates</artifactId>
                             <target>/apps/stubs-packages/application/install</target>
                         </embedded>
                     </embeddeds>
