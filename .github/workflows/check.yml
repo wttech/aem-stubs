@@ -18,4 +18,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-      - run: mvn --batch-mode clean package verify
+          cache: 'maven'
+          cache-dependency-path: 'sub-project/pom.xml' # optional
+      - run: mvn -B clean package verify
