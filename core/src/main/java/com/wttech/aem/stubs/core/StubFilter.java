@@ -46,7 +46,7 @@ public class StubFilter implements Filter {
     public @interface Config {
 
         @AttributeDefinition(name = "Enabled")
-        boolean enabled();
+        boolean enabled() default true;
 
         @AttributeDefinition(name = "Whiteboard Filter Regex")
         String[] osgi_http_whiteboard_filter_regex();
@@ -59,7 +59,13 @@ public class StubFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
+        if (!config.enabled()) {
+            chain.doFilter(req, res);
+            return;
+        }
+
         var request = (HttpServletRequest) req;
         var response = (HttpServletResponse) res;
 
