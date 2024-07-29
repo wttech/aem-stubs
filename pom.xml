@@ -20,7 +20,7 @@
     <groupId>com.wttech.aem.stubs</groupId>
     <artifactId>stubs</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0</version>
     <name>AEM Stubs</name>
     <description>AEM Stubs</description>
     <modules>
