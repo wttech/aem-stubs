@@ -136,4 +136,4 @@ tasks:
       - task: build
       - sh aemw package deploy --url 'https://github.com/orbinson/aem-groovy-console/releases/download/19.0.5/aem-groovy-console-all-19.0.5.zip'
       - task: deploy:min
-      - sh aemw package deploy --file 'ui.content/target/stubs.ui.content-4.0.0-SNAPSHOT.zip'
+      - sh aemw package deploy --file 'ui.content/target/stubs.ui.content-*.zip'
