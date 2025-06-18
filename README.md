@@ -9,6 +9,18 @@
   <img src="docs/logo-text.svg" alt="AEM Stubs" width="300"/>
 </p>
 
+---
+
+:construction: **Deprecation** :construction:
+
+We'd like to inform you that the AEM Stubs is now deprecated.
+
+As a better alternative we recommend checking out [AEM Content Manager](https://github.com/wttech/acm?tab=readme-ov-file#mocks).
+
+No worries, your familiar workflow and features remain intact in ACM.
+
+---
+
 Tool for providing sample data for AEM applications in a simple and flexible way.
 
 Simply [install](#installation) ready-to-use CRX package on AEM instance and start stubbing!
