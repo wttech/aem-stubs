@@ -13,7 +13,7 @@
 
 :construction: **Deprecation** :construction:
 
-We'd like to inform you that the AEM Stubs is now deprecated.
+We’d like to inform you that AEM Stubs is now deprecated, as its functionality has been integrated into a larger tool.
 
 As a better alternative we recommend checking out [AEM Content Manager](https://github.com/wttech/acm?tab=readme-ov-file#mocks).
 
