@@ -37,7 +37,7 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
 
   private static final Logger LOG = LoggerFactory.getLogger(ConfigurableStubManager.class);
 
-  @Reference
+  @Reference(policyOption = ReferencePolicyOption.GREEDY)
   private ResolverAccessor resolverAccessor;
 
   private Config config;
@@ -189,7 +189,6 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
   }
 
   @Activate
-  @Modified
   protected void update(Config config) {
     this.config = config;
     reload();

@@ -9,7 +9,6 @@ import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ActualHttpServer;
 import com.github.dreamhead.moco.internal.ApiUtils;
 import com.github.dreamhead.moco.parser.HttpServerParser;
-import com.google.common.collect.ImmutableList;
 import groovy.lang.Closure;
 import org.apache.sling.api.resource.Resource;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -20,6 +19,8 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -39,10 +40,10 @@ public class MocoStubs implements Stubs<HttpServer> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MocoStubs.class);
 
-  @Reference
+  @Reference(policyOption = ReferencePolicyOption.GREEDY)
   private StubManager manager;
 
-  @Reference
+  @Reference(policyOption = ReferencePolicyOption.GREEDY)
   private ResolverAccessor resolverAccessor;
 
   private ActualHttpServer server;
@@ -64,12 +65,6 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Activate
   protected void activate(Config config) {
     this.config = config;
-  }
-
-  @Modified
-  protected void modify(Config config) {
-    this.config = config;
-    manager.reload(this);
   }
 
   @Deactivate
@@ -127,7 +122,7 @@ public class MocoStubs implements Stubs<HttpServer> {
         .map(BufferedInputStream::new))
       .ifPresent(input -> {
         final ActualHttpServer configServer = (ActualHttpServer) new HttpServerParser().parseServer(
-          ImmutableList.of(input), Optional.of(config.port())
+          ImmutableList.<InputStream>of(input), config.port(), !config.logging()
         );
         server = server.mergeServer(configServer);
       });

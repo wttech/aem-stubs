@@ -8,9 +8,10 @@ import com.github.dreamhead.moco.resource.Identifiable;
 import com.github.dreamhead.moco.resource.ResourceConfigApplier;
 import com.github.dreamhead.moco.resource.reader.ContentResourceReader;
 
+import java.util.Objects;
+
 import static com.github.dreamhead.moco.resource.IdFactory.id;
 import static com.github.dreamhead.moco.resource.ResourceFactory.textResource;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JcrResourceReaderFactory {
 
@@ -27,7 +28,8 @@ public class JcrResourceReaderFactory {
   }
 
   public ResponseHandler jcr(String jcrPath) {
-    return new ContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, textResource(checkNotNull(jcrPath, "Text should not be null")))));
+    final String path = Objects.requireNonNull(jcrPath, "Text should not be null");
+    return new ContentHandler(contentResource(id("jcr"), null, new JcrResourceReader(resolverAccessor, textResource(request -> path))));
   }
 
   public ResponseHandler jcr(ContentResource jcrResource) {

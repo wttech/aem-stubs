@@ -30,7 +30,9 @@ tasks {
             importPackage(
                 "javax.annotation;version=0.0.0",
                 "groovy.*;version=\"[4,7)\"",
-                "org.codehaus.groovy.*;version=\"[4,7)\""
+                "org.codehaus.groovy.*;version=\"[4,7)\"",
+                "com.cognifide.aem.stubs.core",
+                "com.cognifide.aem.stubs.core.*"
             )
 
             exportPackage("com.github.tomakehurst.wiremock.*")
