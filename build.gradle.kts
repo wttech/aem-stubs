@@ -1,11 +1,9 @@
 plugins {
-    id("com.neva.fork")
     id("com.cognifide.aem.instance.local")
     id("net.researchgate.release")
     id("com.github.breadmoirai.github-release")
 }
 
-apply(from = "gradle/fork/props.gradle.kts")
 apply(from = "gradle/common.gradle.kts")
 
 description = "AEM Stubs"

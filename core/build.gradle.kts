@@ -19,6 +19,10 @@ java {
 tasks {
     jar {
         bundle {
+            importPackage(
+                "groovy.*;version=\"[4,7)\"",
+                "org.codehaus.groovy.*;version=\"[4,7)\""
+            )
             embedPackage("commons-io:commons-io:2.6", "org.apache.commons.io.*")
             embedPackage("org.apache.commons:commons-lang3:3.5", "org.apache.commons.lang3.*")
         }
