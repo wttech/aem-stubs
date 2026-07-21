@@ -4,7 +4,6 @@ import com.cognifide.gradle.aem.pkg.tasks.PackageCompose
 group = "com.cognifide.aem.stubs"
 
 repositories {
-    // jcenter() removed: Bintray/JCenter was shut down in 2021 and no longer serves artifacts.
     mavenCentral()
     maven("https://repo.adobe.com/nexus/content/groups/public")
 }
