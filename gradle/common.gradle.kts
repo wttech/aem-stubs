@@ -4,7 +4,6 @@ import com.cognifide.gradle.aem.pkg.tasks.PackageCompose
 group = "com.cognifide.aem.stubs"
 
 repositories {
-    jcenter()
     mavenCentral()
     maven("https://repo.adobe.com/nexus/content/groups/public")
 }

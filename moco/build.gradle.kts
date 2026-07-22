@@ -29,7 +29,11 @@ tasks {
         bundle {
             attribute("DynamicImport-Package", "*")
             importPackageSuffix.set("*;resolution:=optional")
-            importPackage("javax.annotation;version=0.0.0")
+            importPackage(
+                "javax.annotation;version=0.0.0",
+                "groovy.*;version=\"[4,7)\"",
+                "org.codehaus.groovy.*;version=\"[4,7)\""
+            )
 
             embedPackage("com.github.dreamhead:moco-core:1.1.0", "com.github.dreamhead.moco.*", export = true)
             embedPackage("com.github.dreamhead:moco-runner:1.1.0")
