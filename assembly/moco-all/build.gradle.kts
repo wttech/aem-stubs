@@ -14,14 +14,16 @@ tasks {
         from(project(":moco").layout.projectDirectory.dir("src/main/content"))
         installBundleBuilt(":moco:jar") { dirPath.set("/apps/stubs/moco/install")}
 
-        installBundle("io.netty:netty-common:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("io.netty:netty-handler:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("io.netty:netty-buffer:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("io.netty:netty-codec:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("io.netty:netty-codec-http:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("io.netty:netty-transport:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("io.netty:netty-resolver:4.1.46.Final") { dirPath.set("/apps/stubs/moco/install") }
-        installBundle("org.apache.servicemix.bundles:org.apache.servicemix.bundles.freemarker:2.3.29_1") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-common:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-buffer:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-resolver:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-transport:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-transport-native-unix-common:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-handler:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-codec-base:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-codec-compression:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("io.netty:netty-codec-http:4.2.12.Final") { dirPath.set("/apps/stubs/moco/install") }
+        installBundle("org.freemarker:freemarker:2.3.34") { dirPath.set("/apps/stubs/moco/install") }
 
         installBundle("org.apache.groovy:groovy:4.0.9") { dirPath.set("/apps/stubs/moco/install")}
     }

@@ -38,15 +38,15 @@ public class WireMockStubs implements Stubs<WireMockApp> {
 
   private Config config;
 
-  @Reference
+  @Reference(policyOption = ReferencePolicyOption.GREEDY)
   private HttpService httpService;
 
   private WireMockServlet servlet;
 
-  @Reference
+  @Reference(policyOption = ReferencePolicyOption.GREEDY)
   private StubManager manager;
 
-  @Reference
+  @Reference(policyOption = ReferencePolicyOption.GREEDY)
   private ResolverAccessor resolverAccessor;
 
   private String servletPath;
@@ -82,12 +82,6 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   @Activate
   protected void activate(Config config) {
     this.config = config;
-  }
-
-  @Modified
-  protected void modify(Config config) {
-    this.config = config;
-    manager.reload(this);
   }
 
   @Deactivate
