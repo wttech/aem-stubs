@@ -69,10 +69,13 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Activate
   protected void activate(Config config) {
     this.config = config;
+    manager.register(this);
+    manager.reload(this);
   }
 
   @Deactivate
   protected void deactivate() {
+    manager.unregister(this);
     stop();
   }
 
