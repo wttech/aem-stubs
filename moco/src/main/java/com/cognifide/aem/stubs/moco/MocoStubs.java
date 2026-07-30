@@ -9,9 +9,9 @@ import com.github.dreamhead.moco.*;
 import com.github.dreamhead.moco.internal.ActualHttpServer;
 import com.github.dreamhead.moco.internal.ApiUtils;
 import com.github.dreamhead.moco.parser.HttpServerParser;
+import groovy.lang.Binding;
 import groovy.lang.Closure;
 import org.apache.sling.api.resource.Resource;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -24,7 +24,11 @@ import com.google.common.collect.ImmutableList;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.github.dreamhead.moco.Moco.*;
 import static com.github.dreamhead.moco.Runner.runner;
@@ -65,10 +69,13 @@ public class MocoStubs implements Stubs<HttpServer> {
   @Activate
   protected void activate(Config config) {
     this.config = config;
+    manager.register(this);
+    manager.reload(this);
   }
 
   @Deactivate
   protected void deactivate() {
+    manager.unregister(this);
     stop();
   }
 
@@ -106,12 +113,27 @@ public class MocoStubs implements Stubs<HttpServer> {
     final JcrResourceReaderFactory jcrResourceReaderFactory = new JcrResourceReaderFactory(resolverAccessor);
     Closure c = new MethodClosure(jcrResourceReaderFactory, "jcr");
     script.getBinding().setVariable("jcr", c);
-    script.getCompilerConfig().addCompilationCustomizers(new ImportCustomizer().addStaticStars(
-      MocoUtils.class.getName(),
-      Moco.class.getName()
-    ));
+    bindStaticMethods(script.getBinding(), MocoUtils.class, Moco.class);
 
     script.run();
+  }
+
+  /**
+   * Binds static methods as closures instead of using an {@code ImportCustomizer}
+   * static-star import, which would force cross-bundle resolution of guava types
+   * embedded in this bundle (which are embedded in this jar as private package and
+   * no longer available in AEM LTS / AEMaaCS as public packages)
+   */
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+  private void bindStaticMethods(Binding binding, Class<?>... classes) {
+    final Set<String> boundNames = new LinkedHashSet<>();
+    for (Class<?> clazz : classes) {
+      for (Method method : clazz.getMethods()) {
+        if (Modifier.isStatic(method.getModifiers()) && boundNames.add(method.getName())) {
+          binding.setVariable(method.getName(), new MethodClosure(clazz, method.getName()));
+        }
+      }
+    }
   }
 
   @Override

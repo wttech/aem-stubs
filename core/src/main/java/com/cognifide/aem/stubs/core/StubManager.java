@@ -5,6 +5,17 @@ import java.util.Optional;
 public interface StubManager {
 
   /**
+   * Register a stubs runnable. Called by each Stubs implementation from its own
+   * activate method.
+   */
+  void register(Stubs<?> runnable);
+
+  /**
+   * Unregister a stubs runnable, counterpart of {@link #register(Stubs)}.
+   */
+  void unregister(Stubs<?> runnable);
+
+  /**
    * Reload all runnables.
    */
   void reload();

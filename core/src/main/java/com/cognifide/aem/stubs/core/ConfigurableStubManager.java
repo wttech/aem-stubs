@@ -177,15 +177,15 @@ public class ConfigurableStubManager implements StubManager, ResourceChangeListe
       .forEach(this::reload);
   }
 
-  @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
-  protected void bindStubs(Stubs<?> stubs) {
-    runnables.add(stubs);
-    reload(stubs);
+  @Override
+  public void register(Stubs<?> runnable) {
+    runnables.add(runnable);
   }
 
+  @Override
   @SuppressWarnings("PMD.NullAssignment")
-  protected void unbindStubs(Stubs<?> stubs) {
-    runnables.remove(stubs);
+  public void unregister(Stubs<?> runnable) {
+    runnables.remove(runnable);
   }
 
   @Activate

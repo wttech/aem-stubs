@@ -82,10 +82,13 @@ public class WireMockStubs implements Stubs<WireMockApp> {
   @Activate
   protected void activate(Config config) {
     this.config = config;
+    manager.register(this);
+    manager.reload(this);
   }
 
   @Deactivate
   protected void deactivate() {
+    manager.unregister(this);
     stop();
   }
 
